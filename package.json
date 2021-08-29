@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/NienLuanNganhCT466/NienLuanNganhCT466.git"
+    "url": "git+https://github.com/Phong2589/CodeNienLuanNganh.git"
   },
   "author": "phong",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/NienLuanNganhCT466/NienLuanNganhCT466/issues"
+    "url": "https://github.com/Phong2589/CodeNienLuanNganh/issues"
   },
-  "homepage": "https://github.com/NienLuanNganhCT466/NienLuanNganhCT466#readme",
+  "homepage": "https://github.com/Phong2589/CodeNienLuanNganh#readme",
   "dependencies": {
     "express": "^4.17.1",
     "nodemon": "^2.0.12"
