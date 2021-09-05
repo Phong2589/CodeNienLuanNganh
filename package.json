@@ -18,6 +18,8 @@
   "homepage": "https://github.com/Phong2589/CodeNienLuanNganh#readme",
   "dependencies": {
     "express": "^4.17.1",
+    "express-handlebars": "^5.3.3",
+    "morgan": "^1.10.0",
     "nodemon": "^2.0.12"
   }
 }

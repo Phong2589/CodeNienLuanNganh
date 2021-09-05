@@ -1,0 +1,20 @@
+.footer ul li{
+    list-style-type: none;
+}
+.footer{
+    background-color: rgb(219, 219, 210) !important;
+}
+.footer ul li a{
+    text-decoration: none;
+    color: rgb(150, 150, 141);
+}
+.iconFooter{
+    color: rgb(150, 150, 141);
+}
+
+#bodyMain{
+    margin-top: 60px;
+}
+.sortMenu{
+    background-color: white;
+}
