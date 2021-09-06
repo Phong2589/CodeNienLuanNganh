@@ -22,6 +22,9 @@
   .w-xs-15 {
     width: 15% !important;
   }
+  .w-xs-none {
+    width: 0% !important;
+  }
 }
 
 /* Small devices (landscape phones, 576px and up) */
@@ -48,6 +51,9 @@
   .w-sm-15 {
     width: 15% !important;
   }
+  .w-sm-none{
+    width: 0% !important;
+  }
 }
 
 /* Medium devices (tablets, 768px and up) */
@@ -70,6 +76,9 @@
   }
   .w-md-15 {
     width: 15% !important;
+  }
+  .w-md-none{
+    width: 0% !important;
   }
 }
 

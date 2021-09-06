@@ -1,3 +1,4 @@
+/* footer */
 .footer ul li{
     list-style-type: none;
 }
@@ -11,10 +12,22 @@
 .iconFooter{
     color: rgb(150, 150, 141);
 }
-
-#bodyMain{
-    margin-top: 60px;
+.footer ul{
+    padding-inline-start: 0px;
 }
+/* header */
+.form-inline
+{
+    flex-flow: unset;
+}
+.iconCart{
+    color: white;
+    font-size: 5vh;
+    display: block;
+}
+
+
+
 .sortMenu{
     background-color: white;
 }
