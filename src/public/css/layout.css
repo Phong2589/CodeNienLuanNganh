@@ -15,6 +15,7 @@
 .footer ul{
     padding-inline-start: 0px;
 }
+
 /* header */
 .form-inline
 {
@@ -25,6 +26,10 @@
     font-size: 5vh;
     display: block;
 }
+.rightItemLink
+{
+    color: rgba(255,255,255,.5);
+}
 @media (min-width: 576px) and (max-width: 767.98px) {
     .contentMdHidden
     {
@@ -33,7 +38,9 @@
     .rightItem
     {
         display: block !important;
-        padding-left: 0px !important;
+    }
+    .rightItemLink{
+        padding-left: 5px !important;
     }
 }
 @media (max-width: 575.98px) {
@@ -44,10 +51,21 @@
         .rightItem
         {
             display: block !important;
-            padding-left: 0px !important;
+        }
+        .rightItemLink{
+            padding-left: 5px !important;
         }
     }
 
 .sortMenu{
     background-color: white;
+}
+
+#bodyHome{
+    padding-top: 125px;
+}
+@media (max-width: 575.98px) {
+    #bodyHome{
+        padding-top: 140px;
+    }
 }
