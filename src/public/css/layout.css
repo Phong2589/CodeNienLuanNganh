@@ -65,6 +65,10 @@
         padding-top: 140px;
     }
 }
+.footerPadding{
+    padding-left: 0px !important;
+}
+
 
 /* register */
 .facegg{
@@ -106,4 +110,8 @@
 .endFormRegister a{
     text-decoration: none;
     color: rgb(129, 130, 131);
+}
+.warning{
+    color:red;
+    padding-top: 8px;
 }

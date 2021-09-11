@@ -10,19 +10,19 @@
       </div>
       
     <div class="modal-body">
-        <form action="">
+        <form action="/register" method="post" onsubmit="return check()">
             <div class="form-group">
                 <div class="col-sm">
-                    <input type="text" class="form-control" id="user" name="user" placeholder="Tên tài khoản">
-                    <p></p>
+                    <input type="text" class="form-control" id="user" name="user" placeholder="Tên tài khoản" onblur="checkUser(this.value)">
+                    <p class="warning" id="warningUser"></p>
                 </div>
                 <div class="col-sm">
                     <input type="password" class="form-control" id="password" name="password" placeholder="Mật khẩu">
-                    <p></p>
+                    <p class="warning" id="warningPassword"></p>
                 </div>
                 <div class="col-sm">
                     <input type="password" class="form-control" id="rePassword" name="rePassword" placeholder="Nhập lại mật khẩu">
-                    <p></p>
+                    <p class="warning" id="warningRePassWord"></p>
                 </div>
                 <hr>
                 <div class="endFormRegister">
@@ -58,7 +58,7 @@
       </div>
       
     <div class="modal-body">
-        <form action="">
+        {{!-- <form action="/login" method="post">
             <div class="form-group">
                 <div class="col-sm">
                     <input type="text" class="form-control" id="user" name="user" placeholder="Tên đăng nhập">
@@ -79,7 +79,7 @@
                     <button type="submit button" class="btn btn-primary">Đăng nhập</button>   
                 </div>
             </div>
-        </form>
+        </form> --}}
     </div>
     <div class="modal-footer-redefine">
         <div class="facegg">
@@ -94,3 +94,76 @@
     </div>
   </div>
 </div>
+
+{{#each customers}}
+    <p>{{this.user}}</p>
+{{/each}}
+
+<script>
+    checkNameUser = true;
+    //check form register
+    function check(){
+        var checked=true;
+        //check user
+        var user_reg=/^[A-Za-z][A-Za-z0-9]{5,15}$/;
+        var userCheck = document.getElementById('user').value;
+        if(userCheck == "") {
+                document.getElementById("warningUser").innerHTML="Vui lòng nhập vào tên đăng nhập!";
+                checked = false;
+            }
+        else    if(user_reg.test(userCheck))  document.getElementById("warningUser").innerHTML="";
+                else  {
+                    document.getElementById("warningUser").innerHTML="Tên đăng nhập từ 6 - 15 kí tự và bắt đầu bằng chữ cái!";
+                    checked = false;
+                }
+
+        //check password
+        var pass_reg=/^(?=.*[A-Za-z])(?=.*[0-9])[A-Za-z0-9]{6,15}$/;
+        var passCheck = document.getElementById('password').value;
+        if(passCheck == "") {
+            document.getElementById("warningPassword").innerHTML="Vui lòng nhập vào mật khẩu!";
+            checked=false;
+        }
+        else  if(pass_reg.test(passCheck))  document.getElementById("warningPassword").innerHTML="";
+                else  {
+                    document.getElementById("warningPassword").innerHTML="Mật khẩu từ 6 - 15 kí tự bao gồm chữ và số!";
+                    checked = false;
+                }    
+        //
+        var rePassCheck = document.getElementById('rePassword').value;
+        if(rePassCheck == "") {
+            document.getElementById("warningRePassWord").innerHTML="Vui lòng lại mật khẩu!";
+            checked = false;
+        }
+        else  if(rePassCheck == passCheck) document.getElementById("warningRePassWord").innerHTML="";
+                else {
+                        document.getElementById("warningRePassWord").innerHTML="Mật khẩu sai vui lòng nhập lại!";
+                        checked = false;
+                    }
+        if(checkNameUser == false)
+        {
+            checked = false;
+            document.getElementById("warningUser").innerHTML="Tên tài khoản đã tồn tại vui lòng chọn tên khác!";
+        }
+        return checked;
+    }
+    element.addEventListener("blur",checkUser);
+    function checkUser(user)
+        {
+        var xmlhttp;
+        xmlhttp=new XMLHttpRequest();
+        xmlhttp.onreadystatechange=function() {
+        if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+            if(xmlhttp.responseText != "")
+            {
+                document.getElementById("warningUser").innerHTML=xmlhttp.responseText;
+                checkNameUser = false;
+            }
+            else checkNameUser = true;
+            } 
+        
+        }
+        xmlhttp.open("GET","/checkUserDatabase?user="+user,true);
+        xmlhttp.send();
+        }
+</script>
