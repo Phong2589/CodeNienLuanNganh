@@ -58,15 +58,15 @@
       </div>
       
     <div class="modal-body">
-        {{!-- <form action="/login" method="post">
+        <form action="/login" method="post" onsubmit="return checkLogin()">
             <div class="form-group">
                 <div class="col-sm">
-                    <input type="text" class="form-control" id="user" name="user" placeholder="Tên đăng nhập">
-                    <p></p>
+                    <input type="text" class="form-control" id="userLogin" name="userLogin" placeholder="Tên đăng nhập">
+                    <p class="warning" id="WarningUserLogin"></p>
                 </div>
                 <div class="col-sm">
-                    <input type="password" class="form-control" id="password" name="password" placeholder="Mật khẩu">
-                    <p></p>
+                    <input type="password" class="form-control" id="passwordLogin" name="passwordLogin" placeholder="Mật khẩu">
+                    <p class="warning" id="WarningPasswordLogin"></p>
                 </div>
                 <hr>
                 <div class="endFormRegister">
@@ -79,7 +79,7 @@
                     <button type="submit button" class="btn btn-primary">Đăng nhập</button>   
                 </div>
             </div>
-        </form> --}}
+        </form>
     </div>
     <div class="modal-footer-redefine">
         <div class="facegg">
@@ -143,11 +143,12 @@
         if(checkNameUser == false)
         {
             checked = false;
-            document.getElementById("warningUser").innerHTML="Tên tài khoản đã tồn tại vui lòng chọn tên khác!";
+            document.getElementById("warningUser").innerHTML="Tên tài khoản đã tồn tại vui lòng chọn tên khác nhe!";
         }
         return checked;
     }
     element.addEventListener("blur",checkUser);
+    //check user
     function checkUser(user)
         {
         var xmlhttp;
@@ -159,11 +160,32 @@
                 document.getElementById("warningUser").innerHTML=xmlhttp.responseText;
                 checkNameUser = false;
             }
-            else checkNameUser = true;
-            } 
-        
+            else {
+                checkNameUser = true;
+                document.getElementById("warningUser").innerHTML=xmlhttp.responseText;}
+            }
         }
         xmlhttp.open("GET","/checkUserDatabase?user="+user,true);
         xmlhttp.send();
         }
+
+    //check login
+    function checkLogin(){
+        var checkLogin = true;
+        //check user
+        var userCheckLogin = document.getElementById('userLogin').value;
+        if(userCheckLogin == "") {
+                document.getElementById("WarningUserLogin").innerHTML="Vui lòng nhập vào tên đăng nhập!";
+                checkLogin = false;
+            }
+        else    document.getElementById("WarningUserLogin").innerHTML="";
+        //check password
+        var passCheck = document.getElementById('passwordLogin').value;
+        if(passCheck == "") {
+                document.getElementById("WarningPasswordLogin").innerHTML="Vui lòng nhập vào mật khẩu!";
+                checkLogin = false;
+            }
+        else    document.getElementById("WarningPasswordLogin").innerHTML="";
+        return checkLogin;
+    }
 </script>

@@ -4,7 +4,8 @@ const router = express.Router();
 const sitecontroller = require('../app/controllers/SiteControllers');
 
 
-router.get('/new', sitecontroller.new);
+// router.get('/new', sitecontroller.new);
+// router.post('/new', sitecontroller.newMes);
 router.post('/register', sitecontroller.register);
 router.post('/login', sitecontroller.login);
 

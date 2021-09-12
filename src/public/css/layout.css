@@ -56,10 +56,6 @@
 .sortMenu{
     background-color: white;
 }
-
-#bodyHome{
-    padding-top: 125px;
-}
 @media (max-width: 575.98px) {
     #bodyHome{
         padding-top: 140px;

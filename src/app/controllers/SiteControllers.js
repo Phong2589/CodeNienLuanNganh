@@ -1,5 +1,8 @@
 
 const customer = require('../models/customer')
+const admin = require('../models/admin')
+const staff = require('../models/staff')
+
 const {mutipleMongooseToObject} = require('../../util/mongoose')
 
 class SiteController {
@@ -14,7 +17,6 @@ class SiteController {
     }
     //get -> new
     new(req, res, next) {
-        
         res.render('test', { title: 'my other page', layout: 'customer' });
     }
     //post -> register
@@ -23,8 +25,12 @@ class SiteController {
         const customerNew = new customer(req.body);
         customerNew.save()
             .then(()=>{
-                // alert("Chúc mừng bạn đăng kí tài khoản thành công!")
-                res.redirect('/?register=true')
+                req.session.message = {
+                    type: 'success',
+                    intro: 'Chúc mừng bạn đã tạo tài khoản thành công! ',
+                    message: 'Hãy đăng nhập ngay nào.'
+                  }
+                res.redirect('/')
             }
             )
             .catch(error=>{})
@@ -39,7 +45,20 @@ class SiteController {
     {
         customer.findOne({user : req.query.user})
             .then((data)=>{
-                if(data == null) res.send("")
+                if(data == null) {
+                  staff.findOne({user : req.query.user})
+                    .then((data1)=>{
+                        if(data1 == null)
+                        {
+                          admin.findOne({user : req.query.user})
+                            .then((data2)=>{
+                              if(data2 == null) res.send("")
+                              else  res.send("Tên tài khoản đã tồn tại vui lòng chọn tên khác!")
+                            })
+                        }
+                        else res.send("Tên tài khoản đã tồn tại vui lòng chọn tên khác!")
+                    })
+                }
                 else res.send("Tên tài khoản đã tồn tại vui lòng chọn tên khác!")
             })
             .catch(next)

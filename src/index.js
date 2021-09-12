@@ -6,14 +6,17 @@ const morgan = require('morgan');
 const handlebars = require('express-handlebars');
 
 //new
-// const cookieParser = require('cookie-parser');
-// const session = require('express-session');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
 
-// const flash = require('express-flash');
+app.use(cookieParser('secret'));
+app.use(session({cookie: {maxAge: null}}));
+app.use((req, res, next)=>{
+    res.locals.message = req.session.message
+    delete req.session.message
+    next()
+  })
 
-// app.use(cookieParser('keyboard cat'));
-// app.use(session({ cookie: { maxAge: 60000 }}));
-// app.use(flash());
 //body-parser
 app.use(express.urlencoded({
     extended: true
@@ -48,8 +51,6 @@ app.set('view options', { layout: 'customer' });
 //xac dinh tuyen duong
 const route = require('./routes');
 route(app);
-
-
 
 app.listen(process.env.PORT || 8080);
 
