@@ -38,7 +38,14 @@ class SiteController {
     //post -> login
     login(req,res,next)
     {
-        res.json(req.body);
+        var user = req.body.userLogin;
+        var pass = req.body.passwordLogin;
+        customer.findOne({user: user, password: pass})
+            .then((data)=>{
+                if(data!=null) res.redirect('/customer')
+                else res.redirect('/')
+            })
+        
     }
     
     checkUserDatabase(req,res,next)
