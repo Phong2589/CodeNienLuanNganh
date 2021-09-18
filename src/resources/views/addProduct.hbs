@@ -1,0 +1,128 @@
+<form action="/admin/addProductDB" method="post" onsubmit="return check()" class="mt-3" enctype="multipart/form-data">
+    <div class="form-group">
+
+        <div class="d-xl-flex d-lg-flex d-md-flex">
+            <div class="w-xl-50 w-lg-50 w-md-50 w-sm-100 w-xs-100 mr-4">
+                <input type="text" class="form-control" id="name" name="name" placeholder="Tên sản phẩm">
+                <p class="warning" id="warningName"></p>
+            </div>
+            <div class="w-xl-50 w-lg-50 w-md-50 w-sm-100 w-xs-100">
+                <input type="text" class="form-control" id="cost" name="cost" placeholder="Giá sản phẩm (VNĐ)">
+                <p class="warning" id="warningCost"></p>
+            </div>
+        </div>
+
+        <div class="d-xl-flex d-lg-flex d-md-flex">
+            <div class="w-xl-50 w-lg-50 w-md-50 w-sm-100 w-xs-100 mr-4">
+                <input type="file" class="form-control" id="image" name="image" placeholder="Ảnh sản phẩm">
+                <p class="warning" id="warningImage"></p>
+            </div>
+            <div class="w-xl-50 w-lg-50 w-md-50 w-sm-100 w-xs-100">
+                <input type="text" class="form-control" id="quantity" name="quantity" placeholder="Số lượng sản phẩm">
+                <p class="warning" id="warningName"></p>
+            </div>
+        </div>
+        
+        <div class="">
+            <textarea rows="5" type="text" class="form-control" id="description" name="description" placeholder="Chi tiết sản phẩm"></textarea>
+            <p class="warning" id="warningDescription"></p>
+        </div>
+        <hr>
+        <div class="endFormRegister">
+            <button type="reset button" class="btn btn-secondary">Làm lại</button>&nbsp;
+            <button type="submit button" class="btn btn-primary">Thêm sản phẩm</button>   
+        </div>
+    </div>
+</form>
+<script>
+    checkNameUser = true;
+    //check form register
+    function check(){
+        var checked=true;
+        //check user
+        var user_reg=/^[A-Za-z][A-Za-z0-9]{5,15}$/;
+        var userCheck = document.getElementById('user').value;
+        if(userCheck == "") {
+                document.getElementById("warningUser").innerHTML="Vui lòng nhập vào tên đăng nhập!";
+                checked = false;
+            }
+        else    if(user_reg.test(userCheck))  document.getElementById("warningUser").innerHTML="";
+                else  {
+                    document.getElementById("warningUser").innerHTML="Tên đăng nhập từ 6 - 15 kí tự và bắt đầu bằng chữ cái!";
+                    checked = false;
+                }
+
+        //check password
+        var pass_reg=/^(?=.*[A-Za-z])(?=.*[0-9])[A-Za-z0-9]{6,15}$/;
+        var passCheck = document.getElementById('password').value;
+        if(passCheck == "") {
+            document.getElementById("warningPassword").innerHTML="Vui lòng nhập vào mật khẩu!";
+            checked=false;
+        }
+        else  if(pass_reg.test(passCheck))  document.getElementById("warningPassword").innerHTML="";
+                else  {
+                    document.getElementById("warningPassword").innerHTML="Mật khẩu từ 6 - 15 kí tự bao gồm chữ và số!";
+                    checked = false;
+                }    
+        //
+        var rePassCheck = document.getElementById('rePassword').value;
+        if(rePassCheck == "") {
+            document.getElementById("warningRePassWord").innerHTML="Vui lòng lại mật khẩu!";
+            checked = false;
+        }
+        else  if(rePassCheck == passCheck) document.getElementById("warningRePassWord").innerHTML="";
+                else {
+                        document.getElementById("warningRePassWord").innerHTML="Mật khẩu sai vui lòng nhập lại!";
+                        checked = false;
+                    }
+        if(checkNameUser == false)
+        {
+            checked = false;
+            document.getElementById("warningUser").innerHTML="Tên tài khoản đã tồn tại vui lòng chọn tên khác!";
+        }
+        return checked;
+    }
+    element.addEventListener("blur",checkUser);
+    //check user
+    function checkUser(user)
+        {
+        var xmlhttp;
+        xmlhttp=new XMLHttpRequest();
+        xmlhttp.onreadystatechange=function() {
+        if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+            if(xmlhttp.responseText != "")
+            {
+                document.getElementById("warningUser").innerHTML=xmlhttp.responseText;
+                checkNameUser = false;
+            }
+            else {
+                checkNameUser = true;
+                if(document.getElementById("warningUser").innerHTML == "Tên tài khoản đã tồn tại vui lòng chọn tên khác!")
+                    document.getElementById("warningUser").innerHTML=xmlhttp.responseText;
+                }
+            }
+        }
+        xmlhttp.open("GET","/checkUserDatabase?user="+user,true);
+        xmlhttp.send();
+        }
+
+    //check login
+    function checkLogin(){
+        var checkLogin = true;
+        //check user
+        var userCheckLogin = document.getElementById('userLogin').value;
+        if(userCheckLogin == "") {
+                document.getElementById("WarningUserLogin").innerHTML="Vui lòng nhập vào tên đăng nhập!";
+                checkLogin = false;
+            }
+        else    document.getElementById("WarningUserLogin").innerHTML="";
+        //check password
+        var passCheck = document.getElementById('passwordLogin').value;
+        if(passCheck == "") {
+                document.getElementById("WarningPasswordLogin").innerHTML="Vui lòng nhập vào mật khẩu!";
+                checkLogin = false;
+            }
+        else    document.getElementById("WarningPasswordLogin").innerHTML="";
+        return checkLogin;
+    }
+</script>

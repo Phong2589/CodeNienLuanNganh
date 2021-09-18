@@ -42,7 +42,14 @@ class SiteController {
         var pass = req.body.passwordLogin;
         customer.findOne({user: user, password: pass})
             .then((data)=>{
-                if(data!=null) res.redirect('/customer')
+                if(data!=null) {
+                    req.session.message = {
+                        type: 'success',
+                        intro: 'Chúc mừng bạn đăng nhập thành công!',
+                        message: ''
+                      }
+                    res.redirect('/customer')
+                }
                 else res.redirect('/')
             })
         

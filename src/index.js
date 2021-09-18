@@ -47,6 +47,8 @@ app.use(express.static(path.join(__dirname, 'public/')));
 
 // set view 
 app.set('view options', { layout: 'customer' });
+app.set('view options', { layout: 'admin' });
+app.set('view options', { layout: 'staff' });
 
 //xac dinh tuyen duong
 const route = require('./routes');

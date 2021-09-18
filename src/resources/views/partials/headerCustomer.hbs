@@ -1,4 +1,10 @@
 <nav class="navbar-expand-md navbar-dark bg-dark">
+{{#if message}}
+    <div style="text-align: center" class="alert alert-{{message.type}}">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>{{message.intro}}</strong> {{message.message}}
+    </div>
+{{/if}}
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -37,7 +43,7 @@
             <div class="d-flex rightItem navbar-nav">
                 <div class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Phong
+                    <i class="fas fa-user-circle"></i> Phong
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <a class="dropdown-item" href="#">Đổi mật khẩu</a>

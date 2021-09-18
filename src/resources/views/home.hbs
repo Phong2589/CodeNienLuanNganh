@@ -143,7 +143,7 @@
         if(checkNameUser == false)
         {
             checked = false;
-            document.getElementById("warningUser").innerHTML="Tên tài khoản đã tồn tại vui lòng chọn tên khác nhe!";
+            document.getElementById("warningUser").innerHTML="Tên tài khoản đã tồn tại vui lòng chọn tên khác!";
         }
         return checked;
     }
@@ -162,7 +162,9 @@
             }
             else {
                 checkNameUser = true;
-                document.getElementById("warningUser").innerHTML=xmlhttp.responseText;}
+                if(document.getElementById("warningUser").innerHTML == "Tên tài khoản đã tồn tại vui lòng chọn tên khác!")
+                    document.getElementById("warningUser").innerHTML=xmlhttp.responseText;
+                }
             }
         }
         xmlhttp.open("GET","/checkUserDatabase?user="+user,true);
@@ -189,3 +191,5 @@
         return checkLogin;
     }
 </script>
+
+<img src="img/4e9089f91ac0d3efa935f0c19e844631" alt="">
