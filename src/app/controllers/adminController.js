@@ -5,6 +5,15 @@ const product = require('../models/product');
 const {mutipleMongooseToObject} = require('../../util/mongoose')
 
 class adminController {
+    home(req, res,next) {
+        product.find({},function (err, products) {
+            res.render('homeAdmin',{
+                    layout: 'admin',
+                    products: mutipleMongooseToObject(products),
+                })
+        })
+    }
+
     addProduct(req, res,next) {
         res.render('addProduct', {layout: 'admin' });
     }

@@ -112,10 +112,14 @@
         {{/each}}
     </div>
 </div>
-<script>
 
+
+<script>
     window.onload = function()
     {
+        {{#if message.type}}
+            $('#login').modal('show');
+        {{/if}}
         changeNumber();
     };
     

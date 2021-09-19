@@ -68,6 +68,9 @@ body{
     padding-left: 0px !important;
 }
 
+.alert{
+    border-radius: 0px !important;
+}
 
 /* register */
 .facegg{

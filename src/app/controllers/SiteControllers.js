@@ -56,10 +56,10 @@ class SiteController {
                 if(data!=null) {
                     req.session.message = {
                         type: 'success',
-                        intro: 'Chúc mừng bạn đăng nhập thành công customer!',
+                        intro: 'Chúc mừng bạn đăng nhập thành công!',
                         message: ''
                       }
-                    res.cookie('userId',data.id)
+                    res.cookie('cusId',data.id)
                     res.redirect('/customer')
                 }
                 else {
@@ -68,10 +68,11 @@ class SiteController {
                             if(data1!=null) {
                                 req.session.message = {
                                     type: 'success',
-                                    intro: 'Chúc mừng bạn đăng nhập thành công admin!',
+                                    intro: 'Chúc mừng bạn đăng nhập thành công!',
                                     message: ''
                                 }
-                                res.redirect('/admin/addProduct')
+                                res.cookie('adminId',data1.id)
+                                res.redirect('/admin')
                             }
                             else {
                                 staff.findOne({user: user, password: pass})
@@ -79,13 +80,19 @@ class SiteController {
                                         if(data2!=null) {
                                             req.session.message = {
                                                 type: 'success',
-                                                intro: 'Chúc mừng bạn đăng nhập thành công staff!',
+                                                intro: 'Chúc mừng bạn đăng nhập thành công!',
                                                 message: ''
                                             }
-                                            res.redirect('/')
+                                            res.cookie('staffId',data2.id)
+                                            res.redirect('/staff')
                                         }
                                         else {
-                                            res.send('dang nhap that bai')
+                                            req.session.message = {
+                                                type: 'warning',
+                                                intro: 'Đăng nhập thất bại! ',
+                                                message: 'Hãy đăng nhập lại nào.'
+                                              }
+                                            res.redirect('/')
                                         }
                                     })
                             }
