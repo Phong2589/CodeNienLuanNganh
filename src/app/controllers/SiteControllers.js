@@ -2,18 +2,29 @@
 const customer = require('../models/customer')
 const admin = require('../models/admin')
 const staff = require('../models/staff')
+const product = require('../models/product')
+
 
 const {mutipleMongooseToObject} = require('../../util/mongoose')
 
 class SiteController {
      index(req, res,next) {
-        customer.find({})
-            .then(customers => {
-                res.render('home',{
-                    customers: mutipleMongooseToObject(customers)
+        // product.find({},function (err, products) {
+        //     customer.find({})
+        //     .then(customers => {
+        //         res.render('home',{
+        //             customers: mutipleMongooseToObject(customers),
+        //             products: mutipleMongooseToObject(products),
+        //         })
+        //     })
+        //     .catch(next);
+        // })
+        product.find({},function (err, products) {
+            res.render('home',{
+                    products: mutipleMongooseToObject(products),
                 })
-            })
-            .catch(next);
+        })
+        
     }
     //get -> new
     new(req, res, next) {
@@ -45,13 +56,43 @@ class SiteController {
                 if(data!=null) {
                     req.session.message = {
                         type: 'success',
-                        intro: 'Chúc mừng bạn đăng nhập thành công!',
+                        intro: 'Chúc mừng bạn đăng nhập thành công customer!',
                         message: ''
                       }
+                    res.cookie('userId',data.id)
                     res.redirect('/customer')
                 }
-                else res.redirect('/')
+                else {
+                    admin.findOne({user: user, password: pass})
+                        .then((data1)=>{
+                            if(data1!=null) {
+                                req.session.message = {
+                                    type: 'success',
+                                    intro: 'Chúc mừng bạn đăng nhập thành công admin!',
+                                    message: ''
+                                }
+                                res.redirect('/admin/addProduct')
+                            }
+                            else {
+                                staff.findOne({user: user, password: pass})
+                                    .then((data2)=>{
+                                        if(data2!=null) {
+                                            req.session.message = {
+                                                type: 'success',
+                                                intro: 'Chúc mừng bạn đăng nhập thành công staff!',
+                                                message: ''
+                                            }
+                                            res.redirect('/')
+                                        }
+                                        else {
+                                            res.send('dang nhap that bai')
+                                        }
+                                    })
+                            }
+                        })
+                }
             })
+            .catch(next)
         
     }
     

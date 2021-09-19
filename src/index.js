@@ -10,7 +10,13 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 
 app.use(cookieParser('secret'));
-app.use(session({cookie: {maxAge: null}}));
+
+app.use(session({
+        secret : 'something',
+        resave :true,
+        saveUninitialized: true,
+        cookie : {maxAge:null}      
+    }));
 app.use((req, res, next)=>{
     res.locals.message = req.session.message
     delete req.session.message

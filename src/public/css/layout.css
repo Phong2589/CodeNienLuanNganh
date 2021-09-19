@@ -1,3 +1,6 @@
+body{
+    background-color: #DAE2F8;
+}
 /* footer */
 .footer ul li{
     list-style-type: none;
@@ -110,4 +113,17 @@
 .warning{
     color:red;
     padding-top: 8px;
+}
+
+/* home */
+.linkItemProduct{
+    text-decoration: none !important;
+}
+.itemProduct{
+    
+    background-color: white;
+}
+.imageProduct{
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
 }

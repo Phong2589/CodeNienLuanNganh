@@ -95,11 +95,44 @@
   </div>
 </div>
 
-{{#each customers}}
-    <p>{{this.user}}</p>
-{{/each}}
-
+<div class="mt-3 mb-3">
+    <div class="row">
+        {{#each products}}
+            <a href="" class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-12 linkItemProduct">
+               <div class="itemProduct">
+                <img class="imageProduct w-100" src="{{this.image}}" alt="Lỗi không thể tải ảnh" >
+                <div class="">
+                    <p>{{this.name}}</p>
+                    <p class="number">{{this.cost}}</p>
+                    <p>Đã bán: 100</p>
+                
+                </div>
+                </div>
+            </a>
+        {{/each}}
+    </div>
+</div>
 <script>
+
+    window.onload = function()
+    {
+        changeNumber();
+    };
+    
+    function changeNumber(){
+        var numberChange = document.getElementsByClassName("number");
+        for(x=0;x<numberChange.length;x++){
+            var cost = parseInt(numberChange[x].innerHTML)
+
+            const change = new Intl.NumberFormat('vi-VN', {
+            style: 'currency',
+            currency: 'VND',
+            })
+            numberChange[x].innerHTML = change.format(cost)
+        }
+    };
+
+
     checkNameUser = true;
     //check form register
     function check(){
@@ -147,7 +180,6 @@
         }
         return checked;
     }
-    element.addEventListener("blur",checkUser);
     //check user
     function checkUser(user)
         {
@@ -191,5 +223,3 @@
         return checkLogin;
     }
 </script>
-
-<img src="img/4e9089f91ac0d3efa935f0c19e844631" alt="">
