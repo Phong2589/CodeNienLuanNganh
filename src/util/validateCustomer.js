@@ -1,9 +1,7 @@
-const customer = require('../app/models/admin')
-const admin = require('../app/models/admin')
-const staff = require('../app/models/staff')
+const customer = require('../app/models/customer')
 
 module.exports.requireAuth = function(req,res,next){
-    if(!req.cookies.cusId) {
+    if(!req.signedCookies.cusId) {
         req.session.message = {
             type: 'warning',
             intro: 'Bạn chưa đăng nhập!! ',
@@ -13,7 +11,7 @@ module.exports.requireAuth = function(req,res,next){
     }
     else
     {
-        customer.findOne({id: req.cookies.cusId})
+        customer.findOne({id: req.signedCookies.cusId})
             .then((data)=>{
                 if(data == null) {
                     req.session.message = {
@@ -23,7 +21,11 @@ module.exports.requireAuth = function(req,res,next){
                       }
                     res.redirect('/')
                 }
-                else next();
+                else 
+                {
+                    res.locals.cus = data._doc;
+                    next();
+                }
             })
     }
 }

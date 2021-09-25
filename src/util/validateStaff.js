@@ -1,7 +1,7 @@
 const staff = require('../app/models/staff')
 
 module.exports.requireAuth = function(req,res,next){
-    if(!req.cookies.staffId) {
+    if(!req.signedCookies.staffId) {
         req.session.message = {
             type: 'warning',
             intro: 'Bạn chưa đăng nhập!! ',
@@ -11,7 +11,7 @@ module.exports.requireAuth = function(req,res,next){
     }
     else
     {
-        staff.findOne({id: req.cookies.staffId})
+        staff.findOne({id: req.signedCookies.staffId})
             .then((data)=>{
                 if(data == null) {
                     req.session.message = {
@@ -21,7 +21,10 @@ module.exports.requireAuth = function(req,res,next){
                       }
                     res.redirect('/')
                 }
-                else next();
+                else {
+                    res.locals.staff = data._doc;
+                    next();
+                }
             })
     }
 }

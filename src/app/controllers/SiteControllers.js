@@ -3,7 +3,7 @@ const customer = require('../models/customer')
 const admin = require('../models/admin')
 const staff = require('../models/staff')
 const product = require('../models/product')
-
+const md5 = require('md5');
 
 const {mutipleMongooseToObject} = require('../../util/mongoose')
 
@@ -33,6 +33,7 @@ class SiteController {
     //post -> register
     register(req,res,next)
     {
+        req.body.password = md5(req.body.password);
         const customerNew = new customer(req.body);
         customerNew.save()
             .then(()=>{
@@ -51,7 +52,7 @@ class SiteController {
     {
         var user = req.body.userLogin;
         var pass = req.body.passwordLogin;
-        customer.findOne({user: user, password: pass})
+        customer.findOne({user: user, password: md5(pass)})
             .then((data)=>{
                 if(data!=null) {
                     req.session.message = {
@@ -59,11 +60,13 @@ class SiteController {
                         intro: 'Chúc mừng bạn đăng nhập thành công!',
                         message: ''
                       }
-                    res.cookie('cusId',data.id)
+                    res.cookie('cusId',data.id,{
+                        signed: true
+                    })
                     res.redirect('/customer')
                 }
                 else {
-                    admin.findOne({user: user, password: pass})
+                    admin.findOne({user: user, password: md5(pass)})
                         .then((data1)=>{
                             if(data1!=null) {
                                 req.session.message = {
@@ -71,11 +74,13 @@ class SiteController {
                                     intro: 'Chúc mừng bạn đăng nhập thành công!',
                                     message: ''
                                 }
-                                res.cookie('adminId',data1.id)
+                                res.cookie('adminId',data1.id,{
+                                    signed: true
+                                })
                                 res.redirect('/admin')
                             }
                             else {
-                                staff.findOne({user: user, password: pass})
+                                staff.findOne({user: user, password: md5(pass)})
                                     .then((data2)=>{
                                         if(data2!=null) {
                                             req.session.message = {
@@ -83,7 +88,9 @@ class SiteController {
                                                 intro: 'Chúc mừng bạn đăng nhập thành công!',
                                                 message: ''
                                             }
-                                            res.cookie('staffId',data2.id)
+                                            res.cookie('staffId',data2.id,{
+                                                signed: true
+                                            })
                                             res.redirect('/staff')
                                         }
                                         else {

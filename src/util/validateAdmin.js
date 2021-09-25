@@ -1,7 +1,7 @@
 const admin = require('../app/models/admin')
 
 module.exports.requireAuth = function(req,res,next){
-    if(!req.cookies.adminId) {
+    if(!req.signedCookies.adminId) {
         req.session.message = {
             type: 'warning',
             intro: 'Bạn chưa đăng nhập! ',
@@ -11,7 +11,7 @@ module.exports.requireAuth = function(req,res,next){
     }
     else
     {
-        admin.findOne({id: req.cookies.adminId})
+        admin.findOne({id: req.signedCookies.adminId})
             .then((data)=>{
                 if(data == null) {
                     req.session.message = {
@@ -21,7 +21,10 @@ module.exports.requireAuth = function(req,res,next){
                       }
                     res.redirect('/')
                 }
-                else next();
+                else {
+                    res.locals.admin = data._doc;
+                    next();
+                }
             })
     }
 }

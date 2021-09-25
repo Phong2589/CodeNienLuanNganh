@@ -71,6 +71,21 @@ body{
 .alert{
     border-radius: 0px !important;
 }
+.cartItem
+{
+    position: relative;
+}
+
+.cartQuantity{
+    position: absolute;
+    color: #EA4335;
+    background-color: white;
+    border: 2px solid #28a745;
+    align-items: center;
+    left: 38px;
+    padding: 0px 5px;
+}
+
 
 /* register */
 .facegg{
