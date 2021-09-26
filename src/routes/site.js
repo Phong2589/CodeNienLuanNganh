@@ -8,7 +8,7 @@ router.post('/register', sitecontroller.register);
 router.post('/login', sitecontroller.login);
 
 router.get('/checkUserDatabase', sitecontroller.checkUserDatabase);
-
+router.get('/:slug', sitecontroller.detailProduct);
 router.get('/', sitecontroller.index);
 
 module.exports = router;

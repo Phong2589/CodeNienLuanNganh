@@ -132,6 +132,13 @@ class SiteController {
             })
             .catch(next)
     }
+    detailProduct(req,res,next){
+        product.findOne({slug : req.params.slug})
+            .then((data)=>{
+                res.json(data)
+            })
+            .catch(next)
+    }
 }
 
 module.exports = new SiteController();
