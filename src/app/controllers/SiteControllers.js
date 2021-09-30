@@ -6,6 +6,7 @@ const product = require('../models/product')
 const md5 = require('md5');
 
 const {mutipleMongooseToObject} = require('../../util/mongoose')
+const {MongooseToObject} = require('../../util/mongoose')
 
 class SiteController {
      index(req, res,next) {
@@ -133,11 +134,16 @@ class SiteController {
             .catch(next)
     }
     detailProduct(req,res,next){
-        product.findOne({slug : req.params.slug})
-            .then((data)=>{
-                res.json(data)
-            })
-            .catch(next)
+        product.findOne({slug : req.params.slug},function (err, data){
+            product.aggregate([{ $sample: { size: 10 } }])
+                .then((products)=>{
+                    res.render('detailProductCustomer',{
+                        product: MongooseToObject(data),
+                        products
+                    })
+                })
+                .catch(next)
+        })
     }
 }
 
