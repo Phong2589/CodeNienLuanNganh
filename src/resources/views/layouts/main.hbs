@@ -18,6 +18,215 @@
             <div class="bodyPage">
                 <div class="container">
                     {{{body}}}
+                    <!-- Modal register -->
+                    <div class="modal fade" id="register" tabindex="-1" role="dialog" aria-labelledby="registerTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLongTitle">Tạo tài khoản mới</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        
+                        <div class="modal-body">
+                            <form action="/register" method="post" onsubmit="return check()">
+                                <div class="form-group">
+                                    <div class="col-sm">
+                                        <input type="text" class="form-control" id="user" name="user" placeholder="Tên tài khoản" onblur="checkUser(this.value)">
+                                        <p class="warning" id="warningUser"></p>
+                                    </div>
+                                    <div class="col-sm">
+                                        <input type="password" class="form-control" id="password" name="password" placeholder="Mật khẩu">
+                                        <p class="warning" id="warningPassword"></p>
+                                    </div>
+                                    <div class="col-sm">
+                                        <input type="password" class="form-control" id="rePassword" name="rePassword" placeholder="Nhập lại mật khẩu">
+                                        <p class="warning" id="warningRePassWord"></p>
+                                    </div>
+                                    <hr>
+                                    <div class="endFormRegister">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Trở về</button>&nbsp;
+                                        <button type="submit button" class="btn btn-primary">Đăng kí</button>   
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer-redefine">
+                            <div class="facegg">
+                                <a href="" class="facebook btn w-100">
+                                    <i class="fab fa-facebook"></i>&nbsp;<span>Đăng kí với Facebook</span>
+                                </a>
+                                <a href="" class="google btn w-100">
+                                    <i class="fab fa-google"></i>&nbsp;<span>Đăng kí với Google</span>
+                                </a>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                    </div>
+
+                    <!-- Modal login -->
+                    <div class="modal fade" id="login" tabindex="-1" role="dialog" aria-labelledby="loginTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLongTitle">Đăng nhập</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        
+                        <div class="modal-body">
+                            <form action="/login" method="post" onsubmit="return checkLogin()">
+                                <div class="form-group">
+                                    <div class="col-sm">
+                                        <input type="text" class="form-control" id="userLogin" name="userLogin" placeholder="Tên đăng nhập">
+                                        <p class="warning" id="WarningUserLogin"></p>
+                                    </div>
+                                    <div class="col-sm">
+                                        <input type="password" class="form-control" id="passwordLogin" name="passwordLogin" placeholder="Mật khẩu">
+                                        <p class="warning" id="WarningPasswordLogin"></p>
+                                    </div>
+                                    <hr>
+                                    <div class="endFormRegister">
+                                        <a href="">Quên mật khẩu</a> | 
+                                        <a href="">Hỗ trợ ?</a>
+                                    </div>
+                                    <p></p>
+                                    <div class="endFormRegister">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Trở về</button>&nbsp;
+                                        <button type="submit button" class="btn btn-primary">Đăng nhập</button>   
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer-redefine">
+                            <div class="facegg">
+                                <a href="" class="facebook btn w-100">
+                                    <i class="fab fa-facebook"></i>&nbsp;<span>Đăng nhập với Facebook</span>
+                                </a>
+                                <a href="" class="google btn w-100">
+                                    <i class="fab fa-google"></i>&nbsp;<span>Đăng nhập với Google</span>
+                                </a>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                    </div>
+                    <script>
+                        window.onload = function()
+                        {
+                            {{#if message.type}}
+                                $('#login').modal('show');
+                            {{/if}}
+                            changeNumber();
+                        };
+                        
+                        function changeNumber(){
+                            var numberChange = document.getElementsByClassName("number");
+                            for(x=0;x<numberChange.length;x++){
+                                var cost = parseInt(numberChange[x].innerHTML)
+
+                                const change = new Intl.NumberFormat('vi-VN', {
+                                style: 'currency',
+                                currency: 'VND',
+                                })
+                                numberChange[x].innerHTML = change.format(cost)
+                            }
+                        };
+
+
+                        checkNameUser = true;
+                        //check form register
+                        function check(){
+                            var checked=true;
+                            //check user
+                            var user_reg=/^[A-Za-z][A-Za-z0-9]{5,15}$/;
+                            var userCheck = document.getElementById('user').value;
+                            if(userCheck == "") {
+                                    document.getElementById("warningUser").innerHTML="Vui lòng nhập vào tên đăng nhập!";
+                                    checked = false;
+                                }
+                            else    if(user_reg.test(userCheck))  document.getElementById("warningUser").innerHTML="";
+                                    else  {
+                                        document.getElementById("warningUser").innerHTML="Tên đăng nhập từ 6 - 15 kí tự và bắt đầu bằng chữ cái!";
+                                        checked = false;
+                                    }
+
+                            //check password
+                            var pass_reg=/^(?=.*[A-Za-z])(?=.*[0-9])[A-Za-z0-9]{6,15}$/;
+                            var passCheck = document.getElementById('password').value;
+                            if(passCheck == "") {
+                                document.getElementById("warningPassword").innerHTML="Vui lòng nhập vào mật khẩu!";
+                                checked=false;
+                            }
+                            else  if(pass_reg.test(passCheck))  document.getElementById("warningPassword").innerHTML="";
+                                    else  {
+                                        document.getElementById("warningPassword").innerHTML="Mật khẩu từ 6 - 15 kí tự bao gồm chữ và số!";
+                                        checked = false;
+                                    }    
+                            //
+                            var rePassCheck = document.getElementById('rePassword').value;
+                            if(rePassCheck == "") {
+                                document.getElementById("warningRePassWord").innerHTML="Vui lòng lại mật khẩu!";
+                                checked = false;
+                            }
+                            else  if(rePassCheck == passCheck) document.getElementById("warningRePassWord").innerHTML="";
+                                    else {
+                                            document.getElementById("warningRePassWord").innerHTML="Mật khẩu sai vui lòng nhập lại!";
+                                            checked = false;
+                                        }
+                            if(checkNameUser == false)
+                            {
+                                checked = false;
+                                document.getElementById("warningUser").innerHTML="Tên tài khoản đã tồn tại vui lòng chọn tên khác!";
+                            }
+                            return checked;
+                        }
+                        //check user
+                        function checkUser(user)
+                            {
+                            var xmlhttp;
+                            xmlhttp=new XMLHttpRequest();
+                            xmlhttp.onreadystatechange=function() {
+                            if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+                                if(xmlhttp.responseText != "")
+                                {
+                                    document.getElementById("warningUser").innerHTML=xmlhttp.responseText;
+                                    checkNameUser = false;
+                                }
+                                else {
+                                    checkNameUser = true;
+                                    if(document.getElementById("warningUser").innerHTML == "Tên tài khoản đã tồn tại vui lòng chọn tên khác!")
+                                        document.getElementById("warningUser").innerHTML=xmlhttp.responseText;
+                                    }
+                                }
+                            }
+                            xmlhttp.open("GET","/checkUserDatabase?user="+user,true);
+                            xmlhttp.send();
+                            }
+
+                        //check login
+                        function checkLogin(){
+                            var checkLogin = true;
+                            //check user
+                            var userCheckLogin = document.getElementById('userLogin').value;
+                            if(userCheckLogin == "") {
+                                    document.getElementById("WarningUserLogin").innerHTML="Vui lòng nhập vào tên đăng nhập!";
+                                    checkLogin = false;
+                                }
+                            else    document.getElementById("WarningUserLogin").innerHTML="";
+                            //check password
+                            var passCheck = document.getElementById('passwordLogin').value;
+                            if(passCheck == "") {
+                                    document.getElementById("WarningPasswordLogin").innerHTML="Vui lòng nhập vào mật khẩu!";
+                                    checkLogin = false;
+                                }
+                            else    document.getElementById("WarningPasswordLogin").innerHTML="";
+                            return checkLogin;
+                        }
+                    </script>
                 </div>
             </div>      
             {{> footer}}
