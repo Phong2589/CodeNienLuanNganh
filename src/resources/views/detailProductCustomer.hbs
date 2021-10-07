@@ -78,8 +78,10 @@
         xmlhttp = new XMLHttpRequest();
         xmlhttp.onreadystatechange = function () {
             if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-                
-                document.getElementById('cartQuantity').innerHTML = xmlhttp.responseText;
+
+                var quantity = parseInt(xmlhttp.responseText);
+                sessionStorage.setItem('quantityCart',quantity);
+                document.getElementById('cartQuantity').innerHTML = quantity;
             }
         }
         xmlhttp.open("GET", "/addProductToCart/" + slug, true);

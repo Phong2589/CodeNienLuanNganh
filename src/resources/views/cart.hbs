@@ -1,0 +1,78 @@
+<div class="mt-3 mb-3">
+    <div class="" style="background-color: white; padding:10px;">
+        {{#each cart.cart}}
+        <div class="">
+            <div class="" style="border-bottom: 2px solid grey; padding-bottom: 5px;">
+                <div class="d-flex justify-content-between" style="margin: 5px;">
+
+                    <div class="">
+                        <img src="{{this.image}}" alt="" style="width: 50px; height: 60px;">
+                        {{this.name}}
+                    </div>
+                    <div>
+                        Giá: <span class="number" style="font-weight: bold;"
+                            id="totalItem{{this.slug}}">{{this.totalItem}}</span>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between" style="margin: 5px;">
+                    <div>
+                        Kho hàng: <span id="quantity{{this.slug}}">{{this.quantity}}</span>
+                    </div>
+                    <div>
+                        <button>-</button>&nbsp;
+                        <input type="text" value="{{this.quantityBuy}}" style="width: 50px; text-align: center;"
+                            id="quantityBuy{{this.slug}}">
+                        &nbsp;<button onclick="increaseQuantity('{{this.slug}}')">+</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{/each}}
+        <div class="">
+            Tổng tiền: <span class="number" id="totalCart">{{cart.total}}</span>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function increaseQuantity(slug) {
+        var quantity = parseInt(document.getElementById('quantity' + slug).innerHTML);
+        var quantityBuy = parseInt(document.getElementById('quantityBuy' + slug).value);
+
+        var total = document.getElementById('totalCart').innerText;
+        total = total.substring(0, total.length-2);
+        total = total.replace('.','');
+        alert(total);
+
+        if (quantityBuy == quantity) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Trong kho chỉ còn ' + quantity + ' sản phẩm',
+                text: 'Bạn không thể tăng số lượng sản phẩm',
+                footer: '<a href="">Tại sao tôi lại gặp vấn đề này?</a>'
+            })
+
+        }
+        else {
+            
+            var xmlhttp;
+            xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function () {
+                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+
+                    var quantity = parseInt(xmlhttp.responseText);
+                    sessionStorage.setItem('quantityCart', quantity);
+
+
+
+                    document.getElementById('cartQuantity').innerHTML = quantity;
+                }
+            }
+            xmlhttp.open("GET", "/addProductToCart/" + slug, true);
+            xmlhttp.send();
+        }
+    }
+
+</script>

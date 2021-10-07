@@ -9,6 +9,7 @@ const cart = require('../models/cart')
 const { mutipleMongooseToObject } = require('../../util/mongoose')
 const { MongooseToObject } = require('../../util/mongoose');
 const { createSessionID } = require('../../util/createSessionID');
+const { Store } = require('express-session');
 
 class SiteController {
     index(req, res, next) {
@@ -22,18 +23,15 @@ class SiteController {
         //     })
         //     .catch(next);
         // })
-        product.find({}, function (err, products) {
-            
+        // res.locals.quantityCart = 0
+        product.find({}, function (err, products) { 
             res.render('home', {
                 products: mutipleMongooseToObject(products),
             })
         })
-
+        
     }
-    //get -> new
-    new(req, res, next) {
-        res.render('test', { title: 'my other page', layout: 'customer' });
-    }
+ 
     //post -> register
     register(req, res, next) {
         req.body.password = md5(req.body.password);
@@ -135,6 +133,7 @@ class SiteController {
             .catch(next)
     }
     detailProduct(req, res, next) {
+        
         product.findOne({ slug: req.params.slug }, function (err, data) {
             product.aggregate([{ $sample: { size: 10 } }])
                 .then((products) => {
@@ -146,6 +145,20 @@ class SiteController {
                 .catch(next)
         })
     }
+    async cart(req,res,next){
+        var sessionID = req.signedCookies.sessionID
+        var cartElement = await cart.findOne({ sessionID: sessionID })
+        if(cartElement.total == 0){
+            res.send("Giỏ hàng trống!")
+        }
+        else{
+            res.render('cart',{
+                cart : MongooseToObject(cartElement)
+            })
+        }
+    }
+        
+
     async addProductToCart(req, res, next) {
         var slug = req.params.slug
         var sessionID = req.signedCookies.sessionID
@@ -156,26 +169,51 @@ class SiteController {
         try{
             var count=0,cartup
             var cartElement = await cart.findOne({ sessionID: sessionID })
+            var quantity = 0;
+            var cartItem = await product.findOne({ slug: slug })
             if(cartElement){
-                for(var i=0;i<cartElement.name.length;i++){
-                    if(cartElement.name[i] == slug){
-                        cartElement.quantity[i] = cartElement.quantity[i] + 1
-                        cartup = await cart.updateOne({sessionID: sessionID},{quantity : cartElement.quantity})
+                for(var i=0;i<cartElement.cart.length;i++){
+                    quantity = quantity + cartElement.cart[i].quantityBuy;
+                }
+
+                for(var i=0;i<cartElement.cart.length;i++){
+                    if(cartElement.cart[i].slug == slug){
+                        if(cartElement.cart[i].quantityBuy == cartItem.quantity) {
+                            quantity-=1
+                            count=1
+                            break
+                        }
+                        cartElement.cart[i].quantityBuy = cartElement.cart[i].quantityBuy + 1
+                        cartElement.cart[i].totalItem = cartElement.cart[i].quantityBuy * cartElement.cart[i].cost
+                        cartElement.total = cartElement.total + cartElement.cart[i].cost
+                        cartup = await cart.updateOne({sessionID: sessionID},{cart: cartElement.cart,total : cartElement.total})
                         count=1
                         break
                     }
                 }
             } 
+            quantity +=1;
             if(count==0){
                 var cartElementNew = await cart.findOne({ sessionID: sessionID })
-                cartElementNew.name[cartElementNew.name.length] = await slug
-                cartElementNew.quantity[cartElementNew.quantity.length] = 1
-                var result = await cart.updateOne({sessionID: sessionID},{quantity : cartElementNew.quantity,name:cartElementNew.name})
-                res.send('7')
+                var totalItem = cartItem.cost
+                cartElementNew.cart[cartElementNew.cart.length] ={
+                    name: cartItem.name,
+                    cost: cartItem.cost,
+                    image: cartItem.image,
+                    description: cartItem.description,
+                    quantity: cartItem.quantity,
+                    slug: slug,
+                    quantityBuy : 1,
+                    totalItem: totalItem,
+                } 
+                cartElementNew.total += totalItem;
+                
+                var result = await cart.updateOne({sessionID: sessionID},{cart : cartElementNew.cart,total : cartElementNew.total})
+                
             }
-            else{
-                res.send('7')
-            }
+            
+            res.json(quantity)
+            
             
             
         }

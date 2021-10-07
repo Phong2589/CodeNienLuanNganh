@@ -3,8 +3,8 @@ const Schema = mongoose.Schema;
 
 const cart = new Schema({
     sessionID: { type: String},
-    name: { type: Array},
-    quantity: {type:Array}
+    cart: {type: Array},
+    total: {type: Number}
   },{
     timestamps: true,
   });
