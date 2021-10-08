@@ -23,11 +23,12 @@
                     </div>
                     <div>
                         {{!-- href="/deleteProductFromCart/{{this.slug}}" --}}
-                        <button onclick="return deleteProductFromCart('{{this.slug}}')"
+                        <button onclick="deleteProductFromCart('{{this.slug}}')"
                             style="text-decoration: none;">Xóa</button>&nbsp;
                         <button onclick="decreaseQuantity('{{this.slug}}',{{this.cost}})">-</button>&nbsp;
                         <input type="text" value="{{this.quantityBuy}}" style="width: 50px; text-align: center;"
-                            id="quantityBuy{{this.slug}}">
+                            id="quantityBuy{{this.slug}}"
+                            onchange="changeQuantity('{{this.slug}}',{{this.cost}},this.value,{{this.quantity}},{{this.quantityBuy}})">
                         &nbsp;<button onclick="increaseQuantity('{{this.slug}}',{{this.cost}})">+</button>
                     </div>
                 </div>
@@ -47,9 +48,6 @@
 
 
 <script>
-
-    alert(res.locals.quantity);
-
     function increaseQuantity(slug, cost) {
         var quantity = parseInt(document.getElementById('quantity' + slug).innerHTML);
         var quantityBuy = parseInt(document.getElementById('quantityBuy' + slug).value);
@@ -58,7 +56,7 @@
         if (quantityBuy == quantity) {
             Swal.fire({
                 icon: 'error',
-                title: 'Trong kho chỉ còn ' + quantity + ' sản phẩm',
+                title: 'Trong kho chỉ còn ' + quantity + ' sản phẩm, bạn không thể tăng thêm!',
                 text: 'Bạn không thể tăng số lượng sản phẩm',
                 footer: '<a href="">Tại sao tôi lại gặp vấn đề này?</a>'
             })
@@ -168,8 +166,38 @@
                 window.location = "/deleteProductFromCart/" + slug;
             }
         })
-        return false;
+    }
 
+    function changeQuantity(slug, cost, value,quantity,quantityBuyOld) {
+        var quantity_reg = /^[1-9][0-9]{0,10000}$/;
+        if (quantity_reg.test(value)) {
+            var quantityBuy = parseInt(value);
+            if(quantityBuy > quantity){
+                document.getElementById('quantityBuy' + slug).value = quantityBuyOld;
+                Swal.fire({
+                icon: 'error',
+                title: 'Số lượng bạn yêu cầu vượt quá kho hàng hiện có!',
+                text: 'Vui lòng kiểm tra số lượng sản phẩm hiện có!',
+                footer: '<a href="">Tại sao tôi lại gặp lỗi này?</a>'
+                });
+            }
+            else{
+                
+                var quantityNew = parseInt(localStorage.getItem('quantityCart')) +(quantityBuy - quantityBuyOld);
+                localStorage.setItem('quantityCart', quantityNew);
+
+                window.location = "/changeProductFromCart/" + slug+"?quantity="+quantityBuy;
+            }
+        }
+        else {
+            document.getElementById('quantityBuy' + slug).value = quantityBuyOld;
+            Swal.fire({
+                icon: 'error',
+                title: 'Bạn nhập vào không đúng định dạng',
+                text: 'Trường này phải là 1 số và khác 0!',
+                footer: '<a href="">Tại sao tôi lại gặp lỗi này?</a>'
+            });
+        }
     }
 
 </script>

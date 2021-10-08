@@ -10,6 +10,8 @@ router.get('/checkUserDatabase', sitecontroller.checkUserDatabase);
 router.get('/addProductToCart/:slug',sitecontroller.addProductToCart);
 router.get('/decreaseProductToCart/:slug',sitecontroller.decreaseProductToCart);
 router.get('/deleteProductFromCart/:slug',sitecontroller.deleteProductFromCart);
+router.get('/changeProductFromCart/:slug',sitecontroller.changeProductFromCart);
+
 
 router.get('/cart', sitecontroller.cart);
 

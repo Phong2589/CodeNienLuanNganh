@@ -263,7 +263,7 @@ class SiteController {
         }
         try{
             var cartElement = await cart.findOne({ sessionID: sessionID })
-            var cartup,index = 0,quantity=0
+            var cartup,index = 0
             if(cartElement){
                 for(var i=0;i<cartElement.cart.length;i++){
                     if(cartElement.cart[i].slug == slug){
@@ -274,14 +274,40 @@ class SiteController {
                 cartElement.total = cartElement.total - cartElement.cart[index].totalItem
                 cartElement.cart.splice(index,1)
 
-                for(var i=0;i<cartElement.cart.length;i++){
-                    quantity += cartElement.cart[i].quantityBuy
-                }
+                cartup = await cart.updateOne({sessionID: sessionID},{cart: cartElement.cart,total : cartElement.total})
+            }
+            res.redirect('back')
+        }
+        catch(error)
+        {
+            res.json(error)
+        }
+    }
 
+    async changeProductFromCart(req, res, next) {
+        var slug = req.params.slug
+        var quantity = req.query.quantity
+        var sessionID = req.signedCookies.sessionID
+        if (!sessionID) {
+            res.send('Lỗi! Không thể thể giảm sô lượng sản phẩm trong giỏ hàng!')
+            return
+        }
+        try{
+            var cartElement = await cart.findOne({ sessionID: sessionID })
+            var cartup,total,totalItemOld,totalItemNew
+            if(cartElement){
+                for(var i=0;i<cartElement.cart.length;i++){
+                    if(cartElement.cart[i].slug == slug){
+                        totalItemOld = cartElement.cart[i].totalItem
+                        cartElement.cart[i].quantityBuy = quantity
+                        cartElement.cart[i].totalItem = cartElement.cart[i].cost * cartElement.cart[i].quantityBuy
+                        totalItemNew = cartElement.cart[i].totalItem
+                        break
+                    }
+                }
+                cartElement.total = cartElement.total + (totalItemNew - totalItemOld)
                 cartup = await cart.updateOne({sessionID: sessionID},{cart: cartElement.cart,total : cartElement.total})
             } 
-            
-            res.locals.quantity = quantity
             res.redirect('back')
         }
         catch(error)
