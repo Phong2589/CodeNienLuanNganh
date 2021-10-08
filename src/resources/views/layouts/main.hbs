@@ -121,11 +121,11 @@
                                 $('#login').modal('show');
                             {{/if}}
                             changeNumber();
-                            var quanCart = sessionStorage.getItem('quantityCart');
+                            var quanCart = localStorage.getItem('quantityCart');
                             if(!quanCart){
-                                sessionStorage.setItem('quantityCart',0);
+                                localStorage.setItem('quantityCart',0);
                             }
-                            document.getElementById('cartQuantity').innerHTML = sessionStorage.getItem('quantityCart');
+                            document.getElementById('cartQuantity').innerHTML = localStorage.getItem('quantityCart');
                         };
                         
                         function changeNumber(){

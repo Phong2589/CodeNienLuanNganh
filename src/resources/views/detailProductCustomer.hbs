@@ -23,7 +23,7 @@
 
                     <td style="display: block;" class="d-flex justify-content-center">
                         <div class=""><button class="btn btn-danger">Mua ngay</button></div>&nbsp;&nbsp;
-                        <div class=""><a onclick="addToCart('{{product.slug}}')"><button class="btn btn-primary"><i
+                        <div class=""><a onclick="addToCart('{{product.slug}}','{{product.name}}')"><button class="btn btn-primary"><i
                                         class="fas fa-cart-plus"></i> Thêm vào giỏ</button></a></div>
                     </td>
                 </tr>
@@ -73,19 +73,24 @@
         }
     };
 
-    function addToCart(slug) {
+    function addToCart(slug,name) {
         var xmlhttp;
         xmlhttp = new XMLHttpRequest();
         xmlhttp.onreadystatechange = function () {
             if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
 
                 var quantity = parseInt(xmlhttp.responseText);
-                sessionStorage.setItem('quantityCart',quantity);
+                localStorage.setItem('quantityCart', quantity);
                 document.getElementById('cartQuantity').innerHTML = quantity;
+                Swal.fire(
+                    'Sản phẩm '+name+' đã được thêm vào giỏ hàng!',
+                    '<a href="/cart" style="text-decoration: none;">Xem giỏ hàng để biết thêm!<a>',
+                    'success'
+                );
             }
         }
         xmlhttp.open("GET", "/addProductToCart/" + slug, true);
         xmlhttp.send();
-        
+
     }
 </script>

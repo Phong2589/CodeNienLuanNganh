@@ -10,7 +10,7 @@ const createSessionID = require('../util/createSessionID')
 
 function route(app) {
 
-    app.use('/customer', authCustomer.requireAuth, customerRouter);
+    app.use('/customer', createSessionID.createSessionID,authCustomer.requireAuth, customerRouter);
     app.use('/staff',authStaff.requireAuth, staffRouter);
     app.use('/admin', authAdmin.requireAuth, adminRouter);
     app.use('/',createSessionID.createSessionID,siteRouter);

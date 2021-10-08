@@ -149,7 +149,7 @@ class SiteController {
         var sessionID = req.signedCookies.sessionID
         var cartElement = await cart.findOne({ sessionID: sessionID })
         if(cartElement.total == 0){
-            res.send("Giỏ hàng trống!")
+            res.render('cart')
         }
         else{
             res.render('cart',{
@@ -211,11 +211,78 @@ class SiteController {
                 var result = await cart.updateOne({sessionID: sessionID},{cart : cartElementNew.cart,total : cartElementNew.total})
                 
             }
-            
             res.json(quantity)
+        }
+        catch(error)
+        {
+            res.json(error)
+        }
+    }
+
+    async decreaseProductToCart(req, res, next) {
+        var slug = req.params.slug
+        var sessionID = req.signedCookies.sessionID
+        if (!sessionID) {
+            res.send('Lỗi! Không thể thể giảm sô lượng sản phẩm trong giỏ hàng!')
+            return
+        }
+        try{
+            var cartElement = await cart.findOne({ sessionID: sessionID })
+            var quantity = 0,cartup;
+            if(cartElement){
+                for(var i=0;i<cartElement.cart.length;i++){
+                    quantity = quantity + cartElement.cart[i].quantityBuy;
+                }
+
+                for(var i=0;i<cartElement.cart.length;i++){
+                    if(cartElement.cart[i].slug == slug){
+                        
+                        cartElement.cart[i].quantityBuy = cartElement.cart[i].quantityBuy - 1
+                        cartElement.cart[i].totalItem = cartElement.cart[i].quantityBuy * cartElement.cart[i].cost
+                        cartElement.total = cartElement.total - cartElement.cart[i].cost
+                        cartup = await cart.updateOne({sessionID: sessionID},{cart: cartElement.cart,total : cartElement.total})
+                        break
+                    }
+                }
+            } 
+            quantity -=1;
+            res.json(quantity)
+        }
+        catch(error)
+        {
+            res.json(error)
+        }
+    }
+
+    async deleteProductFromCart(req, res, next) {
+        var slug = req.params.slug
+        var sessionID = req.signedCookies.sessionID
+        if (!sessionID) {
+            res.send('Lỗi! Không thể thể giảm sô lượng sản phẩm trong giỏ hàng!')
+            return
+        }
+        try{
+            var cartElement = await cart.findOne({ sessionID: sessionID })
+            var cartup,index = 0,quantity=0
+            if(cartElement){
+                for(var i=0;i<cartElement.cart.length;i++){
+                    if(cartElement.cart[i].slug == slug){
+                        index = i
+                        break
+                    }
+                }
+                cartElement.total = cartElement.total - cartElement.cart[index].totalItem
+                cartElement.cart.splice(index,1)
+
+                for(var i=0;i<cartElement.cart.length;i++){
+                    quantity += cartElement.cart[i].quantityBuy
+                }
+
+                cartup = await cart.updateOne({sessionID: sessionID},{cart: cartElement.cart,total : cartElement.total})
+            } 
             
-            
-            
+            res.locals.quantity = quantity
+            res.redirect('back')
         }
         catch(error)
         {

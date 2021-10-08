@@ -8,6 +8,9 @@ router.post('/register', sitecontroller.register);
 router.post('/login', sitecontroller.login);
 router.get('/checkUserDatabase', sitecontroller.checkUserDatabase);
 router.get('/addProductToCart/:slug',sitecontroller.addProductToCart);
+router.get('/decreaseProductToCart/:slug',sitecontroller.decreaseProductToCart);
+router.get('/deleteProductFromCart/:slug',sitecontroller.deleteProductFromCart);
+
 router.get('/cart', sitecontroller.cart);
 
 
