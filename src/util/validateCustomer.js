@@ -1,4 +1,6 @@
 const customer = require('../app/models/customer')
+const cart = require('../app/models/cart')
+
 
 module.exports.requireAuth = function(req,res,next){
     if(!req.signedCookies.cusId) {
@@ -23,7 +25,10 @@ module.exports.requireAuth = function(req,res,next){
                 }
                 else 
                 {
+                    var sessionID = req.signedCookies.sessionID
+                    var cartFind = cart.findOne({ sessionID: sessionID })
                     res.locals.cus = data._doc;
+                    res.locals.quantityCart = cartFind.cart.length;
                     next();
                 }
             })

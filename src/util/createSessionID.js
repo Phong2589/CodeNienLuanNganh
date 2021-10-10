@@ -9,7 +9,8 @@ module.exports.createSessionID = function(req,res,next){
         })
         const cartNew = new cart({
             sessionID:sessionID,
-            total:0
+            total:0,
+            cusId: 'no',
         })
         cartNew.save()
     }

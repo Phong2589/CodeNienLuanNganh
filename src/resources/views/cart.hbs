@@ -35,8 +35,31 @@
             </div>
         </div>
         {{/each}}
-        <div class="">
+        <div class="" style="text-align: center; font-size: 30px; color:rgb(194, 174, 230)">
             Tổng tiền: <span class="number" id="totalCart">{{cart.total}}</span>
+        </div>
+
+        <div class="">
+            <div class="">
+                Vui lòng đăng nhập và điền đầy đủ thông tin trước khi đặt hàng!
+            </div>
+            <div class="">
+                <form action="/customer/order" method="post" onsubmit="return order()">
+                    <input type="text" name="name" id="name" placeholder="Họ và tên" style="display: block;"
+                        class="mt-1 mb-1 w-xl-35 w-lg-35 w-md-50 w-sm-100 w-xs-100">
+                    <div id="warningName" style="display: none; color:red;"></div>
+                    <input type="text" name="phone" id="phoneNumber" placeholder="Số điện thoại"
+                        style="display: block;" class="mt-1 mb-1 w-xl-35 w-lg-35 w-md-50 w-sm-100 w-xs-100">
+                    <div id="warningPhoneNumber" style="display: none; color:red;"></div>
+                    <textarea type="text" name="address" id="address" placeholder="Địa chỉ" style="display: block;"
+                        class="mt-1 mb-1 w-xl-35 w-lg-35 w-md-50 w-sm-100 w-xs-100" rows="3"></textarea>
+                    <div id="warningAddress" style="display: none; color:red;"></div>
+                    <textarea type="text" name="note" placeholder="Ghi chú" style="display: block;"
+                        class="mt-1 mb-1 w-xl-35 w-lg-35 w-md-50 w-sm-100 w-xs-100" rows="3"></textarea>
+                    <button type="submit" class="btn-primary mt-1 mb-1 w-xl-35 w-lg-35 w-md-50 w-sm-100 w-xs-100"
+                        style="display: block;">Đặt hàng</button>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -168,25 +191,25 @@
         })
     }
 
-    function changeQuantity(slug, cost, value,quantity,quantityBuyOld) {
+    function changeQuantity(slug, cost, value, quantity, quantityBuyOld) {
         var quantity_reg = /^[1-9][0-9]{0,10000}$/;
         if (quantity_reg.test(value)) {
             var quantityBuy = parseInt(value);
-            if(quantityBuy > quantity){
+            if (quantityBuy > quantity) {
                 document.getElementById('quantityBuy' + slug).value = quantityBuyOld;
                 Swal.fire({
-                icon: 'error',
-                title: 'Số lượng bạn yêu cầu vượt quá kho hàng hiện có!',
-                text: 'Vui lòng kiểm tra số lượng sản phẩm hiện có!',
-                footer: '<a href="">Tại sao tôi lại gặp lỗi này?</a>'
+                    icon: 'error',
+                    title: 'Số lượng bạn yêu cầu vượt quá kho hàng hiện có!',
+                    text: 'Vui lòng kiểm tra số lượng sản phẩm hiện có!',
+                    footer: '<a href="">Tại sao tôi lại gặp lỗi này?</a>'
                 });
             }
-            else{
-                
-                var quantityNew = parseInt(localStorage.getItem('quantityCart')) +(quantityBuy - quantityBuyOld);
+            else {
+
+                var quantityNew = parseInt(localStorage.getItem('quantityCart')) + (quantityBuy - quantityBuyOld);
                 localStorage.setItem('quantityCart', quantityNew);
 
-                window.location = "/changeProductFromCart/" + slug+"?quantity="+quantityBuy;
+                window.location = "/changeProductFromCart/" + slug + "?quantity=" + quantityBuy;
             }
         }
         else {
@@ -200,4 +223,26 @@
         }
     }
 
+    function order() {
+        var check = true;
+        if (document.getElementById('name').value == '') {
+            check=false;
+            document.getElementById('warningName').innerHTML = "Vui lòng điền vào họ và tên!";
+            document.getElementById('warningName').style.display = "block";
+        }
+
+        if (document.getElementById('phoneNumber').value == '') {
+            check=false;
+            document.getElementById('warningPhoneNumber').innerHTML = "Vui lòng điền vào số điện thoại!";
+            document.getElementById('warningPhoneNumber').style.display = "block";
+        }
+
+        if (document.getElementById('address').value == '') {
+            check=false;
+            document.getElementById('warningAddress').innerHTML = "Vui lòng điền vào địa chỉ!";
+            document.getElementById('warningAddress').style.display = "block";
+        }
+
+        return check;
+    }
 </script>
