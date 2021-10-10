@@ -80,7 +80,6 @@
             if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
 
                 var quantity = parseInt(xmlhttp.responseText);
-                localStorage.setItem('quantityCart', quantity);
                 document.getElementById('cartQuantity').innerHTML = quantity;
                 Swal.fire(
                     'Sản phẩm '+name+' đã được thêm vào giỏ hàng!',

@@ -25,10 +25,15 @@ module.exports.requireAuth = function(req,res,next){
                 }
                 else 
                 {
-                    var sessionID = req.signedCookies.sessionID
-                    var cartFind = cart.findOne({ sessionID: sessionID })
+                    cart.findOne({ sessionID: sessionID },function(err,data){
+                        var quantity=0
+                        for (var i = 0; i < data.cart.length; i++) {
+                            quantity = quantity + data.cart[i].quantityBuy;
+                        }
+                        res.locals.quantityCart = quantity
+                    })
                     res.locals.cus = data._doc;
-                    res.locals.quantityCart = cartFind.cart.length;
+                    
                     next();
                 }
             })

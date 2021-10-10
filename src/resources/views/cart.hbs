@@ -102,8 +102,7 @@
 
 
                     var quantity = parseInt(xmlhttp.responseText);
-                    localStorage.setItem('quantityCart', quantity);
-                    document.getElementById('cartQuantity').innerHTML = localStorage.getItem('quantityCart');
+                    document.getElementById('cartQuantity').innerHTML = quantity;
 
                     const change = new Intl.NumberFormat('vi-VN', {
                         style: 'currency',
@@ -151,8 +150,7 @@
 
 
                     var quantity = parseInt(xmlhttp.responseText);
-                    localStorage.setItem('quantityCart', quantity);
-                    document.getElementById('cartQuantity').innerHTML = localStorage.getItem('quantityCart');
+                    document.getElementById('cartQuantity').innerHTML = quantity;
 
                     const change = new Intl.NumberFormat('vi-VN', {
                         style: 'currency',
@@ -182,10 +180,6 @@
             cancelButtonText: 'Quay lại'
         }).then((result) => {
             if (result.isConfirmed) {
-
-                var quantityBuy = parseInt(document.getElementById('quantityBuy' + slug).value);
-                var quantity = parseInt(localStorage.getItem('quantityCart')) - quantityBuy;
-                localStorage.setItem('quantityCart', quantity);
                 window.location = "/deleteProductFromCart/" + slug;
             }
         })
@@ -205,10 +199,6 @@
                 });
             }
             else {
-
-                var quantityNew = parseInt(localStorage.getItem('quantityCart')) + (quantityBuy - quantityBuyOld);
-                localStorage.setItem('quantityCart', quantityNew);
-
                 window.location = "/changeProductFromCart/" + slug + "?quantity=" + quantityBuy;
             }
         }

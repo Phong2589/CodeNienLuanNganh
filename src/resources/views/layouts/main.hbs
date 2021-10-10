@@ -121,11 +121,6 @@
                                 $('#login').modal('show');
                             {{/if}}
                             changeNumber();
-                            var quanCart = localStorage.getItem('quantityCart');
-                            if(!quanCart){
-                                localStorage.setItem('quantityCart',0);
-                            }
-                            document.getElementById('cartQuantity').innerHTML = localStorage.getItem('quantityCart');
                         };
                         
                         function changeNumber(){
