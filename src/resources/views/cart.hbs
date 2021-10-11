@@ -138,9 +138,7 @@
             for (var i = 1; i <= 5; i++) {
                 total = total.replace('.', '');
             }
-
             var totalCart = parseInt(total) - cost;
-
             var xmlhttp;
             xmlhttp = new XMLHttpRequest();
             xmlhttp.onreadystatechange = function () {
@@ -216,17 +214,25 @@
             document.getElementById('warningName').innerHTML = "Vui lòng điền vào họ và tên!";
             document.getElementById('warningName').style.display = "block";
         }
+        else{
+            document.getElementById('warningName').style.display = "none";
+        }
 
         if (document.getElementById('phoneNumber').value == '') {
             check=false;
             document.getElementById('warningPhoneNumber').innerHTML = "Vui lòng điền vào số điện thoại!";
             document.getElementById('warningPhoneNumber').style.display = "block";
         }
-
+        else{
+            document.getElementById('warningPhoneNumber').style.display = "none";
+        }
         if (document.getElementById('address').value == '') {
             check=false;
             document.getElementById('warningAddress').innerHTML = "Vui lòng điền vào địa chỉ!";
             document.getElementById('warningAddress').style.display = "block";
+        }
+        else{
+            document.getElementById('warningAddress').style.display = "none";
         }
 
         return check;

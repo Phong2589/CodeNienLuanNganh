@@ -7,6 +7,7 @@ const cart = require('../models/cart')
 
 const { mutipleMongooseToObject } = require('../../util/mongoose')
 const { MongooseToObject } = require('../../util/mongoose')
+const { find, findOne } = require('../models/customer')
 
 
 class customerController {
@@ -114,12 +115,34 @@ class customerController {
         }
     }
     
-    order(req,res,next){
-        const orderNew = new order(req.body)
-        orderNew.save()
-        res.render('orderSuccess',{
-            layout: 'customer',
-        })
+    async order(req,res,next){
+        try{
+            const orderNew = new order()
+            orderNew.cusId = req.signedCookies.cusId
+            orderNew.name = req.body.name
+            orderNew.phone = req.body.phone
+            orderNew.address = req.body.address
+            orderNew.note = req.body.note
+            var cartElement = await cart.findOne({cusId: req.signedCookies.cusId})
+            orderNew.cart = cartElement.cart
+            orderNew.total = cartElement.total
+            var result = await orderNew.save()
+
+            var arrayCart=[]
+            var reasultCart = await cart.updateOne({cusId: req.signedCookies.cusId},{cart:arrayCart,total:0})
+            req.session.message = {
+                type: 'success',
+                intro: 'Chúc mừng bạn đã đặt đơn hàng thành công!',
+                message: ''
+            }
+            res.redirect('/customer')
+        }
+        catch (error) {
+            res.json(error)
+        }
+    }
+    profile(req,res,next){
+        res.render('profileCustomer',{layout: 'customer'})
     }
 }
 
