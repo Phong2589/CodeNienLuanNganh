@@ -2,17 +2,18 @@
 const cart = require('../app/models/cart')
 
 module.exports.quantityCart = async function (req, res, next) {
-    var sessionID = req.signedCookies.sessionID
-    var findCart = await cart.findOne({ sessionID: sessionID })
-    console.log(findCart)
-    var quantity=0
-    if(findCart){
-        for(var i=0;i<findCart.cart.length;i++)
-        {
-            quantity += findCart.cart[i].quantityBuy
+    if(req.signedCookies.cusId){
+        var cartDb = await cart.findOne({cusId: req.signedCookies.cusId})
+        
+        var quantity = 0
+        for (var i = 0; i < cartDb.cart.length; i++) {
+            quantity = quantity + cartDb.cart[i].quantityBuy;
         }
+        res.locals.quantityCart = quantity 
+        
     }
-    res.locals.quantityCart = quantity
-    
+    else{
+        res.locals.quantityCart = 0
+    }
     next()
 }

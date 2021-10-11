@@ -8,7 +8,7 @@ const cart = require('../models/cart')
 
 const { mutipleMongooseToObject } = require('../../util/mongoose')
 const { MongooseToObject } = require('../../util/mongoose');
-const { createSessionID } = require('../../util/createSessionID');
+const { createSessionID } = require('../../util/createCartDB');
 const { Store } = require('express-session');
 
 class SiteController {
@@ -23,7 +23,7 @@ class SiteController {
         //     })
         //     .catch(next);
         // })
-        // res.locals.quantityCart = 0
+
         product.find({}, function (err, products) {
             res.render('home', {
                 products: mutipleMongooseToObject(products),
@@ -49,72 +49,37 @@ class SiteController {
             .catch(error => { })
     }
     //post -> login
-    login(req, res, next) {
-        var user = req.body.userLogin;
-        var pass = req.body.passwordLogin;
-        customer.findOne({ user: user, password: md5(pass) })
-            .then((data) => {
-                if (data != null) {
-                    req.session.message = {
-                        type: 'success',
-                        intro: 'Chúc mừng bạn đăng nhập thành công!',
-                        message: ''
-                    }
-                    res.cookie('cusId', data.id, {
-                        signed: true,
-                        maxAge: 1000 * 60 * 60 * 2
-                    })
-                    var sessionID = req.signedCookies.sessionID
-                    cart.updateOne({ sessionID: sessionID }, { cusId:  data.id})
-                        .then(()=>{
-                            res.redirect('/customer')
-                        })
-                        .catch(next)
-                }
-                else {
-                    admin.findOne({ user: user, password: md5(pass) })
-                        .then((data1) => {
-                            if (data1 != null) {
-                                req.session.message = {
-                                    type: 'success',
-                                    intro: 'Chúc mừng bạn đăng nhập thành công!',
-                                    message: ''
-                                }
-                                res.cookie('adminId', data1.id, {
-                                    signed: true,
-                                    maxAge: 1000 * 60 * 60 * 2
-                                })
-                                res.redirect('/admin')
-                            }
-                            else {
-                                staff.findOne({ user: user, password: md5(pass) })
-                                    .then((data2) => {
-                                        if (data2 != null) {
-                                            req.session.message = {
-                                                type: 'success',
-                                                intro: 'Chúc mừng bạn đăng nhập thành công!',
-                                                message: ''
-                                            }
-                                            res.cookie('staffId', data2.id, {
-                                                signed: true,
-                                                maxAge: 1000 * 60 * 60 * 2
-                                            })
-                                            res.redirect('/staff')
-                                        }
-                                        else {
-                                            req.session.message = {
-                                                type: 'warning',
-                                                intro: 'Đăng nhập thất bại! ',
-                                                message: 'Hãy đăng nhập lại nào.'
-                                            }
-                                            res.redirect('back')
-                                        }
-                                    })
-                            }
-                        })
-                }
+    async login(req, res, next) {
+        var user = req.body.userLogin
+        var pass = md5(req.body.passwordLogin)
+        //customer
+        var data = await customer.findOne({ user: user ,password: pass})
+        if (data != null) {
+            req.session.message = {
+                type: 'success',
+                intro: 'Chúc mừng bạn đăng nhập thành công!',
+                message: ''
+            }
+            res.cookie('cusId', data.id, {
+                signed: true,
+                maxAge: 1000 * 60 * 60 * 2
             })
-            .catch(next)
+            var dataDb = await cart.findOne({cusId:  data.id})
+            if(dataDb == null){
+                const cartNew = new cart()
+                cartNew.total = 0
+                cartNew.cusId = data.id
+                var cartup = await cartNew.save()
+                if(cartup){
+                    res.redirect('/customer')
+                }
+            }
+            else{
+                res.redirect('/customer')
+            } 
+        }
+        
+            
     }
 
     checkUserDatabase(req, res, next) {
@@ -167,66 +132,44 @@ class SiteController {
                                 }
                             })
                     }
-
                 })
                 .catch(next)
         })
     }
     async cart(req, res, next) {
-        var sessionID = req.signedCookies.sessionID
-        var cartElement = await cart.findOne({ sessionID: sessionID })
+        
         if(req.signedCookies.cusId){
-            var data1 = await cart.findOne({cusId: req.signedCookies.cusId})
-        }
+            var cusId = req.signedCookies.cusId
+            var cartElement = await cart.findOne({ cusId: cusId })
+            var customerCurrent = await customer.findOne({id: cusId})
+            res.locals.cus = customerCurrent._doc
 
-        if (!req.signedCookies.cusId) {
             if (cartElement.total == 0) {
-                res.render('cart')
+                res.render('cart',{layout: 'customer',})
             }
             else {
                 res.render('cart', {
-                    cart: MongooseToObject(cartElement)
+                    layout: 'customer',
+                    cart: MongooseToObject(cartElement),
                 })
             }
         }
-        else {
-            var findCus = await customer.findOne({ id: req.signedCookies.cusId })
-            if(findCus == null){
-                if (cartElement.total == 0) {
-                    res.render('cart')
-                }
-                else {
-                    res.render('cart', {
-                        cart: MongooseToObject(cartElement)
-                    })
-                }
-            }
-            else {
-                res.locals.cus = findCus._doc
-                if (data1.total == 0) {
-                    res.render('cart',{layout: 'customer',})
-                }
-                else {
-                    res.render('cart', {
-                        layout: 'customer',
-                        cart: MongooseToObject(data1),
-                    })
-                }
-            }
+        else{
+            res.render('cart')
         }
     }
 
 
     async addProductToCart(req, res, next) {
         var slug = req.params.slug
-        var sessionID = req.signedCookies.sessionID
-        if (!sessionID) {
-            res.send('Lỗi! Không thể thêm sản phẩm vào giỏ hàng!')
+        var cusId = req.signedCookies.cusId
+        if (!cusId) {
+            res.json('no')
             return
         }
         try {
             var count = 0, cartup
-            var cartElement = await cart.findOne({ sessionID: sessionID })
+            var cartElement = await cart.findOne({ cusId: cusId })
             var quantity = 0;
             var cartItem = await product.findOne({ slug: slug })
             if (cartElement) {
@@ -244,7 +187,7 @@ class SiteController {
                         cartElement.cart[i].quantityBuy = cartElement.cart[i].quantityBuy + 1
                         cartElement.cart[i].totalItem = cartElement.cart[i].quantityBuy * cartElement.cart[i].cost
                         cartElement.total = cartElement.total + cartElement.cart[i].cost
-                        cartup = await cart.updateOne({ sessionID: sessionID }, { cart: cartElement.cart, total: cartElement.total })
+                        cartup = await cart.updateOne({ cusId: cusId }, { cart: cartElement.cart, total: cartElement.total })
                         count = 1
                         break
                     }
@@ -252,7 +195,7 @@ class SiteController {
             }
             quantity += 1;
             if (count == 0) {
-                var cartElementNew = await cart.findOne({ sessionID: sessionID })
+                var cartElementNew = await cart.findOne({ cusId: cusId })
                 var totalItem = cartItem.cost
                 cartElementNew.cart[cartElementNew.cart.length] = {
                     name: cartItem.name,
@@ -266,7 +209,7 @@ class SiteController {
                 }
                 cartElementNew.total += totalItem;
 
-                var result = await cart.updateOne({ sessionID: sessionID }, { cart: cartElementNew.cart, total: cartElementNew.total })
+                var result = await cart.updateOne({ cusId: cusId }, { cart: cartElementNew.cart, total: cartElementNew.total })
 
             }
             res.json(quantity)
@@ -275,100 +218,12 @@ class SiteController {
             res.json(error)
         }
     }
-
-    async decreaseProductToCart(req, res, next) {
-        var slug = req.params.slug
-        var sessionID = req.signedCookies.sessionID
-        if (!sessionID) {
-            res.send('Lỗi! Không thể thể giảm sô lượng sản phẩm trong giỏ hàng!')
-            return
+    
+    registerModal(req,res,next){
+        req.session.message = {
+            show: 'show'
         }
-        try {
-            var cartElement = await cart.findOne({ sessionID: sessionID })
-            var quantity = 0, cartup;
-            if (cartElement) {
-                for (var i = 0; i < cartElement.cart.length; i++) {
-                    quantity = quantity + cartElement.cart[i].quantityBuy;
-                }
-
-                for (var i = 0; i < cartElement.cart.length; i++) {
-                    if (cartElement.cart[i].slug == slug) {
-
-                        cartElement.cart[i].quantityBuy = cartElement.cart[i].quantityBuy - 1
-                        cartElement.cart[i].totalItem = cartElement.cart[i].quantityBuy * cartElement.cart[i].cost
-                        cartElement.total = cartElement.total - cartElement.cart[i].cost
-                        cartup = await cart.updateOne({ sessionID: sessionID }, { cart: cartElement.cart, total: cartElement.total })
-                        break
-                    }
-                }
-            }
-            quantity -= 1;
-            res.json(quantity)
-        }
-        catch (error) {
-            res.json(error)
-        }
-    }
-
-    async deleteProductFromCart(req, res, next) {
-        var slug = req.params.slug
-        var sessionID = req.signedCookies.sessionID
-        if (!sessionID) {
-            res.send('Lỗi! Không thể thể giảm sô lượng sản phẩm trong giỏ hàng!')
-            return
-        }
-        try {
-            var cartElement = await cart.findOne({ sessionID: sessionID })
-            var cartup, index = 0
-            if (cartElement) {
-                for (var i = 0; i < cartElement.cart.length; i++) {
-                    if (cartElement.cart[i].slug == slug) {
-                        index = i
-                        break
-                    }
-                }
-                cartElement.total = cartElement.total - cartElement.cart[index].totalItem
-                cartElement.cart.splice(index, 1)
-
-                cartup = await cart.updateOne({ sessionID: sessionID }, { cart: cartElement.cart, total: cartElement.total })
-            }
-            res.redirect('back')
-        }
-        catch (error) {
-            res.json(error)
-        }
-    }
-
-    async changeProductFromCart(req, res, next) {
-        var slug = req.params.slug
-        var quantityGet = req.query.quantity
-        var quantity = parseInt(quantityGet)
-        var sessionID = req.signedCookies.sessionID
-        if (!sessionID) {
-            res.send('Lỗi! Không thể thể giảm sô lượng sản phẩm trong giỏ hàng!')
-            return
-        }
-        try {
-            var cartElement = await cart.findOne({ sessionID: sessionID })
-            var cartup, total, totalItemOld, totalItemNew
-            if (cartElement) {
-                for (var i = 0; i < cartElement.cart.length; i++) {
-                    if (cartElement.cart[i].slug == slug) {
-                        totalItemOld = cartElement.cart[i].totalItem
-                        cartElement.cart[i].quantityBuy = quantity
-                        cartElement.cart[i].totalItem = cartElement.cart[i].cost * cartElement.cart[i].quantityBuy
-                        totalItemNew = cartElement.cart[i].totalItem
-                        break
-                    }
-                }
-                cartElement.total = cartElement.total + (totalItemNew - totalItemOld)
-                cartup = await cart.updateOne({ sessionID: sessionID }, { cart: cartElement.cart, total: cartElement.total })
-            }
-            res.redirect('back')
-        }
-        catch (error) {
-            res.json(error)
-        }
+        res.redirect('/')
     }
 }
 

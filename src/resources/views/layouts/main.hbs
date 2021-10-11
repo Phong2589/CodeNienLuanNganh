@@ -91,7 +91,7 @@
                                     <hr>
                                     <div class="endFormRegister">
                                         <a href="">Quên mật khẩu</a> | 
-                                        <a href="">Hỗ trợ ?</a>
+                                        <a href="/registerModal">Tạo tài khoản</a>
                                     </div>
                                     <p></p>
                                     <div class="endFormRegister">
@@ -119,6 +119,9 @@
                         {
                             {{#if message.type}}
                                 $('#login').modal('show');
+                            {{/if}}
+                            {{#if message.show}}
+                                $('#register').modal('show');
                             {{/if}}
                             changeNumber();
                         };

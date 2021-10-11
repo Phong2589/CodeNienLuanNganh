@@ -99,10 +99,8 @@
             xmlhttp = new XMLHttpRequest();
             xmlhttp.onreadystatechange = function () {
                 if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-
-
-                    var quantity = parseInt(xmlhttp.responseText);
-                    document.getElementById('cartQuantity').innerHTML = quantity;
+                    
+                    document.getElementById('cartQuantity').innerHTML = xmlhttp.responseText;
 
                     const change = new Intl.NumberFormat('vi-VN', {
                         style: 'currency',
@@ -148,9 +146,7 @@
             xmlhttp.onreadystatechange = function () {
                 if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
 
-
-                    var quantity = parseInt(xmlhttp.responseText);
-                    document.getElementById('cartQuantity').innerHTML = quantity;
+                    document.getElementById('cartQuantity').innerHTML = xmlhttp.responseText;
 
                     const change = new Intl.NumberFormat('vi-VN', {
                         style: 'currency',
@@ -163,7 +159,7 @@
                     document.getElementById('totalCart').innerHTML = change.format(totalCart);
                 }
             }
-            xmlhttp.open("GET", "/decreaseProductToCart/" + slug, true);
+            xmlhttp.open("GET", "/customer/decreaseProductToCart/" + slug, true);
             xmlhttp.send();
         }
     }
@@ -180,7 +176,7 @@
             cancelButtonText: 'Quay lại'
         }).then((result) => {
             if (result.isConfirmed) {
-                window.location = "/deleteProductFromCart/" + slug;
+                window.location = "/customer/deleteProductFromCart/" + slug;
             }
         })
     }
@@ -199,7 +195,7 @@
                 });
             }
             else {
-                window.location = "/changeProductFromCart/" + slug + "?quantity=" + quantityBuy;
+                window.location = "/customer/changeProductFromCart/" + slug + "?quantity=" + quantityBuy;
             }
         }
         else {

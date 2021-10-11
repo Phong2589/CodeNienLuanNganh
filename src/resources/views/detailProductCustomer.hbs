@@ -23,8 +23,9 @@
 
                     <td style="display: block;" class="d-flex justify-content-center">
                         <div class=""><button class="btn btn-danger">Mua ngay</button></div>&nbsp;&nbsp;
-                        <div class=""><a onclick="addToCart('{{product.slug}}','{{product.name}}')"><button class="btn btn-primary"><i
-                                        class="fas fa-cart-plus"></i> Thêm vào giỏ</button></a></div>
+                        <div class=""><a onclick="addToCart('{{product.slug}}','{{product.name}}')"><button
+                                    class="btn btn-primary"><i class="fas fa-cart-plus"></i> Thêm vào giỏ</button></a>
+                        </div>
                     </td>
                 </tr>
             </table>
@@ -73,19 +74,37 @@
         }
     };
 
-    function addToCart(slug,name) {
+    function addToCart(slug, name) {
+
         var xmlhttp;
         xmlhttp = new XMLHttpRequest();
         xmlhttp.onreadystatechange = function () {
             if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                if (xmlhttp.responseText == JSON.stringify('no')) {
+                    Swal.fire({
+                        title: 'Bạn cần đăng nhập để thực hiện hành động này!',
+                        text: "Hãy đăng nhập để thực hiện các giao dịch",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Tiếp tục',
+                        cancelButtonText: 'Quay lại'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location = "/customer";
+                        }
+                    })
+                }
+                else {
+                    document.getElementById('cartQuantity').innerHTML = xmlhttp.responseText;
+                    Swal.fire(
+                        'Sản phẩm ' + name + ' đã được thêm vào giỏ hàng!',
+                        '<a href="/cart" style="text-decoration: none;">Xem giỏ hàng để biết thêm!<a>',
+                        'success'
+                    );
+                }
 
-                var quantity = parseInt(xmlhttp.responseText);
-                document.getElementById('cartQuantity').innerHTML = quantity;
-                Swal.fire(
-                    'Sản phẩm '+name+' đã được thêm vào giỏ hàng!',
-                    '<a href="/cart" style="text-decoration: none;">Xem giỏ hàng để biết thêm!<a>',
-                    'success'
-                );
             }
         }
         xmlhttp.open("GET", "/addProductToCart/" + slug, true);

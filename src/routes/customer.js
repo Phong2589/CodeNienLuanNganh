@@ -4,6 +4,10 @@ const router = express.Router();
 
 const customerController = require('../app/controllers/customerController');
 
+
+router.get('/decreaseProductToCart/:slug',customerController.decreaseProductToCart);
+router.get('/deleteProductFromCart/:slug',customerController.deleteProductFromCart);
+router.get('/changeProductFromCart/:slug',customerController.changeProductFromCart);
 router.post('/order', customerController.order);
 router.get('/', customerController.customer);
 
