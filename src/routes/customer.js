@@ -9,6 +9,7 @@ router.get('/decreaseProductToCart/:slug',customerController.decreaseProductToCa
 router.get('/deleteProductFromCart/:slug',customerController.deleteProductFromCart);
 router.get('/changeProductFromCart/:slug',customerController.changeProductFromCart);
 router.get('/profile',customerController.profile);
+router.post('/profileProcess',customerController.profileProcess);
 router.post('/order', customerController.order);
 router.get('/', customerController.customer);
 

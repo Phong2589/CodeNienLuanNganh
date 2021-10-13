@@ -5,6 +5,8 @@ const staff = require('../models/staff')
 const product = require('../models/product')
 const md5 = require('md5');
 const cart = require('../models/cart')
+const profileCustomer = require('../models/profileCustomer')
+
 
 const { mutipleMongooseToObject } = require('../../util/mongoose')
 const { MongooseToObject } = require('../../util/mongoose');
@@ -141,6 +143,7 @@ class SiteController {
         if(req.signedCookies.cusId){
             var cusId = req.signedCookies.cusId
             var cartElement = await cart.findOne({ cusId: cusId })
+            var findProfile = await profileCustomer.findOne({cusId:cusId})
             var customerCurrent = await customer.findOne({id: cusId})
             res.locals.cus = customerCurrent._doc
 
@@ -151,6 +154,7 @@ class SiteController {
                 res.render('cart', {
                     layout: 'customer',
                     cart: MongooseToObject(cartElement),
+                    profile: MongooseToObject(findProfile),
                 })
             }
         }

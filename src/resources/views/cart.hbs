@@ -46,13 +46,13 @@
             <div class="">
                 <form action="/customer/order" method="post" onsubmit="return order()">
                     <input type="text" name="name" id="name" placeholder="Họ và tên" style="display: block;"
-                        class="mt-1 mb-1 w-xl-35 w-lg-35 w-md-50 w-sm-100 w-xs-100">
+                        class="mt-1 mb-1 w-xl-35 w-lg-35 w-md-50 w-sm-100 w-xs-100" value="{{profile.name}}">
                     <div id="warningName" style="display: none; color:red;"></div>
                     <input type="text" name="phone" id="phoneNumber" placeholder="Số điện thoại"
-                        style="display: block;" class="mt-1 mb-1 w-xl-35 w-lg-35 w-md-50 w-sm-100 w-xs-100">
+                        style="display: block;" class="mt-1 mb-1 w-xl-35 w-lg-35 w-md-50 w-sm-100 w-xs-100" value="{{profile.phone}}">
                     <div id="warningPhoneNumber" style="display: none; color:red;"></div>
                     <textarea type="text" name="address" id="address" placeholder="Địa chỉ" style="display: block;"
-                        class="mt-1 mb-1 w-xl-35 w-lg-35 w-md-50 w-sm-100 w-xs-100" rows="3"></textarea>
+                        class="mt-1 mb-1 w-xl-35 w-lg-35 w-md-50 w-sm-100 w-xs-100" rows="3">{{profile.address}}</textarea>
                     <div id="warningAddress" style="display: none; color:red;"></div>
                     <textarea type="text" name="note" placeholder="Ghi chú" style="display: block;"
                         class="mt-1 mb-1 w-xl-35 w-lg-35 w-md-50 w-sm-100 w-xs-100" rows="3"></textarea>

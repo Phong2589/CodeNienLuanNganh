@@ -3,7 +3,7 @@ const customer = require('../models/customer')
 const product = require('../models/product')
 const order = require('../models/order')
 const cart = require('../models/cart')
-
+const profileCustomer = require('../models/profileCustomer')
 
 const { mutipleMongooseToObject } = require('../../util/mongoose')
 const { MongooseToObject } = require('../../util/mongoose')
@@ -141,8 +141,37 @@ class customerController {
             res.json(error)
         }
     }
-    profile(req,res,next){
-        res.render('profileCustomer',{layout: 'customer'})
+    async profile(req,res,next){
+        var cusId = req.signedCookies.cusId
+        var findProfile = await profileCustomer.findOne({cusId:cusId})
+        res.render('profileCustomer',{layout: 'customer',
+                                     profile: MongooseToObject(findProfile),
+                                    })
+    }   
+
+    async profileProcess(req,res,next){
+        var cusId = req.signedCookies.cusId
+        var findProfile = await profileCustomer.findOne({cusId:cusId})
+        if(findProfile){
+            var resultOld = await profileCustomer.updateOne({usId:cusId},{
+                name: req.body.name,
+                phone: req.body.phone,
+                address: req.body.address,
+                note: req.body.note
+            })
+        }
+        else{
+            const profileCusNew = new profileCustomer(req.body)
+            profileCusNew.note = ''
+            profileCusNew.cusId = cusId
+            var resultNew = await profileCusNew.save()
+        }
+        req.session.message = {
+            type: 'success',
+            intro: 'Chúc mừng bạn đã cập nhật thông tin thành công!',
+            message: ''
+        }
+        res.redirect('back')
     }
 }
 
