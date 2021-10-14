@@ -41,7 +41,7 @@
 
         <div class="">
             <div class="">
-                Vui lòng đăng nhập và điền đầy đủ thông tin trước khi đặt hàng!
+                Vui lòng điền đầy đủ thông tin trước khi đặt hàng!
             </div>
             <div class="">
                 <form action="/customer/order" method="post" onsubmit="return order()">
@@ -87,11 +87,6 @@
         else {
             var costBuy = cost * (quantityBuy + 1);
             var total = document.getElementById('totalCart').innerText;
-            total = total.substring(0, total.length - 2);
-
-            for (var i = 1; i <= 5; i++) {
-                total = total.replace('.', '');
-            }
 
             var totalCart = parseInt(total) + cost;
 
@@ -133,11 +128,7 @@
         else {
             var costBuy = cost * (quantityBuy - 1);
             var total = document.getElementById('totalCart').innerText;
-            total = total.substring(0, total.length - 2);
 
-            for (var i = 1; i <= 5; i++) {
-                total = total.replace('.', '');
-            }
             var totalCart = parseInt(total) - cost;
             var xmlhttp;
             xmlhttp = new XMLHttpRequest();
@@ -236,5 +227,9 @@
         }
 
         return check;
+    }
+    var ssQuantity = sessionStorage.getItem('quantityBuy');
+    if(ssQuantity){
+        sessionStorage.clear('quantityBuy');
     }
 </script>

@@ -229,6 +229,18 @@ class SiteController {
         }
         res.redirect('/')
     }
+    async orderNow(req, res, next) {
+        var cusId = req.signedCookies.cusId
+        if (!cusId) {
+            res.json('no')
+            return
+        }
+        else{
+            res.json('')
+            return 
+        }
+    }
+          
 }
 
 module.exports = new SiteController();

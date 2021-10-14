@@ -9,14 +9,8 @@ router.get('/registerModal', sitecontroller.registerModal);
 router.post('/login', sitecontroller.login);
 router.get('/checkUserDatabase', sitecontroller.checkUserDatabase);
 router.get('/addProductToCart/:slug',sitecontroller.addProductToCart);
-
-
-
+router.get('/orderNow/:slug', sitecontroller.orderNow);
 router.get('/cart', sitecontroller.cart);
-
-
-
-
 router.get('/:slug', sitecontroller.detailProduct);
 router.get('/', sitecontroller.index);
 

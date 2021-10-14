@@ -173,6 +173,24 @@ class customerController {
         }
         res.redirect('back')
     }
+
+    async orderNow(req,res,next){
+    
+        var cusId = req.signedCookies.cusId
+        var slug = req.params.slug
+        var productBuy = await product.findOne({slug: slug})
+        var profile = await profileCustomer.findOne({cusId: cusId})
+        res.render('orderNow',{
+            layout: 'customer',
+            product: MongooseToObject(productBuy),
+            profile: MongooseToObject(profile),
+
+        })
+    }
+
+    async orderNowCustomer(req,res,next){
+        res.json(req.body)
+    }
 }
 
 module.exports = new customerController();
