@@ -20,5 +20,8 @@
 </div>
 
 <script>
-    
+    var ssQuantity = sessionStorage.getItem('quantityBuy');
+    if(ssQuantity){
+        sessionStorage.clear('quantityBuy');
+    }
 </script>

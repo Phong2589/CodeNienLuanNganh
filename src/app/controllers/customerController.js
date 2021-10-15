@@ -4,19 +4,19 @@ const product = require('../models/product')
 const order = require('../models/order')
 const cart = require('../models/cart')
 const profileCustomer = require('../models/profileCustomer')
-
+const ShortUniqueId = require('short-unique-id')
 const { mutipleMongooseToObject } = require('../../util/mongoose')
 const { MongooseToObject } = require('../../util/mongoose')
 const { find, findOne } = require('../models/customer')
 
+const uid = new ShortUniqueId({ length: 10 })
 
 class customerController {
-     customer(req, res,next) {
-        product.find({}, function (err, products) { 
-            res.render('homeCustomer', {
-                layout: 'customer',
-                products: mutipleMongooseToObject(products),
-            })
+     async customer(req, res,next) {
+        var products = await product.find({quantity: { $gte: 1 }})
+        res.render('homeCustomer', {
+            layout: 'customer',
+            products: mutipleMongooseToObject(products),
         })
     }
 
@@ -119,6 +119,7 @@ class customerController {
         try{
             const orderNew = new order()
             orderNew.cusId = req.signedCookies.cusId
+            orderNew.orderId = uid()
             orderNew.name = req.body.name
             orderNew.phone = req.body.phone
             orderNew.address = req.body.address
@@ -127,7 +128,10 @@ class customerController {
             orderNew.cart = cartElement.cart
             orderNew.total = cartElement.total
             var result = await orderNew.save()
-
+            for(var i=0;i<cartElement.cart.length;i++){
+                var quantityUpdate = cartElement.cart[i].quantity - cartElement.cart[i].quantityBuy
+                var resultUpdate = await product.updateOne({slug:cartElement.cart[i].slug},{quantity: quantityUpdate})
+            }
             var arrayCart=[]
             var reasultCart = await cart.updateOne({cusId: req.signedCookies.cusId},{cart:arrayCart,total:0})
             req.session.message = {
@@ -189,7 +193,65 @@ class customerController {
     }
 
     async orderNowCustomer(req,res,next){
-        res.json(req.body)
+        var cusId = req.signedCookies.cusId
+        var slug = req.params.slug
+        const orderNew = new order()
+        orderNew.cusId = cusId
+        orderNew.orderId = uid()
+        orderNew.name = req.body.name
+        orderNew.phone = req.body.phone
+        orderNew.address = req.body.address
+        orderNew.note = req.body.note
+
+        var quantityBuy = parseInt(req.body.quantityBuy)
+        var productBuy = await product.findOne({slug:slug})
+        orderNew.cart[0] = {
+            name: productBuy.name,
+            cost: productBuy.cost,
+            image: productBuy.image,
+            description: productBuy.description,
+            quantity: productBuy.quantity,
+            slug: slug,
+            quantityBuy: quantityBuy,
+            totalItem: quantityBuy*productBuy.cost
+        }
+        orderNew.total = quantityBuy*productBuy.cost
+        var resultSave = await orderNew.save()
+        var resultUpdate = await product.updateOne({slug:slug},{quantity: productBuy.quantity - quantityBuy})
+        req.session.message = {
+            type: 'success',
+            intro: 'Chúc mừng bạn đã đặt hàng thành công!',
+            message: ''
+        }
+        res.redirect('/customer')
+    }
+    async sortaz(req, res,next) {
+        var products = await product.find().sort({"name":1})
+        res.render('homeCustomer', {
+            layout: 'customer',
+            products: mutipleMongooseToObject(products),
+        })
+    }
+    async sortza(req, res,next) {
+        var products = await product.find().sort({"name":-1})
+        res.render('homeCustomer', {
+            layout: 'customer',
+            products: mutipleMongooseToObject(products),
+        })
+    }
+    async sortCostDecrease(req, res,next) {
+        var products = await product.find().sort({"cost":-1})
+        res.render('homeCustomer', {
+            layout: 'customer',
+            products: mutipleMongooseToObject(products),
+        })
+    }
+    async sortCostIncrease(req, res,next) {
+        var products = await product.find().sort({"cost":1})
+        res.render('homeCustomer', {
+            layout: 'customer',
+            products: mutipleMongooseToObject(products),
+        })
     }
 }
 

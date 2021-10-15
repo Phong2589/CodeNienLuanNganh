@@ -13,6 +13,11 @@ router.get('/profile',customerController.profile);
 router.post('/profileProcess',customerController.profileProcess);
 router.post('/order', customerController.order);
 router.post('/orderNowCustomer/:slug', customerController.orderNowCustomer);
+router.get('/sortaz',customerController.sortaz);
+router.get('/sortza',customerController.sortza);
+router.get('/sortCostIncrease',customerController.sortCostIncrease);
+router.get('/sortCostDecrease',customerController.sortCostDecrease);
+
 
 router.get('/', customerController.customer);
 

@@ -6,7 +6,7 @@
                     <div class="d-flex justify-content-between" style="margin: 5px;">
 
                         <div class="">
-                            <img src="/{{product.image}}" alt="" style="width: 50px; height: 60px;">
+                            <img src="{{product.image}}" alt="" style="width: 50px; height: 60px;">
                             {{product.name}}
                         </div>
                         <div>
@@ -20,9 +20,8 @@
                             Kho hàng: <span id="quantity{{product.slug}}">{{product.quantity}}</span>
                         </div>
                         <div>
-                            <input type="text" name="quatityBuy" style="width: 50px; text-align: center;"
-                                id="quantityBuyNow"
-                                onchange="changeQuantity('{{product.slug}}',{{product.cost}},this.value,{{product.quantity}},{{product.quantityBuy}})">
+                            Số lượng: <input type="text" name="quantityBuy" style="width: 50px; text-align: center;"
+                                id="quantityBuyNow" onchange="changeQuantity(this.value,{{product.quantity}},{{product.cost}})">
                         </div>
                     </div>
                 </div>
@@ -36,19 +35,20 @@
                     Vui lòng iền đầy đủ thông tin trước khi đặt hàng!
                 </div>
                 <div class="">
-                        <input type="text" name="name" id="name" placeholder="Họ và tên" style="display: block;"
-                            class="mt-1 mb-1 w-xl-35 w-lg-35 w-md-50 w-sm-100 w-xs-100" value="{{profile.name}}">
-                        <div id="warningName" style="display: none; color:red;"></div>
-                        <input type="text" name="phone" id="phoneNumber" placeholder="Số điện thoại"
-                            style="display: block;" class="mt-1 mb-1 w-xl-35 w-lg-35 w-md-50 w-sm-100 w-xs-100" value="{{profile.phone}}">
-                        <div id="warningPhoneNumber" style="display: none; color:red;"></div>
-                        <textarea type="text" name="address" id="address" placeholder="Địa chỉ" style="display: block;"
-                            class="mt-1 mb-1 w-xl-35 w-lg-35 w-md-50 w-sm-100 w-xs-100" rows="3">{{profile.address}}</textarea>
-                        <div id="warningAddress" style="display: none; color:red;"></div>
-                        <textarea type="text" name="note" placeholder="Ghi chú" style="display: block;"
-                            class="mt-1 mb-1 w-xl-35 w-lg-35 w-md-50 w-sm-100 w-xs-100" rows="3"></textarea>
-                        <button type="submit" class="btn-primary mt-1 mb-1 w-xl-35 w-lg-35 w-md-50 w-sm-100 w-xs-100"
-                            style="display: block;">Đặt hàng</button>
+                    <input type="text" name="name" id="name" placeholder="Họ và tên" style="display: block;"
+                        class="mt-1 mb-1 w-xl-35 w-lg-35 w-md-50 w-sm-100 w-xs-100" value="{{profile.name}}">
+                    <div id="warningName" style="display: none; color:red;"></div>
+                    <input type="text" name="phone" id="phoneNumber" placeholder="Số điện thoại" style="display: block;"
+                        class="mt-1 mb-1 w-xl-35 w-lg-35 w-md-50 w-sm-100 w-xs-100" value="{{profile.phone}}">
+                    <div id="warningPhoneNumber" style="display: none; color:red;"></div>
+                    <textarea type="text" name="address" id="address" placeholder="Địa chỉ" style="display: block;"
+                        class="mt-1 mb-1 w-xl-35 w-lg-35 w-md-50 w-sm-100 w-xs-100"
+                        rows="3">{{profile.address}}</textarea>
+                    <div id="warningAddress" style="display: none; color:red;"></div>
+                    <textarea type="text" name="note" placeholder="Ghi chú" style="display: block;"
+                        class="mt-1 mb-1 w-xl-35 w-lg-35 w-md-50 w-sm-100 w-xs-100" rows="3"></textarea>
+                    <button type="submit" class="btn-primary mt-1 mb-1 w-xl-35 w-lg-35 w-md-50 w-sm-100 w-xs-100"
+                        style="display: block;">Đặt hàng</button>
                 </div>
             </div>
         </div>
@@ -57,8 +57,8 @@
 
 
 <script>
-    
-window.onload = function () {
+
+    window.onload = function () {
         changeNumber();
     };
 
@@ -74,22 +74,23 @@ window.onload = function () {
             numberChange[x].innerHTML = change.format(cost)
         }
     };
-/*change text*/
+    /*change text*/
     var ssQuantity = sessionStorage.getItem('quantityBuy');
-    if(!ssQuantity){
-        sessionStorage.setItem('quantityBuy',1);
+    if (!ssQuantity) {
+        sessionStorage.setItem('quantityBuy', 1);
     }
     document.getElementById('quantityBuyNow').value = sessionStorage.getItem('quantityBuy');
     var cost = document.getElementById('costProduct').innerText;
-    document.getElementById('totalCart').innerHTML = parseInt(cost)*sessionStorage.getItem('quantityBuy');
+    document.getElementById('totalCart').innerHTML = parseInt(cost) * sessionStorage.getItem('quantityBuy');
 
 
-    function changeQuantity(slug, cost, value, quantity, quantityBuyOld) {
+    function changeQuantity(value, quantity,cost) {
+        var quantityBuyOld = sessionStorage.getItem('quantityBuy');
         var quantity_reg = /^[1-9][0-9]{0,10000}$/;
         if (quantity_reg.test(value)) {
             var quantityBuy = parseInt(value);
             if (quantityBuy > quantity) {
-                document.getElementById('quantityBuy' + slug).value = quantityBuyOld;
+                document.getElementById('quantityBuyNow').value = quantityBuyOld;
                 Swal.fire({
                     icon: 'error',
                     title: 'Số lượng bạn yêu cầu vượt quá kho hàng hiện có!',
@@ -98,11 +99,16 @@ window.onload = function () {
                 });
             }
             else {
-                window.location = "/customer/changeProductFromCart/" + slug + "?quantity=" + quantityBuy;
+                sessionStorage.setItem('quantityBuy',quantityBuy);
+                const change = new Intl.NumberFormat('vi-VN', {
+                style: 'currency',
+                currency: 'VND',
+                })
+                document.getElementById('totalCart').innerHTML = change.format(cost * quantityBuy);
             }
         }
         else {
-            document.getElementById('quantityBuy' + slug).value = quantityBuyOld;
+            document.getElementById('quantityBuyNow').value = quantityBuyOld;
             Swal.fire({
                 icon: 'error',
                 title: 'Bạn nhập vào không đúng định dạng',
@@ -115,28 +121,28 @@ window.onload = function () {
     function order() {
         var check = true;
         if (document.getElementById('name').value == '') {
-            check=false;
+            check = false;
             document.getElementById('warningName').innerHTML = "Vui lòng điền vào họ và tên!";
             document.getElementById('warningName').style.display = "block";
         }
-        else{
+        else {
             document.getElementById('warningName').style.display = "none";
         }
 
         if (document.getElementById('phoneNumber').value == '') {
-            check=false;
+            check = false;
             document.getElementById('warningPhoneNumber').innerHTML = "Vui lòng điền vào số điện thoại!";
             document.getElementById('warningPhoneNumber').style.display = "block";
         }
-        else{
+        else {
             document.getElementById('warningPhoneNumber').style.display = "none";
         }
         if (document.getElementById('address').value == '') {
-            check=false;
+            check = false;
             document.getElementById('warningAddress').innerHTML = "Vui lòng điền vào địa chỉ!";
             document.getElementById('warningAddress').style.display = "block";
         }
-        else{
+        else {
             document.getElementById('warningAddress').style.display = "none";
         }
 

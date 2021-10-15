@@ -240,6 +240,30 @@ class SiteController {
             return 
         }
     }
+    async sortaz(req, res,next) {
+        var products = await product.find().sort({"name":1})
+        res.render('homeCustomer', {
+            products: mutipleMongooseToObject(products),
+        })
+    }
+    async sortza(req, res,next) {
+        var products = await product.find().sort({"name":-1})
+        res.render('homeCustomer', {
+            products: mutipleMongooseToObject(products),
+        })
+    }
+    async sortCostDecrease(req, res,next) {
+        var products = await product.find().sort({"cost":-1})
+        res.render('homeCustomer', {
+            products: mutipleMongooseToObject(products),
+        })
+    }
+    async sortCostIncrease(req, res,next) {
+        var products = await product.find().sort({"cost":1})
+        res.render('homeCustomer', {
+            products: mutipleMongooseToObject(products),
+        })
+    }
           
 }
 
