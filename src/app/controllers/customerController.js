@@ -127,6 +127,7 @@ class customerController {
             var cartElement = await cart.findOne({cusId: req.signedCookies.cusId})
             orderNew.cart = cartElement.cart
             orderNew.total = cartElement.total
+            orderNew.state = 0
             var result = await orderNew.save()
             for(var i=0;i<cartElement.cart.length;i++){
                 var quantityUpdate = cartElement.cart[i].quantity - cartElement.cart[i].quantityBuy
@@ -202,6 +203,7 @@ class customerController {
         orderNew.phone = req.body.phone
         orderNew.address = req.body.address
         orderNew.note = req.body.note
+        orderNew.state = 0
 
         var quantityBuy = parseInt(req.body.quantityBuy)
         var productBuy = await product.findOne({slug:slug})
@@ -251,6 +253,32 @@ class customerController {
         res.render('homeCustomer', {
             layout: 'customer',
             products: mutipleMongooseToObject(products),
+        })
+    }
+    async search(req, res,next){
+        var products = await product.find({ $text : { $search : req.query.search }})
+        if(products){
+            res.render('homeCustomer', {
+                layout: 'customer',
+                products: mutipleMongooseToObject(products),
+            })
+        }
+        else{
+            res.render('homeCustomer', {
+                layout: 'customer',
+            })
+        }
+    }
+    logOut(req, res,next){
+        res.clearCookie("cusId")
+        res.redirect('/')
+    }
+    async awaitingConfirm(req, res,next){
+        var cusId = req.signedCookies.cusId
+        var orders = await order.find({cusId: cusId})
+        res.render('awaitingConfirm', {
+            layout: 'customer',
+            orders: mutipleMongooseToObject(orders)
         })
     }
 }

@@ -1,0 +1,38 @@
+{{#if orders}}
+    <div class="mt-2 mb-2">
+        {{#each orders}}
+
+            <div class="mt-2 mb-2" style="background-color: white;">
+
+                <div class="d-flex justify-content-between ml-2 mr-2">
+                    <div class="">
+                        <div class="">
+                            Thông tin nhận hàng
+                        </div>
+                        <div class="">
+                            Họ và tên: {{this.name}}
+                        </div>
+                        <div class="">
+                            Số điện thoại: {{this.phone}}
+                        </div>
+                        <div class="">
+                            Địa chỉ nhận: {{this.address}}
+                        </div>
+                        <div class="">
+                            Ghi chú: {{this.note}}
+                        </div>
+                    </div>
+
+                    <div class="">
+                    Mã đơn hàng: {{this.orderId}}
+                    </div>
+                </div>
+                
+
+            </div>
+
+        {{/each}}
+    </div>
+{{else}}
+<h3 class="mt-3 mb-3" style="text-align: center; color:rgb(194, 174, 230);">Bạn chưa đặt đơn hàng nào!</h3>
+{{/if}}

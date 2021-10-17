@@ -13,7 +13,7 @@ module.exports.requireAuth = async function(req,res,next){
     }
     else
     {
-        var data = await customer.findOne({id: req.signedCookies.cusId})
+        var data = await customer.findOne({_id: req.signedCookies.cusId})
         var cartDb = await cart.findOne({cusId: req.signedCookies.cusId})
         if(cartDb){
             var quantity = 0

@@ -9,7 +9,8 @@ const order = new Schema({
     address: { type: String},
     note: { type: String},
     cart: {type: Array},
-    total: {type: Number}
+    total: {type: Number},
+    state: {type: Number}
   },{
     timestamps: true,
   });

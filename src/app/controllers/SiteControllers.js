@@ -3,10 +3,9 @@ const customer = require('../models/customer')
 const admin = require('../models/admin')
 const staff = require('../models/staff')
 const product = require('../models/product')
-const md5 = require('md5');
 const cart = require('../models/cart')
 const profileCustomer = require('../models/profileCustomer')
-
+const sha512 = require('js-sha512').sha512
 
 const { mutipleMongooseToObject } = require('../../util/mongoose')
 const { MongooseToObject } = require('../../util/mongoose');
@@ -15,18 +14,7 @@ const { Store } = require('express-session');
 
 class SiteController {
     index(req, res, next) {
-        // product.find({},function (err, products) {
-        //     customer.find({})
-        //     .then(customers => {
-        //         res.render('home',{
-        //             customers: mutipleMongooseToObject(customers),
-        //             products: mutipleMongooseToObject(products),
-        //         })
-        //     })
-        //     .catch(next);
-        // })
-
-        product.find({}, function (err, products) {
+        product.find({quantity: { $gte: 1 }}, function (err, products) {
             res.render('home', {
                 products: mutipleMongooseToObject(products),
             })
@@ -36,7 +24,7 @@ class SiteController {
 
     //post -> register
     register(req, res, next) {
-        req.body.password = md5(req.body.password);
+        req.body.password = sha512(req.body.password);
         const customerNew = new customer(req.body);
         customerNew.save()
             .then(() => {
@@ -53,7 +41,7 @@ class SiteController {
     //post -> login
     async login(req, res, next) {
         var user = req.body.userLogin
-        var pass = md5(req.body.passwordLogin)
+        var pass = sha512(req.body.passwordLogin)
         //customer
         var data = await customer.findOne({ user: user ,password: pass})
         if (data != null) {
@@ -79,6 +67,14 @@ class SiteController {
             else{
                 res.redirect('/customer')
             } 
+        }
+        else{
+            req.session.message = {
+                type: 'warning',
+                intro: 'Đăng nhập thất bại!',
+                message: 'Vui lòng đăng nhập lại!'
+            }
+            res.redirect('back')
         }
         
             
@@ -265,6 +261,18 @@ class SiteController {
         })
     }
           
+    async search(req, res,next){
+        var products = await product.find({ $text : { $search : req.query.search }})
+        if(products){
+            res.render('home', {
+                products: mutipleMongooseToObject(products),
+            })
+        }
+        else{
+            res.render('home', {
+            })
+        }
+    }
 }
 
 module.exports = new SiteController();

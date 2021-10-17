@@ -32,7 +32,7 @@
                     Đơn hàng
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="#">Chờ xác nhận</a>
+                    <a class="dropdown-item" href="/customer/awaitingConfirm">Chờ xác nhận</a>
                     <a class="dropdown-item" href="#">Đã xác nhận</a>
                     <a class="dropdown-item" href="#">Đã hoàn thành</a>
                     </div>
@@ -48,7 +48,7 @@
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <a class="dropdown-item" href="#">Đổi mật khẩu</a>
                     <a class="dropdown-item" href="/customer/profile">Cập nhật thông tin</a>
-                    <a class="dropdown-item" href="#">Đăng xuất</a>
+                    <a class="dropdown-item" href="/customer/logOut">Đăng xuất</a>
                     </div>
                 </div>
             </div>
@@ -61,8 +61,8 @@
             </div>
 
             <div class="d-flex">
-                <form class="form-inline my-2 my-lg-0">
-                    <input class="form-control mr-sm-2" type="search" placeholder="Tìm kiếm" aria-label="Search">
+                <form class="form-inline my-2 my-lg-0" method="get" action="/customer/search">
+                    <input class="form-control mr-sm-2" type="search" placeholder="Tìm kiếm" aria-label="Search" name="search">
                     <button class="btn btn-outline-success my-2 my-sm-0" type="submit"><i class="fas fa-search"></i></button>
                 </form>&nbsp;
             </div>

@@ -17,6 +17,10 @@ router.get('/sortaz',customerController.sortaz);
 router.get('/sortza',customerController.sortza);
 router.get('/sortCostIncrease',customerController.sortCostIncrease);
 router.get('/sortCostDecrease',customerController.sortCostDecrease);
+router.get('/search',customerController.search);
+router.get('/logOut',customerController.logOut);
+router.get('/awaitingConfirm',customerController.awaitingConfirm);
+
 
 
 router.get('/', customerController.customer);
