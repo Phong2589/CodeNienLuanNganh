@@ -20,6 +20,9 @@ router.get('/sortCostDecrease',customerController.sortCostDecrease);
 router.get('/search',customerController.search);
 router.get('/logOut',customerController.logOut);
 router.get('/awaitingConfirm',customerController.awaitingConfirm);
+router.get('/cancelOrder/:orderId',customerController.cancelOrder);
+router.get('/confirmed',customerController.confirmed);
+
 
 
 
