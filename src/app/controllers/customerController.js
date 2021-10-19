@@ -14,10 +14,22 @@ const uid = new ShortUniqueId({ length: 10 })
 
 class customerController {
     async customer(req, res, next) {
+        var page = parseInt(req.query.page)
+        if(!page) page=1
+        var perPage = 8
+        var start = (page-1)*perPage
+        var end = page*perPage
         var products = await product.find({ quantity: { $gte: 1 } })
+        var quantityPage = Math.round(products.length / perPage)
+        var quantityPageArr = []
+        for(var i=0;i<quantityPage;i++){
+            quantityPageArr[i] = i+1
+        }
+        products = products.slice(start,end)
         res.render('homeCustomer', {
             layout: 'customer',
             products: mutipleMongooseToObject(products),
+            quantityPage: quantityPageArr
         })
     }
 
@@ -309,6 +321,15 @@ class customerController {
         var cusId = req.signedCookies.cusId
         var orders = await order.find({ cusId: cusId, state: 1 })
         res.render('confirmed', {
+            layout: 'customer',
+            orders: mutipleMongooseToObject(orders)
+        })
+    }
+
+    async history(req, res, next){
+        var cusId = req.signedCookies.cusId
+        var orders = await historyOrder.find({ cusId: cusId})
+        res.render('historyOrderCus', {
             layout: 'customer',
             orders: mutipleMongooseToObject(orders)
         })

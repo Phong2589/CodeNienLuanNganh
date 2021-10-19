@@ -175,3 +175,29 @@ body{
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+/* // */
+.page{
+    margin-left: 2px;
+    margin-right: 2px;
+    position: relative;
+    display: block;
+    padding: .5rem .75rem;
+    margin-left: -1px;
+    line-height: 1.25;
+    text-decoration: none !important;
+    color: black;
+}
+
+.pageNew{
+    margin-left: 2px;
+    margin-right: 2px;
+    position: relative;
+    display: block;
+    padding: .5rem .75rem;
+    margin-left: -1px;
+    line-height: 1.25;
+    text-decoration: none !important;
+    color: pink !important;
+    background-color: white;
+}
