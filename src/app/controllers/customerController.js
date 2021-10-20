@@ -9,6 +9,7 @@ const { mutipleMongooseToObject } = require('../../util/mongoose')
 const { MongooseToObject } = require('../../util/mongoose')
 const { find, findOne } = require('../models/customer')
 const historyOrder = require('../models/historyOrder')
+const sha512 = require('js-sha512').sha512
 
 const uid = new ShortUniqueId({ length: 10 })
 
@@ -403,6 +404,38 @@ class customerController {
             orders: mutipleMongooseToObject(orders)
         })
     }
+    async changePassword(req, res, next){
+        res.render('changePasswordCustomer',{
+            layout: 'customer',
+        })
+    }
+
+    async changePassCusPro(req, res, next){
+        var cusId = req.signedCookies.cusId
+        var pass = sha512(req.body.newPassword)
+        var result = await customer.updateOne({id: cusId},{
+            password: pass
+        })
+        req.session.message = {
+            type: 'success',
+            intro: 'Chúc mừng bạn đã đổi mật khẩu thành công!',
+            message: ''
+        }
+        res.redirect('/customer')
+    }
+
+    async checkPassword(req,res,next){
+        var pass = sha512(req.query.pass)
+        var cusId = req.signedCookies.cusId
+        var result = await customer.findOne({id: cusId,password: pass})
+        if(result){
+            res.send("")
+        }
+        else{
+            res.send("no")
+        }
+    }
+
 }
 
 module.exports = new customerController();

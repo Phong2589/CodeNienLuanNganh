@@ -23,6 +23,10 @@ router.get('/awaitingConfirm',customerController.awaitingConfirm);
 router.get('/cancelOrder/:orderId',customerController.cancelOrder);
 router.get('/confirmed',customerController.confirmed);
 router.get('/history',customerController.history);
+router.get('/changePassword',customerController.changePassword);
+router.post('/changePassCusPro',customerController.changePassCusPro);
+router.get('/checkPassword',customerController.checkPassword);
+
 
 
 

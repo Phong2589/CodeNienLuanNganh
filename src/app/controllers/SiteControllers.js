@@ -16,18 +16,18 @@ class SiteController {
     async index(req, res, next) {
 
         var page = parseInt(req.query.page)
-        if(!page) page=1
+        if (!page) page = 1
         var perPage = 16
-        var start = (page-1)*perPage
-        var end = page*perPage
-        var products = await product.find({quantity: { $gte: 1 }})
+        var start = (page - 1) * perPage
+        var end = page * perPage
+        var products = await product.find({ quantity: { $gte: 1 } })
         var quantityPage = Math.ceil(products.length / perPage)
         var quantityPageArr = []
-        for(var i=0;i<quantityPage;i++){
-            quantityPageArr[i] = i+1
+        for (var i = 0; i < quantityPage; i++) {
+            quantityPageArr[i] = i + 1
         }
-        products = products.slice(start,end)
-    
+        products = products.slice(start, end)
+        
         res.render('home', {
             products: mutipleMongooseToObject(products),
             quantityPage: quantityPageArr
@@ -55,7 +55,7 @@ class SiteController {
         var user = req.body.userLogin
         var pass = sha512(req.body.passwordLogin)
         //customer
-        var data = await customer.findOne({ user: user ,password: pass})
+        var data = await customer.findOne({ user: user, password: pass })
         if (data != null) {
             req.session.message = {
                 type: 'success',
@@ -66,30 +66,60 @@ class SiteController {
                 signed: true,
                 maxAge: 1000 * 60 * 60 * 2
             })
-            var dataDb = await cart.findOne({cusId:  data.id})
-            if(dataDb == null){
+            var dataDb = await cart.findOne({ cusId: data.id })
+            if (dataDb == null) {
                 const cartNew = new cart()
                 cartNew.total = 0
                 cartNew.cusId = data.id
                 var cartup = await cartNew.save()
-                if(cartup){
+                if (cartup) {
                     res.redirect('/customer')
                 }
             }
-            else{
+            else {
                 res.redirect('/customer')
-            } 
-        }
-        else{
-            req.session.message = {
-                type: 'warning',
-                intro: 'Đăng nhập thất bại!',
-                message: 'Vui lòng đăng nhập lại!'
             }
-            res.redirect('back')
         }
-        
-            
+        else {
+            //admin
+            var data1 = await admin.findOne({ user: user, password: pass })
+            if (data1 != null) {
+                req.session.message = {
+                    type: 'success',
+                    intro: 'Chúc mừng bạn đăng nhập thành công!',
+                    message: ''
+                }
+                res.cookie('adminId', data1.id, {
+                    signed: true,
+                    maxAge: 1000 * 60 * 60 * 2
+                })
+                res.redirect('/admin')
+            }
+            else {
+                //staff
+                var data2 = await staff.findOne({ user: user, password: pass })
+                if (data2 != null) {
+                    req.session.message = {
+                        type: 'success',
+                        intro: 'Chúc mừng bạn đăng nhập thành công!',
+                        message: ''
+                    }
+                    res.cookie('staffId', data2.id, {
+                        signed: true,
+                        maxAge: 1000 * 60 * 60 * 2
+                    })
+                    res.redirect('/staff')
+                }
+                else {
+                    req.session.message = {
+                        type: 'warning',
+                        intro: 'Đăng nhập thất bại!',
+                        message: 'Vui lòng đăng nhập lại!'
+                    }
+                    res.redirect('back')
+                }
+            }
+        }
     }
 
     checkUserDatabase(req, res, next) {
@@ -147,16 +177,16 @@ class SiteController {
         })
     }
     async cart(req, res, next) {
-        
-        if(req.signedCookies.cusId){
+
+        if (req.signedCookies.cusId) {
             var cusId = req.signedCookies.cusId
             var cartElement = await cart.findOne({ cusId: cusId })
-            var findProfile = await profileCustomer.findOne({cusId:cusId})
-            var customerCurrent = await customer.findOne({id: cusId})
+            var findProfile = await profileCustomer.findOne({ cusId: cusId })
+            var customerCurrent = await customer.findOne({ id: cusId })
             res.locals.cus = customerCurrent._doc
 
             if (cartElement.total == 0) {
-                res.render('cart',{layout: 'customer',})
+                res.render('cart', { layout: 'customer', })
             }
             else {
                 res.render('cart', {
@@ -166,7 +196,7 @@ class SiteController {
                 })
             }
         }
-        else{
+        else {
             res.render('cart')
         }
     }
@@ -230,8 +260,8 @@ class SiteController {
             res.json(error)
         }
     }
-    
-    registerModal(req,res,next){
+
+    registerModal(req, res, next) {
         req.session.message = {
             show: 'show'
         }
@@ -243,26 +273,26 @@ class SiteController {
             res.json('no')
             return
         }
-        else{
+        else {
             res.json('')
-            return 
+            return
         }
     }
     async sortaz(req, res, next) {
         var page = parseInt(req.query.page)
-        if(!page) page=1
+        if (!page) page = 1
         var perPage = 16
-        var start = (page-1)*perPage
-        var end = page*perPage
+        var start = (page - 1) * perPage
+        var end = page * perPage
         var products = await product.find().sort({ "name": 1 })
         var quantityPage = Math.ceil(products.length / perPage)
         var quantityPageArr = []
-        for(var i=0;i<quantityPage;i++){
-            quantityPageArr[i] = i+1
+        for (var i = 0; i < quantityPage; i++) {
+            quantityPageArr[i] = i + 1
         }
-        products = products.slice(start,end)
+        products = products.slice(start, end)
 
-        
+
         res.render('homeCustomer', {
             products: mutipleMongooseToObject(products),
             quantityPage: quantityPageArr
@@ -270,18 +300,18 @@ class SiteController {
     }
     async sortza(req, res, next) {
         var page = parseInt(req.query.page)
-        if(!page) page=1
+        if (!page) page = 1
         var perPage = 16
-        var start = (page-1)*perPage
-        var end = page*perPage
+        var start = (page - 1) * perPage
+        var end = page * perPage
         var products = await product.find().sort({ "name": -1 })
         var quantityPage = Math.ceil(products.length / perPage)
         var quantityPageArr = []
-        for(var i=0;i<quantityPage;i++){
-            quantityPageArr[i] = i+1
+        for (var i = 0; i < quantityPage; i++) {
+            quantityPageArr[i] = i + 1
         }
-        products = products.slice(start,end)
-        
+        products = products.slice(start, end)
+
         res.render('homeCustomer', {
             products: mutipleMongooseToObject(products),
             quantityPage: quantityPageArr
@@ -289,19 +319,19 @@ class SiteController {
     }
     async sortCostDecrease(req, res, next) {
         var page = parseInt(req.query.page)
-        if(!page) page=1
+        if (!page) page = 1
         var perPage = 16
-        var start = (page-1)*perPage
-        var end = page*perPage
+        var start = (page - 1) * perPage
+        var end = page * perPage
         var products = await product.find().sort({ "cost": -1 })
         var quantityPage = Math.ceil(products.length / perPage)
         var quantityPageArr = []
-        for(var i=0;i<quantityPage;i++){
-            quantityPageArr[i] = i+1
+        for (var i = 0; i < quantityPage; i++) {
+            quantityPageArr[i] = i + 1
         }
-        products = products.slice(start,end)
+        products = products.slice(start, end)
 
-        
+
         res.render('homeCustomer', {
             products: mutipleMongooseToObject(products),
             quantityPage: quantityPageArr
@@ -309,40 +339,40 @@ class SiteController {
     }
     async sortCostIncrease(req, res, next) {
         var page = parseInt(req.query.page)
-        if(!page) page=1
+        if (!page) page = 1
         var perPage = 16
-        var start = (page-1)*perPage
-        var end = page*perPage
+        var start = (page - 1) * perPage
+        var end = page * perPage
         var products = await product.find().sort({ "cost": 1 })
         var quantityPage = Math.ceil(products.length / perPage)
         var quantityPageArr = []
-        for(var i=0;i<quantityPage;i++){
-            quantityPageArr[i] = i+1
+        for (var i = 0; i < quantityPage; i++) {
+            quantityPageArr[i] = i + 1
         }
-        products = products.slice(start,end)
+        products = products.slice(start, end)
 
         res.render('homeCustomer', {
             products: mutipleMongooseToObject(products),
             quantityPage: quantityPageArr
         })
     }
-          
+
     async search(req, res, next) {
 
         var page = parseInt(req.query.page)
-        if(!page) page=1
+        if (!page) page = 1
         var perPage = 16
-        var start = (page-1)*perPage
-        var end = page*perPage
+        var start = (page - 1) * perPage
+        var end = page * perPage
         var products = await product.find({ $text: { $search: req.query.search } })
         var quantityPage = Math.ceil(products.length / perPage)
         var quantityPageArr = []
-        for(var i=0;i<quantityPage;i++){
-            quantityPageArr[i] = i+1
+        for (var i = 0; i < quantityPage; i++) {
+            quantityPageArr[i] = i + 1
         }
-        products = products.slice(start,end)
+        products = products.slice(start, end)
 
-        
+
         if (products) {
             res.render('searchCustomer', {
                 products: mutipleMongooseToObject(products),
