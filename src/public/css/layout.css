@@ -183,10 +183,14 @@ body{
     position: relative;
     display: block;
     padding: .5rem .75rem;
-    margin-left: -1px;
     line-height: 1.25;
     text-decoration: none !important;
     color: black;
+}
+.page:hover{
+    color: rgb(224, 188, 24) !important;
+    background-color: white;
+    border-radius: 5px;
 }
 
 .pageNew{
@@ -195,9 +199,16 @@ body{
     position: relative;
     display: block;
     padding: .5rem .75rem;
-    margin-left: -1px;
     line-height: 1.25;
     text-decoration: none !important;
-    color: pink !important;
+    color: rgb(224, 188, 24) !important;
     background-color: white;
+    border-radius: 5px;
 }
+.isDisabled {
+    color: currentColor;
+    cursor: not-allowed;
+    opacity: 0.5;
+    text-decoration: none;
+    pointer-events: none;
+  }

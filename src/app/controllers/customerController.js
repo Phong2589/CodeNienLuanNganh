@@ -16,11 +16,11 @@ class customerController {
     async customer(req, res, next) {
         var page = parseInt(req.query.page)
         if(!page) page=1
-        var perPage = 8
+        var perPage = 16
         var start = (page-1)*perPage
         var end = page*perPage
         var products = await product.find({ quantity: { $gte: 1 } })
-        var quantityPage = Math.round(products.length / perPage)
+        var quantityPage = Math.ceil(products.length / perPage)
         var quantityPageArr = []
         for(var i=0;i<quantityPage;i++){
             quantityPageArr[i] = i+1
@@ -242,43 +242,112 @@ class customerController {
         res.redirect('/customer')
     }
     async sortaz(req, res, next) {
+        var page = parseInt(req.query.page)
+        if(!page) page=1
+        var perPage = 16
+        var start = (page-1)*perPage
+        var end = page*perPage
         var products = await product.find().sort({ "name": 1 })
+        var quantityPage = Math.ceil(products.length / perPage)
+        var quantityPageArr = []
+        for(var i=0;i<quantityPage;i++){
+            quantityPageArr[i] = i+1
+        }
+        products = products.slice(start,end)
+
+        
         res.render('homeCustomer', {
             layout: 'customer',
             products: mutipleMongooseToObject(products),
+            quantityPage: quantityPageArr
         })
     }
     async sortza(req, res, next) {
+        var page = parseInt(req.query.page)
+        if(!page) page=1
+        var perPage = 16
+        var start = (page-1)*perPage
+        var end = page*perPage
         var products = await product.find().sort({ "name": -1 })
+        var quantityPage = Math.ceil(products.length / perPage)
+        var quantityPageArr = []
+        for(var i=0;i<quantityPage;i++){
+            quantityPageArr[i] = i+1
+        }
+        products = products.slice(start,end)
+        
         res.render('homeCustomer', {
             layout: 'customer',
             products: mutipleMongooseToObject(products),
+            quantityPage: quantityPageArr
         })
     }
     async sortCostDecrease(req, res, next) {
+        var page = parseInt(req.query.page)
+        if(!page) page=1
+        var perPage = 16
+        var start = (page-1)*perPage
+        var end = page*perPage
         var products = await product.find().sort({ "cost": -1 })
+        var quantityPage = Math.ceil(products.length / perPage)
+        var quantityPageArr = []
+        for(var i=0;i<quantityPage;i++){
+            quantityPageArr[i] = i+1
+        }
+        products = products.slice(start,end)
+
+        
         res.render('homeCustomer', {
             layout: 'customer',
             products: mutipleMongooseToObject(products),
+            quantityPage: quantityPageArr
         })
     }
     async sortCostIncrease(req, res, next) {
+        var page = parseInt(req.query.page)
+        if(!page) page=1
+        var perPage = 16
+        var start = (page-1)*perPage
+        var end = page*perPage
         var products = await product.find().sort({ "cost": 1 })
+        var quantityPage = Math.ceil(products.length / perPage)
+        var quantityPageArr = []
+        for(var i=0;i<quantityPage;i++){
+            quantityPageArr[i] = i+1
+        }
+        products = products.slice(start,end)
+
         res.render('homeCustomer', {
             layout: 'customer',
             products: mutipleMongooseToObject(products),
+            quantityPage: quantityPageArr
         })
     }
     async search(req, res, next) {
+
+        var page = parseInt(req.query.page)
+        if(!page) page=1
+        var perPage = 16
+        var start = (page-1)*perPage
+        var end = page*perPage
         var products = await product.find({ $text: { $search: req.query.search } })
+        var quantityPage = Math.ceil(products.length / perPage)
+        var quantityPageArr = []
+        for(var i=0;i<quantityPage;i++){
+            quantityPageArr[i] = i+1
+        }
+        products = products.slice(start,end)
+
+        
         if (products) {
-            res.render('homeCustomer', {
+            res.render('searchCustomer', {
                 layout: 'customer',
                 products: mutipleMongooseToObject(products),
+                quantityPage: quantityPageArr
             })
         }
         else {
-            res.render('homeCustomer', {
+            res.render('searchCustomer', {
                 layout: 'customer',
             })
         }
