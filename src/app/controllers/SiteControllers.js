@@ -144,7 +144,7 @@ class SiteController {
     }
     detailProduct(req, res, next) {
         product.findOne({ slug: req.params.slug }, function (err, data) {
-            product.aggregate([{ $sample: { size: 10 } }])
+            product.aggregate([{ $sample: { size: 8} }])
                 .then((products) => {
 
                     if (!req.signedCookies.cusId) {

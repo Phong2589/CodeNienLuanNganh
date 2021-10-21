@@ -13,6 +13,12 @@ router.get('/logout', adminController.logout);
 router.get('/changePassword',adminController.changePassword);
 router.post('/changePassAdPro',adminController.changePassAdPro);
 router.get('/checkPassword',adminController.checkPassword);
+router.get('/sortaz',adminController.sortaz);
+router.get('/sortza',adminController.sortza);
+router.get('/sortCostIncrease',adminController.sortCostIncrease);
+router.get('/sortCostDecrease',adminController.sortCostDecrease);
+router.get('/search',adminController.search);
+router.get('/detailProduct/:slug',adminController.detailProduct);
 
 
 router.get('/', adminController.home);

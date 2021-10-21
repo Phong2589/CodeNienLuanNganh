@@ -15,7 +15,7 @@
         <div class="collapse navbar-collapse" id="navbarText">
             <ul class="navbar-nav mr-auto contentMdHidden">
                 <li class="nav-item">
-                    <a class="navbar-brand" href="/">Trang chủ</a>
+                    <a class="navbar-brand" href="/admin">PQ Shop</a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -61,11 +61,11 @@
                     Sắp xếp
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="#">Từ a-z</a>
-                    <a class="dropdown-item" href="#">Từ z-a</a>
+                    <a class="dropdown-item" href="/admin/sortaz">Từ a-z</a>
+                    <a class="dropdown-item" href="/admin/sortza">Từ z-a</a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#">Giá giảm dần</a>
-                    <a class="dropdown-item" href="#">Giá tăng dần</a>
+                    <a class="dropdown-item" href="/admin/sortCostDecrease">Giá giảm dần</a>
+                    <a class="dropdown-item" href="/admin/sortCostIncrease">Giá tăng dần</a>
                     </div>
                 </li>
             </ul>
@@ -87,12 +87,14 @@
         <div class="d-flex justify-content-between collapse navbar-collapse">
 
             <div class="d-flex justify-content-start">
-                <img src="/img/logo.png" alt="Lỗi không thể tải ảnh" id="iconPQShop" class="d-none d-md-block w-xl-25 w-lg-25 w-md-25">&nbsp;
+                <a href="/admin">
+                    <img src="/img/logo.png" alt="Lỗi không thể tải ảnh" id="iconPQShop" class="d-none d-md-block w-xl-25 w-lg-25 w-md-25">
+                </a>&nbsp;
             </div>
 
             <div class="d-flex">
-                <form class="form-inline my-2 my-lg-0">
-                    <input class="form-control mr-sm-2" type="search" placeholder="Tìm kiếm" aria-label="Search">
+                <form class="form-inline my-2 my-lg-0" method="get" action="/admin/search">
+                    <input class="form-control mr-sm-2" type="search" placeholder="Tìm kiếm" aria-label="Search" name="search">
                     <button class="btn btn-outline-success my-2 my-sm-0" type="submit"><i class="fas fa-search"></i></button>
                 </form>&nbsp;
             </div>

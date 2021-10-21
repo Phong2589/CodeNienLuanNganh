@@ -5,7 +5,7 @@
         {{#each products}}
         <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-12 linkItemProduct">
             <div class="itemProduct">
-                <a href="/admin/detailProduct/{{this.slug}}"><img class="w-100 imageProduct" src="{{this.image}}" alt="Lỗi không thể tải ảnh"></a>
+                <a href="/{{this.slug}}"><img class="w-100 imageProduct" src="{{this.image}}" alt="Lỗi không thể tải ảnh"></a>
                 <div class="textProduct">
                     <h5 class="nameProduct">{{this.name}}</h5>
                     <div class="d-flex justify-content-between">
@@ -26,7 +26,7 @@
         </li>
 
         {{#each quantityPage}}
-        <li class="page-item"><a class="page pageCustomer" href="?page={{this}}">{{this}}</a></li>
+        <li class="page-item"><a class="page pageCustomer" href="">{{this}}</a></li>
         {{/each}}
 
         <li class="page-item">
@@ -46,12 +46,15 @@
     }
 
     var pathName = window.location.href;    
-    var currenPage = pathName.split('=')[1];
+    var currenPage = pathName.split('=')[2];
     var pageCustomer = document.getElementsByClassName("pageCustomer");
     var count=0
     var incre = document.getElementById('increasePage');
     var decre = document.getElementById('decreasePage');
+    var currenPath = pathName.split('&')[0];
     for (x = 0; x < pageCustomer.length; x++) {
+
+        pageCustomer[x].href = currenPath+'&page='+(x+1);
         var page = pageCustomer[x].innerText;
         if(currenPage == page){
             pageCustomer[x].classList.remove("page");
@@ -65,7 +68,7 @@
         incre.classList.add("isDisabled");
         decre.classList.add("isDisabled");
     }
-    if(pathName.indexOf("?") == -1){
+    if(pathName.indexOf("&") == -1){
         incre.classList.remove("isDisabled");
         currenPage=1;
     }
@@ -77,16 +80,10 @@
     }
 
     function decreasePage(){
-        var currenPath = pathName.split('?')[0];
-        decre.href = currenPath +'?page='+(parseInt(currenPage)-1);
+        decre.href = currenPath +'&page='+(parseInt(currenPage)-1);
     }
 
     function increasePage(){
-        var currenPath = pathName.split('?')[0];
-        incre.href = currenPath +'?page='+(parseInt(currenPage)+1);
-    }
-
-    function btnUpdate(slug){
-        window.location.replace("/admin/detailProduct/"+slug);
+        incre.href = currenPath +'&page='+(parseInt(currenPage)+1);
     }
 </script>
