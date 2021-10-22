@@ -15,7 +15,6 @@ router.get('/deleteProduct/:slug', adminController.deleteProduct);
 router.get('/productDeleted', adminController.productDeleted);
 router.get('/restoreproduct/:slug', adminController.restoreproduct);
 router.get('/destroy/:slug', adminController.destroy);
-
 router.get('/logout', adminController.logout);
 router.get('/changePassword',adminController.changePassword);
 router.post('/changePassAdPro',adminController.changePassAdPro);
@@ -26,6 +25,11 @@ router.get('/sortCostIncrease',adminController.sortCostIncrease);
 router.get('/sortCostDecrease',adminController.sortCostDecrease);
 router.get('/search',adminController.search);
 router.get('/detailProduct/:slug',adminController.detailProduct);
+router.get('/addStaff', adminController.addStaff);
+router.post('/addStaffProcess', adminController.addStaffProcess);
+router.get('/listStaff', adminController.listStaff);
+
+
 
 
 router.get('/', adminController.home);

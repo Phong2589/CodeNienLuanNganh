@@ -6,6 +6,8 @@ const order = require('../models/order')
 const historyOrder = require('../models/historyOrder')
 const { MongooseToObject } = require('../../util/mongoose')
 const admin = require('../models/admin')
+const staff = require('../models/staff')
+const infoStaff = require('../models/infoStaff')
 
 const { mutipleMongooseToObject } = require('../../util/mongoose')
 
@@ -284,9 +286,9 @@ class adminController {
         var products = await product.find({ $text: { $search: req.query.search } })
         var quantityPage = Math.ceil(products.length / perPage)
         var quantityPageArr = []
-        for(var i = 0; i<quantityPage; i++) {
-                quantityPageArr[i] = i + 1
-            }
+        for (var i = 0; i < quantityPage; i++) {
+            quantityPageArr[i] = i + 1
+        }
         products = products.slice(start, end)
 
 
@@ -314,6 +316,40 @@ class adminController {
             products: productRelated,
         })
     }
+
+    async addStaff(req, res, next) {
+        res.render('addStaff', {
+            layout: 'admin',
+        })
+    }
+
+    async addStaffProcess(req, res, next) {
+
+        var result = await staff.create({
+            user: req.body.user,
+            password: sha512(req.body.password)
+        })
+        var result2 = await infoStaff.create({
+            user: req.body.user,
+            name: req.body.name,
+            gender: req.body.gender,
+            phone: req.body.phone,
+            address: req.body.address,
+        })
+
+        req.session.message = {
+            type: 'success',
+            intro: 'Nhân viên đã được thêm vào!',
+            message: ''
+        }
+        res.redirect('/admin/listStaff')
+    }
+    async listStaff(req,res,next){
+        var result = await infoStaff.find({})
+        res.json(result)
+    }
+
+
 }
 
 module.exports = new adminController();

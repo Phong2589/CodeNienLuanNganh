@@ -173,11 +173,10 @@ class customerController {
         var cusId = req.signedCookies.cusId
         var findProfile = await profileCustomer.findOne({ cusId: cusId })
         if (findProfile) {
-            var resultOld = await profileCustomer.updateOne({ usId: cusId }, {
+            var resultOld = await profileCustomer.updateOne({ cusId: cusId }, {
                 name: req.body.name,
                 phone: req.body.phone,
                 address: req.body.address,
-                note: req.body.note
             })
         }
         else {

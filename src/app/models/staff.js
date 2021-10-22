@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const staff = new Schema({
-    user: { type: String},
+    user: { type: String, unique: true},
     password: { type: String},
   },{
     timestamps: true,
