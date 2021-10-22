@@ -1,0 +1,90 @@
+{{#if product}}
+
+<form action="/admin/updateProductDB/{{product.slug}}" method="post" onsubmit="return check()" class="mt-3" enctype="multipart/form-data">
+    <div class="form-group">
+
+        <div class="d-xl-flex d-lg-flex d-md-flex">
+            <div class="w-xl-50 w-lg-50 w-md-50 w-sm-100 w-xs-100 mr-4">
+                <input type="text" class="form-control" id="name" name="name" placeholder="Tên sản phẩm" value="{{product.name}}">
+                <p class="warning" id="warningName"></p>
+            </div>
+            <div class="w-xl-50 w-lg-50 w-md-50 w-sm-100 w-xs-100">
+                <input type="text" class="form-control" id="cost" name="cost" placeholder="Giá sản phẩm (VNĐ)" value="{{product.cost}}">
+                <p class="warning" id="warningCost"></p>
+            </div>
+        </div>
+
+        <div class="d-xl-flex d-lg-flex d-md-flex">
+            <div class="w-xl-50 w-lg-50 w-md-50 w-sm-100 w-xs-100 mr-4">
+                <input type="file" class="form-control" id="image" name="image" placeholder="Ảnh sản phẩm">
+                <p class="warning" id="warningImage"></p>
+            </div>
+            <div class="w-xl-50 w-lg-50 w-md-50 w-sm-100 w-xs-100">
+                <input type="text" class="form-control" id="quantity" name="quantity" placeholder="Số lượng sản phẩm" value="{{product.quantity}}">
+                <p class="warning" id="warningQuantity"></p>
+            </div>
+        </div>
+        
+        <div class="">
+            <textarea rows="5" type="text" class="form-control" id="description" name="description" placeholder="Chi tiết sản phẩm">{{product.description}}</textarea>
+            <p class="warning" id="warningDescription"></p>
+        </div>
+        <hr>
+        <div class="endFormRegister">
+            <button type="reset button" class="btn btn-secondary">Làm lại</button>&nbsp;
+            <button type="submit button" class="btn btn-primary">Cập nhật</button>   
+        </div>
+    </div>
+</form>
+
+{{else}}
+<h3 class="mt-3 mb-3" style="text-align: center; color:rgb(194, 174, 230);">Không tìm thấy sản phẩm!</h3>
+{{/if}}
+
+<script>
+    function check(){
+        var checked=true;
+        //check name product
+        
+        var nameCheck = document.getElementById('name').value;
+        if(nameCheck == "") {
+                document.getElementById("warningName").innerHTML="Vui lòng nhập vào tên sản phẩm!";
+                checked = false;
+            }
+        else    document.getElementById("warningName").innerHTML="";
+
+        //check cost
+        var cost_reg=/^[1-9][0-9]{3,15}$/;
+        var costCheck = document.getElementById('cost').value;
+        if(costCheck == "") {
+            document.getElementById("warningCost").innerHTML="Vui lòng nhập vào giá sản phẩm!";
+            checked=false;
+        }
+        else  if(cost_reg.test(costCheck))  document.getElementById("warningCost").innerHTML="";
+                else  {
+                    document.getElementById("warningCost").innerHTML="Giá sản phẩm không đúng định dạng!";
+                    checked = false;
+                }    
+        //check quantity
+        var quantity_reg=/^[1-9][0-9]{0,15}$/;
+        var quantityCheck = document.getElementById('quantity').value;
+        if(quantityCheck == "") {
+            document.getElementById("warningQuantity").innerHTML="Vui lòng nhập vào số lượng sản phẩm!";
+            checked=false;
+        }
+        else  if(quantity_reg.test(quantityCheck))  document.getElementById("warningQuantity").innerHTML="";
+                else  {
+                    document.getElementById("warningQuantity").innerHTML="Số lượng sản phẩm không đúng định dạng!";
+                    checked = false;
+                }    
+        //check description
+        var descriptionCheck = document.getElementById('description').value;
+        if(descriptionCheck == "") {
+                document.getElementById("warningDescription").innerHTML="Vui lòng nhập vào mô tả sản phẩm!";
+                checked = false;
+            }
+        else    document.getElementById("warningDescription").innerHTML="";
+        return checked;
+    }
+   
+</script>

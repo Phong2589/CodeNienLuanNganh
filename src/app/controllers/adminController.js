@@ -34,14 +34,128 @@ class adminController {
     addProduct(req, res, next) {
         res.render('addProduct', { layout: 'admin' });
     }
-    addProductDB(req, res, next) {
-        req.body.image = req.file.path.split('\\').slice(2).join('/');
-        const productNew = new product(req.body);
-        productNew.save()
-            .then(() => {
-                res.send('thanh cong')
+    async addProductDB(req, res, next) {
+        req.body.image = req.file.path.split('\\').slice(2).join('/')
+        req.body.image = "/" + req.body.image
+        const productNew = new product(req.body)
+        var result = await productNew.save()
+        if (result) {
+            req.session.message = {
+                type: 'success',
+                intro: 'Thêm sản phẩm thành công!',
+                message: ''
+            }
+            res.redirect('/admin')
+        }
+        else {
+            req.session.message = {
+                type: 'warning',
+                intro: 'Thêm sản phẩm thất bại!',
+                message: ''
+            }
+            res.redirect('/admin')
+        }
+    }
+    async updateProduct(req, res, next) {
+        var slug = req.params.slug
+        var productFind = await product.findOne({ slug: slug })
+        res.render('updateProduct', {
+            layout: 'admin',
+            product: MongooseToObject(productFind),
+        });
+    }
+    async updateProductDB(req, res, next) {
+        var slug = await req.params.slug
+        var result
+        if (req.file) {
+            req.body.image = req.file.path.split('\\').slice(2).join('/')
+            req.body.image = "/" + req.body.image
+            result = await product.updateOne({ slug: slug }, {
+                name: req.body.name,
+                cost: req.body.cost,
+                quantity: req.body.quantity,
+                description: req.body.description,
+                image: req.body.image
             })
-            .catch(next);
+        }
+        else {
+            result = await product.updateOne({ slug: slug }, {
+                name: req.body.name,
+                cost: req.body.cost,
+                quantity: req.body.quantity,
+                description: req.body.description,
+            })
+        }
+
+        if (result) {
+            req.session.message = {
+                type: 'success',
+                intro: 'Cập nhật sản phẩm thành công!',
+                message: ''
+            }
+            res.redirect('/admin')
+        }
+        else {
+            req.session.message = {
+                type: 'warning',
+                intro: 'Cập nhật sản phẩm thất bại!',
+                message: ''
+            }
+            res.redirect('/admin')
+        }
+    }
+    async deleteProduct(req, res, next) {
+        var slug = await req.params.slug
+
+        var result = await product.delete({ slug: slug })
+        if (result) {
+            req.session.message = {
+                type: 'success',
+                intro: 'Sản phẩm đã được xóa!',
+                message: ''
+            }
+            res.redirect('/admin')
+        }
+        else {
+            req.session.message = {
+                type: 'warning',
+                intro: 'Xóa sản phẩm thất bại!',
+                message: ''
+            }
+            res.redirect('/admin')
+        }
+    }
+    async productDeleted(req, res, next) {
+        var products = await product.findDeleted({})
+        res.render('productDeleted', {
+            layout: 'admin',
+            products: mutipleMongooseToObject(products)
+        })
+    }
+    async restoreproduct(req, res, next) {
+        var slug = await req.params.slug
+        var result = await product.restore({ slug: slug })
+        if (result) {
+            res.redirect('/admin/updateProduct/' + slug)
+        }
+        else {
+            res.json('Lỗi Không thể khôi phục')
+        }
+    }
+    async destroy(req, res, next) {
+        var slug = await req.params.slug
+        var result = await product.deleteOne({ slug: slug })
+        if (result) {
+            req.session.message = {
+                type: 'success',
+                intro: 'Sản phẩm đã được xóa!',
+                message: ''
+            }
+            res.redirect('back')
+        }
+        else {
+            res.json('Lỗi Không thể xóa vĩnh viễn')
+        }
     }
 
     logout(req, res, next) {
@@ -170,9 +284,9 @@ class adminController {
         var products = await product.find({ $text: { $search: req.query.search } })
         var quantityPage = Math.ceil(products.length / perPage)
         var quantityPageArr = []
-        for (var i = 0; i < quantityPage; i++) {
-            quantityPageArr[i] = i + 1
-        }
+        for(var i = 0; i<quantityPage; i++) {
+                quantityPageArr[i] = i + 1
+            }
         products = products.slice(start, end)
 
 
@@ -190,11 +304,11 @@ class adminController {
         }
     }
 
-    async detailProduct(req,res,next){
+    async detailProduct(req, res, next) {
         var slug = req.params.slug
-        var productFind = await product.findOne({slug:slug})
-        var productRelated = await product.aggregate([{ $sample: { size: 8} }])
-        res.render('detailProductAdmin',{
+        var productFind = await product.findOne({ slug: slug })
+        var productRelated = await product.aggregate([{ $sample: { size: 8 } }])
+        res.render('detailProductAdmin', {
             layout: 'admin',
             product: MongooseToObject(productFind),
             products: productRelated,

@@ -9,6 +9,13 @@ const adminController = require('../app/controllers/adminController');
 
 router.get('/addProduct', adminController.addProduct);
 router.post('/addProductDB', upload.single('image'), adminController.addProductDB);
+router.get('/updateProduct/:slug', adminController.updateProduct);
+router.post('/updateProductDB/:slug', upload.single('image'), adminController.updateProductDB);
+router.get('/deleteProduct/:slug', adminController.deleteProduct);
+router.get('/productDeleted', adminController.productDeleted);
+router.get('/restoreproduct/:slug', adminController.restoreproduct);
+router.get('/destroy/:slug', adminController.destroy);
+
 router.get('/logout', adminController.logout);
 router.get('/changePassword',adminController.changePassword);
 router.post('/changePassAdPro',adminController.changePassAdPro);

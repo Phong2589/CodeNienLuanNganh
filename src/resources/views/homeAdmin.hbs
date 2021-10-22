@@ -9,8 +9,8 @@
                 <div class="textProduct">
                     <h5 class="nameProduct">{{this.name}}</h5>
                     <div class="d-flex justify-content-between">
-                        <div><button type="button" class="btn btn-primary" onclick="btnUpdate('{{this.slug}}')" style="z-index: 1;">Cập nhật</button></div>
-                        <div><button type="button" class="btn btn-danger">Xóa</button></div>
+                        <div><button type="button" class="btn btn-primary" onclick="btnUpdate('{{this.slug}}')">Cập nhật</button></div>
+                        <div><button type="button" class="btn btn-danger" onclick="btnDelete('{{this.slug}}')">Xóa</button></div>
                     </div>
                 </div>
             </div>
@@ -87,6 +87,22 @@
     }
 
     function btnUpdate(slug){
-        window.location.replace("/admin/detailProduct/"+slug);
+        window.location.replace("/admin/updateProduct/"+slug);
+    }
+    function btnDelete(slug){
+        Swal.fire({
+            title: 'Bạn có chắc muốn xóa sản phẩm?',
+            text: "Hành động có thể tổn hại đến dữ liệu!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Tiếp tục',
+            cancelButtonText: 'Quay lại'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.replace("/admin/deleteProduct/"+slug);
+            }
+        })
     }
 </script>
