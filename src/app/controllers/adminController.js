@@ -4,12 +4,13 @@ const sha512 = require('js-sha512').sha512
 const customer = require('../models/customer')
 const order = require('../models/order')
 const historyOrder = require('../models/historyOrder')
-const { MongooseToObject } = require('../../util/mongoose')
 const admin = require('../models/admin')
 const staff = require('../models/staff')
 const infoStaff = require('../models/infoStaff')
 
 const { mutipleMongooseToObject } = require('../../util/mongoose')
+const { MongooseToObject } = require('../../util/mongoose')
+
 
 class adminController {
     async home(req, res, next) {
@@ -346,7 +347,38 @@ class adminController {
     }
     async listStaff(req,res,next){
         var result = await infoStaff.find({})
-        res.json(result)
+        res.render('listStaff',{
+            layout: 'admin',
+            staffs: mutipleMongooseToObject(result),
+        })
+    }
+    async updateStaff(req,res,next){
+        var user = await req.params.user
+        var staffFind = await infoStaff.findOne({user:user})
+        if(staffFind.gender == 'Nữ'){
+            res.setHeader('gender', 'nu')
+        }
+        else res.setHeader('gender', staffFind.gender)
+        res.render('updateStaff',{
+            layout: 'admin',
+            staff: MongooseToObject(staffFind),
+        })
+    }
+    async updateStaffProcess(req,res,next){
+        var user = await req.params.user
+        var result = await infoStaff.updateOne({user:user},{
+            name: req.body.name,
+            phone: req.body.phone,
+            gender: req.body.gender,
+            address: req.body.address,
+
+        })
+        req.session.message = {
+            type: 'success',
+            intro: 'Thông tin nhân viên đã được cập nhật!',
+            message: ''
+        }
+        res.redirect('/admin/listStaff')
     }
 
 

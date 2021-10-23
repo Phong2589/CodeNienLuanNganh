@@ -28,6 +28,10 @@ router.get('/detailProduct/:slug',adminController.detailProduct);
 router.get('/addStaff', adminController.addStaff);
 router.post('/addStaffProcess', adminController.addStaffProcess);
 router.get('/listStaff', adminController.listStaff);
+router.get('/updateStaff/:user', adminController.updateStaff);
+router.post('/updateStaffProcess/:user', adminController.updateStaffProcess);
+
+
 
 
 

@@ -1,0 +1,111 @@
+{{#if staff}}
+
+<div class="mt-3 mb-3">
+    <div class="mb-3" style="font-size: 25px; text-align: center;">Cập nhật thông tin nhân viên</div>
+    <form action="/admin/updateStaffProcess/{{staff.user}}" method="post" onsubmit="return check()">
+        <div class="row">
+            <div class="col-xl-6 col-lg-6 col-md-6 col-12"
+                style="padding-left: 15px !important; padding-bottom: 0px !important">
+                <input type="text" placeholder="Họ và tên" id="name" name="name"
+                    class="w-xl-98 w-lg-98 w-md-98 w-sm-98 w-xs-98" value="{{staff.name}}">
+                <p id="warningName" class="warning"></p>
+            </div>
+
+            <div class="input-group col-xl-6 col-lg-6 col-md-6 col-12"
+                style="padding-left: 15px !important; padding-right: 18px !important">
+                <div class="">
+                    <label class="input-group-text">Giới tính</label>
+                </div>
+                <select class="custom-select" name="gender" value="{{staff.gender}}">
+                    <option value="Nam" class="selectGender">Nam</option>
+                    <option value="Nữ" class="selectGender">Nữ</option>
+                    <option value="Khác" class="selectGender">Khác</option>
+                </select>
+            </div>
+            <div class="col-xl-6 col-lg-6 col-md-6 col-12"
+                style="padding-left: 15px !important; padding-bottom: 0px !important">
+                <input type="text" placeholder="Số điện thoại" name="phone"
+                    class="w-xl-98 w-lg-98 w-md-98 w-sm-98 w-xs-98" id="phone" value="{{staff.phone}}">
+                <p class="warning" id="warningPhone"></p>
+            </div>
+            <div class="col-xl-6 col-lg-6 col-md-6 col-12"
+                style="padding-left: 15px !important; padding-bottom: 0px !important">
+                <textarea name="address" rows="1" placeholder="Địa chỉ" class="w-xl-98 w-lg-98 w-md-98 w-sm-98 w-xs-98"
+                    id="address">{{staff.address}}</textarea>
+                <p id="warningAddress" class="warning"></p>
+            </div>
+        </div>
+
+
+
+        <div class="d-flex justify-content-center">
+            <div class="">
+                <button type="reset" class="btn btn-secondary">Làm lại</button>
+            </div>&nbsp;&nbsp;
+            <div class="">
+                <button class="btn btn-primary" type="submit">Cập nhật</button>
+
+            </div>
+        </div>
+    </form>
+</div>
+
+{{else}}
+<h3 class="mt-3 mb-3" style="text-align: center; color:rgb(194, 174, 230);">Không có nhân viên này!</h3>
+{{/if}}
+
+<script>
+
+    function check() {
+        var checked = true;
+        //check name
+        var nameCheck = document.getElementById('name').value;
+        if (nameCheck == "") {
+            document.getElementById("warningName").innerHTML = "Vui lòng nhập vào họ và tên!";
+            checked = false;
+        }
+        else document.getElementById("warningName").innerHTML = "";
+        //check phone
+        var phone_reg = /^[0-9]{6,11}$/;
+        var phoneCheck = document.getElementById('phone').value;
+        if (phoneCheck == "") {
+            document.getElementById("warningPhone").innerHTML = "Vui lòng nhập vào số điện thoại!";
+            checked = false;
+        }
+        else if (phone_reg.test(phoneCheck)) document.getElementById("warningPhone").innerHTML = "";
+        else {
+            document.getElementById("warningPhone").innerHTML = "Số điện thoại không hợp lệ!";
+            checked = false;
+        }
+        //check address
+        var addressCheck = document.getElementById('address').value;
+        if (addressCheck == "") {
+            document.getElementById("warningAddress").innerHTML = "Vui lòng nhập địa chỉ!";
+            checked = false;
+        }
+        else document.getElementById("warningAddress").innerHTML = "";
+        return checked;
+    }
+
+    var pathName = window.location.href;
+    var user = pathName.substring(pathName.lastIndexOf('/'), pathName.length);
+    var gender
+    var client = new XMLHttpRequest();
+    client.open("GET", "/admin/updateStaff" + user, true);
+    client.send();
+
+    client.onreadystatechange = function () {
+        if (this.readyState == this.HEADERS_RECEIVED) {
+            gender = client.getResponseHeader("gender");
+            if(gender == 'nu') gender='Nữ';
+            var selectGender = document.getElementsByClassName("selectGender");
+            for (x = 0; x < selectGender.length; x++) {
+                if (selectGender[x].value == gender) {
+                    selectGender[x].selected = true;
+                }
+            }
+        }
+    }
+
+
+</script>
