@@ -23,6 +23,7 @@
     "express-handlebars": "^5.3.3",
     "express-session": "^1.17.2",
     "js-sha512": "^0.8.0",
+    "moment": "^2.29.1",
     "mongoose": "^6.0.5",
     "mongoose-delete": "^0.5.4",
     "mongoose-slug-generator": "^1.0.4",

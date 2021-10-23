@@ -7,7 +7,7 @@ const historyOrder = require('../models/historyOrder')
 const admin = require('../models/admin')
 const staff = require('../models/staff')
 const infoStaff = require('../models/infoStaff')
-
+const moment = require('moment')
 const { mutipleMongooseToObject } = require('../../util/mongoose')
 const { MongooseToObject } = require('../../util/mongoose')
 
@@ -380,7 +380,124 @@ class adminController {
         }
         res.redirect('/admin/listStaff')
     }
+    async deleteStaff(req,res,next){
+        var user = await req.params.user
+        var result = await infoStaff.deleteOne({user:user})
+        var result2 = await staff.deleteOne({user:user})
+        if(result && result2){
+            req.session.message = {
+                type: 'success',
+                intro: 'Xóa nhân viên thành công!',
+                message: ''
+            }
+            res.redirect('/admin/listStaff')
+        }
+        else{
+            res.json('Lỗi không thể xóa nhân viên')
+        }
+    }
 
+    async awaitingConfirm(req, res, next) {
+        var orders = await order.find({ state: 0 })
+        res.render('awaitingConfirmAll', {
+            layout: 'admin',
+            orders: mutipleMongooseToObject(orders)
+        })
+    }
+    async confirmOrder(req,res,next){
+        var slug = await req.params.slug
+        var result = await order.updateOne({orderId:slug},{
+            state:1
+        })
+        if(result){
+            req.session.message = {
+                type: 'success',
+                intro: 'Đơn hàng '+slug +' đã được xác nhận!',
+                message: ''
+            }
+            res.redirect('/admin/awaitingConfirm')
+        }
+        else{
+            res.json('lỗi không thể xác nhận đơn hàng!')
+        }
+    }
+    async cancelOrder(req, res, next) {
+        try {
+            var orderId = req.params.slug
+            var orderDel = await order.findOne({ orderId: orderId })
+            const orderSave = new historyOrder()
+            orderSave.cusId = orderDel.cusId
+            orderSave.orderId = orderDel.orderId
+            orderSave.name = orderDel.name
+            orderSave.phone = orderDel.phone
+            orderSave.address = orderDel.address
+            orderSave.note = orderDel.note
+            orderSave.total = orderDel.total
+            orderSave.state = -1
+            orderSave.cart = orderDel.cart
+            var result = await orderSave.save()
+            var del = await order.deleteOne({orderId: orderId})
+            res.send('success')
+        }
+        catch (error) {
+            res.json(error)
+        }
+    }
+    async completeOrder(req, res, next) {
+        try {
+            var orderId = req.params.slug
+            var orderDel = await order.findOne({ orderId: orderId })
+            const orderSave = new historyOrder()
+            orderSave.cusId = orderDel.cusId
+            orderSave.orderId = orderDel.orderId
+            orderSave.name = orderDel.name
+            orderSave.phone = orderDel.phone
+            orderSave.address = orderDel.address
+            orderSave.note = orderDel.note
+            orderSave.total = orderDel.total
+            orderSave.state = 1
+            orderSave.cart = orderDel.cart
+            var result = await orderSave.save()
+            var del = await order.deleteOne({orderId: orderId})
+            res.send('success')
+        }
+        catch (error) {
+            res.json(error)
+        }
+    }
+    async confirmed(req, res, next){
+        var orders = await order.find({state: 1 })
+        res.render('confirmedAll', {
+            layout: 'admin',
+            orders: mutipleMongooseToObject(orders)
+        })
+    }
+
+    async history(req, res, next){
+        var orders = await historyOrder.find({}).limit(20)
+        res.render('historyOrderCus', {
+            layout: 'admin',
+            orders: mutipleMongooseToObject(orders)
+        })
+    }
+    async revenueDay(req,res,next){
+        const today = moment().startOf('day')
+        var orders = await historyOrder.find({
+            createdAt:{
+                $gte: today.toDate(),
+                $lte: moment(today).endOf('day').toDate()
+            },
+            state: 1
+            })
+        var total = 0
+        for(var i=0;i<orders.length;i++){
+            total = total + orders[i].total
+        }
+        res.render('revenueDay',{
+            layout: 'admin',
+            total: total
+        })
+    }
 
 }
 

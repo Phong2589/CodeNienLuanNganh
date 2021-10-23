@@ -30,8 +30,14 @@ router.post('/addStaffProcess', adminController.addStaffProcess);
 router.get('/listStaff', adminController.listStaff);
 router.get('/updateStaff/:user', adminController.updateStaff);
 router.post('/updateStaffProcess/:user', adminController.updateStaffProcess);
-
-
+router.get('/deleteStaff/:user', adminController.deleteStaff);
+router.get('/awaitingConfirm',adminController.awaitingConfirm);
+router.get('/confirmed',adminController.confirmed);
+router.get('/history',adminController.history);
+router.get('/confirmOrder/:slug',adminController.confirmOrder);
+router.get('/cancelOrder/:slug',adminController.cancelOrder);
+router.get('/completeOrder/:slug',adminController.completeOrder);
+router.get('/revenueDay',adminController.revenueDay);
 
 
 

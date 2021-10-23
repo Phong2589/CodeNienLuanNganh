@@ -397,7 +397,7 @@ class customerController {
 
     async history(req, res, next){
         var cusId = req.signedCookies.cusId
-        var orders = await historyOrder.find({ cusId: cusId})
+        var orders = await historyOrder.find({ cusId: cusId}).limit(10)
         res.render('historyOrderCus', {
             layout: 'customer',
             orders: mutipleMongooseToObject(orders)

@@ -4,9 +4,8 @@
         <tr>
             <th scope="col" class="d-none d-sm-block">STT</th>
             <th scope="col">Họ và tên</th>
-            <th scope="col" class="d-none d-sm-block">Tên đăng nhập</th>
             <th scope="col" class="d-none d-sm-block">Giới tính</th>
-            <th scope="col" class="d-none d-sm-block">Số điện thoại</th>
+            <th scope="col" class="">Số điện thoại</th>
             <th scope="col" class="d-none d-sm-block">Địa chỉ</th>
             <th scope="col">Cập nhật</th>
             <th scope="col">Xóa</th>
@@ -17,9 +16,8 @@
         <tr>
             <th scope="row" class="d-none d-sm-block">{{sum @index 1}}</th>
             <td>{{this.name}}</td>
-            <td class="d-none d-sm-block">{{this.user}}</td>
             <td class="d-none d-sm-block">{{this.gender}}</td>
-            <td class="d-none d-sm-block">{{this.phone}}</td>
+            <td class="">{{this.phone}}</td>
             <td class="d-none d-sm-block">{{this.address}}</td>
             <td>
                 <a href="/admin/updateStaff/{{this.user}}"><button class="btn btn-primary">Cập nhật</button></a>
@@ -35,7 +33,7 @@
 
 <script>
 
-    function destroy(slug) {
+    function destroy(user) {
         Swal.fire({
             title: 'Bạm có chắc muốn xóa nhân viên này?',
             text: "Bạn không thể khôi phục nhân viên này nếu tiếp tục!",
@@ -47,7 +45,7 @@
             cancelButtonText: 'Quay lại'
         }).then((result) => {
             if (result.isConfirmed) {
-                alert('ah');
+                window.location = "/admin/deleteStaff/" + user;
             }
         })
     }
