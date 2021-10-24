@@ -345,28 +345,28 @@ class adminController {
         }
         res.redirect('/admin/listStaff')
     }
-    async listStaff(req,res,next){
+    async listStaff(req, res, next) {
         var result = await infoStaff.find({})
-        res.render('listStaff',{
+        res.render('listStaff', {
             layout: 'admin',
             staffs: mutipleMongooseToObject(result),
         })
     }
-    async updateStaff(req,res,next){
+    async updateStaff(req, res, next) {
         var user = await req.params.user
-        var staffFind = await infoStaff.findOne({user:user})
-        if(staffFind.gender == 'Nữ'){
+        var staffFind = await infoStaff.findOne({ user: user })
+        if (staffFind.gender == 'Nữ') {
             res.setHeader('gender', 'nu')
         }
         else res.setHeader('gender', staffFind.gender)
-        res.render('updateStaff',{
+        res.render('updateStaff', {
             layout: 'admin',
             staff: MongooseToObject(staffFind),
         })
     }
-    async updateStaffProcess(req,res,next){
+    async updateStaffProcess(req, res, next) {
         var user = await req.params.user
-        var result = await infoStaff.updateOne({user:user},{
+        var result = await infoStaff.updateOne({ user: user }, {
             name: req.body.name,
             phone: req.body.phone,
             gender: req.body.gender,
@@ -380,11 +380,11 @@ class adminController {
         }
         res.redirect('/admin/listStaff')
     }
-    async deleteStaff(req,res,next){
+    async deleteStaff(req, res, next) {
         var user = await req.params.user
-        var result = await infoStaff.deleteOne({user:user})
-        var result2 = await staff.deleteOne({user:user})
-        if(result && result2){
+        var result = await infoStaff.deleteOne({ user: user })
+        var result2 = await staff.deleteOne({ user: user })
+        if (result && result2) {
             req.session.message = {
                 type: 'success',
                 intro: 'Xóa nhân viên thành công!',
@@ -392,7 +392,7 @@ class adminController {
             }
             res.redirect('/admin/listStaff')
         }
-        else{
+        else {
             res.json('Lỗi không thể xóa nhân viên')
         }
     }
@@ -404,20 +404,20 @@ class adminController {
             orders: mutipleMongooseToObject(orders)
         })
     }
-    async confirmOrder(req,res,next){
+    async confirmOrder(req, res, next) {
         var slug = await req.params.slug
-        var result = await order.updateOne({orderId:slug},{
-            state:1
+        var result = await order.updateOne({ orderId: slug }, {
+            state: 1
         })
-        if(result){
+        if (result) {
             req.session.message = {
                 type: 'success',
-                intro: 'Đơn hàng '+slug +' đã được xác nhận!',
+                intro: 'Đơn hàng ' + slug + ' đã được xác nhận!',
                 message: ''
             }
             res.redirect('/admin/awaitingConfirm')
         }
-        else{
+        else {
             res.json('lỗi không thể xác nhận đơn hàng!')
         }
     }
@@ -436,7 +436,7 @@ class adminController {
             orderSave.state = -1
             orderSave.cart = orderDel.cart
             var result = await orderSave.save()
-            var del = await order.deleteOne({orderId: orderId})
+            var del = await order.deleteOne({ orderId: orderId })
             res.send('success')
         }
         catch (error) {
@@ -458,46 +458,133 @@ class adminController {
             orderSave.state = 1
             orderSave.cart = orderDel.cart
             var result = await orderSave.save()
-            var del = await order.deleteOne({orderId: orderId})
+            var del = await order.deleteOne({ orderId: orderId })
             res.send('success')
         }
         catch (error) {
             res.json(error)
         }
     }
-    async confirmed(req, res, next){
-        var orders = await order.find({state: 1 })
+    async confirmed(req, res, next) {
+        var orders = await order.find({ state: 1 })
         res.render('confirmedAll', {
             layout: 'admin',
             orders: mutipleMongooseToObject(orders)
         })
     }
 
-    async history(req, res, next){
+    async history(req, res, next) {
         var orders = await historyOrder.find({}).limit(20)
         res.render('historyOrderCus', {
             layout: 'admin',
             orders: mutipleMongooseToObject(orders)
         })
     }
-    async revenueDay(req,res,next){
+    async revenueDay(req, res, next) {
         const today = moment().startOf('day')
         var orders = await historyOrder.find({
-            createdAt:{
+            createdAt: {
                 $gte: today.toDate(),
                 $lte: moment(today).endOf('day').toDate()
             },
             state: 1
-            })
+        })
         var total = 0
-        for(var i=0;i<orders.length;i++){
+        for (var i = 0; i < orders.length; i++) {
             total = total + orders[i].total
         }
-        res.render('revenueDay',{
+
+        var date = new Date()
+        var day = date.getDay()
+        var strDay = ''
+        if (day == 0) {
+            strDay = "Chủ nhật";
+        } else {
+            for (var i = 1; i <= 6; i++) {
+                if (day == i) {
+                    strDay = "Thứ " + (i + 1);
+                }
+            }
+        }
+        var month = date.getMonth() + 1
+        var year = date.getFullYear()
+        var numberDay = date.getDate()
+        res.render('revenueDay', {
             layout: 'admin',
-            total: total
+            total: total,
+            day: strDay,
+            month: month,
+            year: year,
+            numberDay: numberDay
         })
     }
+
+    async revenueMonth(req, res, next) {
+        var month = moment().startOf('month')
+        var date = new Date()
+        var numberDay = date.getDate()
+        var year = date.getFullYear()
+
+        var monthDate
+        monthDate = req.query.month
+        if (!monthDate) {
+            monthDate = date.getMonth() + 1
+        }
+        if (!parseInt(monthDate) || monthDate < 1 || monthDate>12) {
+            res.json('Tháng nhập vào không đúng!')
+        }
+        else {
+            var currentDate = moment(year + '-'+(monthDate));
+
+            // var futureMonth = moment(currentDate).subtract(1, 'M');
+            // res.json(currentDate)
+            var orders = await historyOrder.find({
+                createdAt: {
+                    $gte: currentDate.toDate(),
+                    $lte: moment(currentDate).endOf('month').toDate()
+                },
+                state: 1
+            })
+            var total = 0
+            for (var i = 0; i < orders.length; i++) {
+                total = total + orders[i].total
+            }
+            res.render('revenueMonth', {
+                layout: 'admin',
+                total: total,
+                month: monthDate,
+                year: year
+            })
+        }
+        }
+    async statistics(req,res,next){
+        var date = new Date()
+        var year = date.getFullYear()
+        var arr = []
+        for(var i=1;i<=12;i++){
+            var currentDate = moment(year + '-'+i)
+            var orders = await historyOrder.find({
+                createdAt: {
+                    $gte: currentDate.toDate(),
+                    $lte: moment(currentDate).endOf('month').toDate()
+                },
+                state: 1
+            })
+            var total = 0
+            for (var j = 0; j < orders.length; j++) {
+                total = total + orders[j].total
+            }
+            arr[i-1] = total
+        }
+
+        res.setHeader('total', arr)
+        res.render('statistics',{
+            layout: 'admin',
+        })
+    }
+
+
+
 
 }
 

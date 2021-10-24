@@ -38,6 +38,11 @@ router.get('/confirmOrder/:slug',adminController.confirmOrder);
 router.get('/cancelOrder/:slug',adminController.cancelOrder);
 router.get('/completeOrder/:slug',adminController.completeOrder);
 router.get('/revenueDay',adminController.revenueDay);
+router.get('/revenueMonth',adminController.revenueMonth);
+router.get('/statistics',adminController.statistics);
+
+
+
 
 
 

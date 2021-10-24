@@ -1,0 +1,53 @@
+{{#if total}}
+    <div class="mt-3 mb-3">
+        <h3 style="text-align: center; color:rgb(194, 174, 230);">Doanh thu tháng: <span class="number">{{total}}</span></h3>
+        <h5 style="text-align: center;">Tháng {{month}} năm {{year}}</h5>
+        <div class="text-center">
+            <button class="btn btn-info" onclick="decreateMonth({{month}})">&laquo;</button>
+            &nbsp;<span>{{month}}</span>&nbsp;
+            <button class="btn btn-info" onclick="increateMonth({{month}})">&raquo;</button>
+        </div>
+    </div>
+{{else}}
+    <div class="mt-3 mb-3">
+        <h3 style="text-align: center; color:rgb(194, 174, 230);">Doanh thu tháng: <span class="number">0</span></h3>
+        <h5 style="text-align: center;">Tháng {{month}} năm {{year}}</h5>
+        <div class="text-center">
+            <button class="btn btn-info" onclick="decreateMonth({{month}})">&laquo;</button>
+            &nbsp;<span>{{month}}</span>&nbsp;
+            <button class="btn btn-info" onclick="increateMonth({{month}})">&raquo;</button>
+        </div>
+    </div>
+{{/if}}
+
+
+<script>
+
+    function decreateMonth(month){
+        if (month>1) {
+            window.location = "/admin/revenueMonth?month=" + (month-1);
+        }
+        else{
+            Swal.fire({
+                    icon: 'error',
+                    title: 'Không thể tiếp tục giảm tháng',
+                    text: 'Vui lòng kiểm tra lại!',
+                    footer: '<a href="">Tại sao tôi lại gặp lỗi này?</a>'
+                });
+        }
+    }
+    
+    function increateMonth(month){
+        if (month<12) {
+            window.location = "/admin/revenueMonth?month=" + (month+1);
+        }
+        else{
+            Swal.fire({
+                    icon: 'error',
+                    title: 'Không thể tiếp tục tăng tháng',
+                    text: 'Vui lòng kiểm tra lại!',
+                    footer: '<a href="">Tại sao tôi lại gặp lỗi này?</a>'
+                });
+        }
+    }
+</script>
