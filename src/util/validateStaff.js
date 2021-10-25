@@ -1,6 +1,6 @@
 const staff = require('../app/models/staff')
 
-module.exports.requireAuth = function(req,res,next){
+module.exports.requireAuth = async function(req,res,next){
     if(!req.signedCookies.staffId) {
         req.session.message = {
             type: 'warning',
@@ -11,20 +11,20 @@ module.exports.requireAuth = function(req,res,next){
     }
     else
     {
-        staff.findOne({id: req.signedCookies.staffId})
-            .then((data)=>{
-                if(data == null) {
-                    req.session.message = {
-                        type: 'warning',
-                        intro: 'Đăng nhập thất bại! ',
-                        message: 'Hãy đăng nhập lại nào.'
-                      }
-                    res.redirect('/')
+        var data = await staff.findOne({_id: req.signedCookies.staffId})
+        
+        if(data == null) {
+            req.session.message = {
+                type: 'warning',
+                intro: 'Đăng nhập thất bại! ',
+                message: 'Hãy đăng nhập lại nào.'
                 }
-                else {
-                    res.locals.staff = data._doc;
-                    next();
-                }
-            })
+            res.redirect('/')
+        }
+        else {
+            res.locals.staff = data._doc;
+            next();
+        }
+            
     }
 }

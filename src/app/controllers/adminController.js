@@ -174,7 +174,7 @@ class adminController {
     async checkPassword(req, res, next) {
         var pass = sha512(req.query.pass)
         var adminId = req.signedCookies.adminId
-        var result = await admin.findOne({ id: adminId, password: pass })
+        var result = await admin.findOne({ _id: adminId, password: pass })
         if (result) {
             res.send("")
         }
@@ -185,7 +185,7 @@ class adminController {
     async changePassAdPro(req, res, next) {
         var adminId = req.signedCookies.adminId
         var pass = sha512(req.body.newPassword)
-        var result = await admin.updateOne({ id: adminId }, {
+        var result = await admin.updateOne({ _id: adminId }, {
             password: pass
         })
         req.session.message = {
@@ -301,8 +301,8 @@ class adminController {
             })
         }
         else {
-            res.render('searchCustomer', {
-                layout: 'customer',
+            res.render('searchAdmin', {
+                layout: 'admin',
             })
         }
     }

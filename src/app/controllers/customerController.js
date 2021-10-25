@@ -412,7 +412,7 @@ class customerController {
     async changePassCusPro(req, res, next){
         var cusId = req.signedCookies.cusId
         var pass = sha512(req.body.newPassword)
-        var result = await customer.updateOne({id: cusId},{
+        var result = await customer.updateOne({_id: cusId},{
             password: pass
         })
         req.session.message = {
@@ -426,7 +426,7 @@ class customerController {
     async checkPassword(req,res,next){
         var pass = sha512(req.query.pass)
         var cusId = req.signedCookies.cusId
-        var result = await customer.findOne({id: cusId,password: pass})
+        var result = await customer.findOne({_id: cusId,password: pass})
         if(result){
             res.send("")
         }

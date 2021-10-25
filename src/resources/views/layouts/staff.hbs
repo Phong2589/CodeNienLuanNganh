@@ -19,6 +19,24 @@
             </div>
             
             {{> footer}}
+            <script>
+            window.onload = function () {
+                changeNumber();
+            };
+
+            function changeNumber() {
+                var numberChange = document.getElementsByClassName("number");
+                for (x = 0; x < numberChange.length; x++) {
+                    var cost = parseInt(numberChange[x].innerHTML)
+
+                    const change = new Intl.NumberFormat('vi-VN', {
+                        style: 'currency',
+                        currency: 'VND',
+                    })
+                    numberChange[x].innerHTML = change.format(cost)
+                }
+            };
+        </script>
         </div>
         <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>

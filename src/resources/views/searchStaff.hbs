@@ -26,7 +26,7 @@
         </li>
 
         {{#each quantityPage}}
-        <li class="page-item"><a class="page pageCustomer" href="?page={{this}}">{{this}}</a></li>
+        <li class="page-item"><a class="page pageCustomer" href="">{{this}}</a></li>
         {{/each}}
 
         <li class="page-item">
@@ -45,13 +45,16 @@
         sessionStorage.clear('quantityBuy');
     }
 
-    var pathName = window.location.href;
-    var currenPage = pathName.split('=')[1];
+    var pathName = window.location.href;    
+    var currenPage = pathName.split('=')[2];
     var pageCustomer = document.getElementsByClassName("pageCustomer");
     var count=0
     var incre = document.getElementById('increasePage');
     var decre = document.getElementById('decreasePage');
+    var currenPath = pathName.split('&')[0];
     for (x = 0; x < pageCustomer.length; x++) {
+
+        pageCustomer[x].href = currenPath+'&page='+(x+1);
         var page = pageCustomer[x].innerText;
         if(currenPage == page){
             pageCustomer[x].classList.remove("page");
@@ -65,7 +68,7 @@
         incre.classList.add("isDisabled");
         decre.classList.add("isDisabled");
     }
-    if(pathName.indexOf("?") == -1){
+    if(pathName.indexOf("&") == -1){
         incre.classList.remove("isDisabled");
         currenPage=1;
     }
@@ -77,12 +80,10 @@
     }
 
     function decreasePage(){
-        var currenPath = pathName.split('?')[0];
-        decre.href = currenPath +'?page='+(parseInt(currenPage)-1);
+        decre.href = currenPath +'&page='+(parseInt(currenPage)-1);
     }
 
     function increasePage(){
-        var currenPath = pathName.split('?')[0];
-        incre.href = currenPath +'?page='+(parseInt(currenPage)+1);
+        incre.href = currenPath +'&page='+(parseInt(currenPage)+1);
     }
 </script>

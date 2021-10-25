@@ -1,0 +1,14 @@
+
+{{#if info}}
+
+<div class="mt-3 mb-3">
+    <p>Họ và tên: {{info.name}}</p>
+    <p>Giới tính: {{info.gender}}</p>
+    <p>Số điện thoại: {{info.phone}}</p>
+    <p>Địa chỉ: {{info.address}}</p>
+
+</div>
+
+{{else}}
+<h3 class="mt-3 mb-3" style="text-align: center; color:rgb(194, 174, 230);">Không tìm thông tin nhân viến!</h3>
+{{/if}}
