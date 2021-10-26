@@ -244,7 +244,94 @@ class staffController {
         }
         res.redirect('/staff')
     }
+    async awaitingConfirm(req, res, next) {
+        var orders = await order.find({ state: 0 })
+        res.render('awaitingConfirmAll', {
+            layout: 'staff',
+            orders: mutipleMongooseToObject(orders)
+        })
+    }
+    async confirmOrder(req, res, next) {
+        var slug = await req.params.slug
+        var result = await order.updateOne({ orderId: slug }, {
+            state: 1
+        })
+        if (result) {
+            req.session.message = {
+                type: 'success',
+                intro: 'Đơn hàng ' + slug + ' đã được xác nhận!',
+                message: ''
+            }
+            res.redirect('/staff/awaitingConfirm')
+        }
+        else {
+            res.json('lỗi không thể xác nhận đơn hàng!')
+        }
+    }
+    async cancelOrder(req, res, next) {
+        try {
+            var orderId = req.params.slug
+            var orderDel = await order.findOne({ orderId: orderId })
+            const orderSave = new historyOrder()
+            orderSave.cusId = orderDel.cusId
+            orderSave.orderId = orderDel.orderId
+            orderSave.name = orderDel.name
+            orderSave.phone = orderDel.phone
+            orderSave.address = orderDel.address
+            orderSave.note = orderDel.note
+            orderSave.total = orderDel.total
+            orderSave.state = -1
+            orderSave.cart = orderDel.cart
+            var result = await orderSave.save()
+            for (var i = 0; i < orderDel.cart.length; i++) {
+                var productFind = await product.findOne({ slug: orderDel.cart[i].slug })
+                var quantityUpdate = productFind.quantity + orderDel.cart[i].quantityBuy
+                var resultUpdate = await product.updateOne({ slug: orderDel.cart[i].slug }, { quantity: quantityUpdate })
+            }
+            var del = await order.deleteOne({ orderId: orderId })
+            res.send('success')
+        }
+        catch (error) {
+            res.json(error)
+        }
+    }
+    async completeOrder(req, res, next) {
+        try {
+            var orderId = req.params.slug
+            var orderDel = await order.findOne({ orderId: orderId })
+            const orderSave = new historyOrder()
+            orderSave.cusId = orderDel.cusId
+            orderSave.orderId = orderDel.orderId
+            orderSave.name = orderDel.name
+            orderSave.phone = orderDel.phone
+            orderSave.address = orderDel.address
+            orderSave.note = orderDel.note
+            orderSave.total = orderDel.total
+            orderSave.state = 1
+            orderSave.cart = orderDel.cart
+            var result = await orderSave.save()
+            var del = await order.deleteOne({ orderId: orderId })
+            res.send('success')
+        }
+        catch (error) {
+            res.json(error)
+        }
+    }
+    async confirmed(req, res, next) {
+        var orders = await order.find({ state: 1 })
+        res.render('confirmedAll', {
+            layout: 'staff',
+            orders: mutipleMongooseToObject(orders)
+        })
+    }
 
+    async history(req, res, next) {
+        var orders = await historyOrder.find({}).limit(20).sort({ createdAt : -1})
+        res.render('historyOrderCus', {
+            layout: 'staff',
+            orders: mutipleMongooseToObject(orders)
+        })
+    }
 
     
 }

@@ -16,7 +16,12 @@ router.get('/profile',staffController.profile);
 router.get('/changePassword',staffController.changePassword);
 router.get('/checkPassword',staffController.checkPassword);
 router.post('/changePassAdPro',staffController.changePassAdPro);
-
+router.get('/awaitingConfirm',staffController.awaitingConfirm);
+router.get('/confirmed',staffController.confirmed);
+router.get('/history',staffController.history);
+router.get('/confirmOrder/:slug',staffController.confirmOrder);
+router.get('/cancelOrder/:slug',staffController.cancelOrder);
+router.get('/completeOrder/:slug',staffController.completeOrder);
 
 
 

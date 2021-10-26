@@ -144,7 +144,8 @@ class customerController {
             orderNew.state = 0
             var result = await orderNew.save()
             for (var i = 0; i < cartElement.cart.length; i++) {
-                var quantityUpdate = cartElement.cart[i].quantity - cartElement.cart[i].quantityBuy
+                var productFind = await product.findOne({ slug: cartElement.cart[i].slug })
+                var quantityUpdate = productFind.quantity - cartElement.cart[i].quantityBuy
                 var resultUpdate = await product.updateOne({ slug: cartElement.cart[i].slug }, { quantity: quantityUpdate })
             }
             var arrayCart = []
@@ -378,7 +379,13 @@ class customerController {
             orderSave.total = orderDel.total
             orderSave.state = -1
             orderSave.cart = orderDel.cart
+            console.log(orderSave)
             var result = await orderSave.save()
+            for (var i = 0; i < orderDel.cart.length; i++) {
+                var productFind = await product.findOne({ slug: orderDel.cart[i].slug })
+                var quantityUpdate = productFind.quantity + orderDel.cart[i].quantityBuy
+                var resultUpdate = await product.updateOne({ slug: orderDel.cart[i].slug }, { quantity: quantityUpdate })
+            }
             var del = await order.deleteOne({orderId: orderId})
             res.send('success')
         }
@@ -397,7 +404,7 @@ class customerController {
 
     async history(req, res, next){
         var cusId = req.signedCookies.cusId
-        var orders = await historyOrder.find({ cusId: cusId}).limit(10)
+        var orders = await historyOrder.find({ cusId: cusId}).limit(10).sort({ createdAt : -1})
         res.render('historyOrderCus', {
             layout: 'customer',
             orders: mutipleMongooseToObject(orders)

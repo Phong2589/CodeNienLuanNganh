@@ -436,6 +436,11 @@ class adminController {
             orderSave.state = -1
             orderSave.cart = orderDel.cart
             var result = await orderSave.save()
+            for (var i = 0; i < orderDel.cart.length; i++) {
+                var productFind = await product.findOne({ slug: orderDel.cart[i].slug })
+                var quantityUpdate = productFind.quantity + orderDel.cart[i].quantityBuy
+                var resultUpdate = await product.updateOne({ slug: orderDel.cart[i].slug }, { quantity: quantityUpdate })
+            }
             var del = await order.deleteOne({ orderId: orderId })
             res.send('success')
         }
@@ -474,7 +479,7 @@ class adminController {
     }
 
     async history(req, res, next) {
-        var orders = await historyOrder.find({}).limit(20)
+        var orders = await historyOrder.find({}).limit(20).sort({ createdAt : -1})
         res.render('historyOrderCus', {
             layout: 'admin',
             orders: mutipleMongooseToObject(orders)

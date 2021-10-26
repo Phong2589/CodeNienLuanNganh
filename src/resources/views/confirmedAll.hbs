@@ -75,12 +75,37 @@
 {{else}}
 <div class="mt-3 mb-3">
     <h3 style="text-align: center; color:rgb(194, 174, 230);">Chưa xác nhận đơn hàng nào!</h3>
-    <div class="" style="text-align: center;"><a href="/customer/awaitingConfirm" style="text-decoration: none;">Tìm hiểu nguyên nhân</a></div>
+    <div class="" style="text-align: center;"><a href="#" style="text-decoration: none;">Tìm hiểu nguyên nhân</a></div>
 </div>
 
 {{/if}}
 
 <script>
+    function getCookie(cname) {
+        let name = cname + "=";
+        let decodedCookie = decodeURIComponent(document.cookie);
+        let ca = decodedCookie.split(';');
+        for (let i = 0; i < ca.length; i++) {
+            let c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return "";
+    }
+    var pathUrl = '';
+    var pathConf = '';
+    if(getCookie('staffId')){
+        pathUrl = "/staff/cancelOrder/";
+        pathConf = "/staff/completeOrder/";
+    }
+    else{
+        pathUrl = "/admin/cancelOrder/";
+        pathConf = "/admin/completeOrder/";
+    }
     function cancelOrder(orderId) {
         Swal.fire({
             title: 'Bạn có chắc muốn hủy đơn hàng này?',
@@ -105,7 +130,7 @@
                         })
                     }
                 }
-                xmlhttp.open("GET", "/admin/cancelOrder/" + orderId , true);
+                xmlhttp.open("GET", pathUrl + orderId , true);
                 xmlhttp.send();
             }
         })
@@ -135,7 +160,7 @@
                         })
                     }
                 }
-                xmlhttp.open("GET", "/admin/completeOrder/" + orderId , true);
+                xmlhttp.open("GET", pathConf + orderId , true);
                 xmlhttp.send();
             }
         })
