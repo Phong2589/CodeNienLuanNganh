@@ -16,6 +16,8 @@ router.get('/sortza',sitecontroller.sortza);
 router.get('/sortCostIncrease',sitecontroller.sortCostIncrease);
 router.get('/sortCostDecrease',sitecontroller.sortCostDecrease);
 router.get('/search',sitecontroller.search);
+router.get('/sortNew',sitecontroller.sortNew);
+
 
 router.get('/:slug', sitecontroller.detailProduct);
 router.get('/', sitecontroller.index);

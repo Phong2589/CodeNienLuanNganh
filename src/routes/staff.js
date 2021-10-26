@@ -22,6 +22,7 @@ router.get('/history',staffController.history);
 router.get('/confirmOrder/:slug',staffController.confirmOrder);
 router.get('/cancelOrder/:slug',staffController.cancelOrder);
 router.get('/completeOrder/:slug',staffController.completeOrder);
+router.get('/sortNew',staffController.sortNew);
 
 
 

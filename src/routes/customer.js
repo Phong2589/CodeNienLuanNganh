@@ -26,6 +26,7 @@ router.get('/history',customerController.history);
 router.get('/changePassword',customerController.changePassword);
 router.post('/changePassCusPro',customerController.changePassCusPro);
 router.get('/checkPassword',customerController.checkPassword);
+router.get('/sortNew',customerController.sortNew);
 
 
 

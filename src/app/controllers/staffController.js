@@ -114,6 +114,26 @@ class staffController {
             quantityPage: quantityPageArr
         })
     }
+    async sortNew(req,res,next){
+        var page = parseInt(req.query.page)
+        if (!page) page = 1
+        var perPage = 16
+        var start = (page - 1) * perPage
+        var end = page * perPage
+        var products = await product.find().sort({ "updatedAt": -1 })
+        var quantityPage = Math.ceil(products.length / perPage)
+        var quantityPageArr = []
+        for (var i = 0; i < quantityPage; i++) {
+            quantityPageArr[i] = i + 1
+        }
+        products = products.slice(start, end)
+
+        res.render('homeStaff', {
+            layout: 'staff',
+            products: mutipleMongooseToObject(products),
+            quantityPage: quantityPageArr
+        })
+    }
     async search(req, res, next) {
         var page = parseInt(req.query.page)
         if (!page) page = 1

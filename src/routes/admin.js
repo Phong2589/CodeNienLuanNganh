@@ -40,7 +40,7 @@ router.get('/completeOrder/:slug',adminController.completeOrder);
 router.get('/revenueDay',adminController.revenueDay);
 router.get('/revenueMonth',adminController.revenueMonth);
 router.get('/statistics',adminController.statistics);
-
+router.get('/sortNew',adminController.sortNew);
 
 
 
