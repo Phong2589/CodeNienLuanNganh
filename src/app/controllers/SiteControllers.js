@@ -4,6 +4,7 @@ const admin = require('../models/admin')
 const staff = require('../models/staff')
 const product = require('../models/product')
 const cart = require('../models/cart')
+const google = require('../models/google')
 const profileCustomer = require('../models/profileCustomer')
 const sha512 = require('js-sha512').sha512
 
@@ -183,7 +184,16 @@ class SiteController {
             var cartElement = await cart.findOne({ cusId: cusId })
             var findProfile = await profileCustomer.findOne({ cusId: cusId })
             var customerCurrent = await customer.findOne({ _id: cusId })
-            res.locals.cus = customerCurrent._doc
+            var googleFind = await google.findOne({_id: req.signedCookies.cusId})
+            if(customerCurrent){
+                res.locals.cus = customerCurrent._doc;
+            }
+            else if(googleFind){
+                res.locals.cus = googleFind._doc;
+            }
+            else {
+                res.locals.cus = "khong biet"
+            }
             for(var i=0;i<cartElement.cart.length;i++){
                 var productFind = await product.findOne({slug: cartElement.cart[i].slug})
                 cartElement.cart[i].quantity = productFind.quantity
@@ -405,6 +415,73 @@ class SiteController {
             res.render('searchCustomer')
         }
     }
+
+    // register with google
+    async success(req,res,next){
+        var findEmail = await google.findOne({email: req.user.email})
+        if(findEmail){
+            req.session.message = {
+                type: 'warning',
+                intro: 'Email này đã đăng kí! ',
+                message: 'Hãy đăng nhập ngay nào.'
+            }
+            res.redirect('back')
+        }
+        else{
+            const googleNew = new google()
+            googleNew.email = req.user.email
+            googleNew.user = req.user.given_name + ' ' + req.user.family_name
+            console.log(googleNew)
+            var result = await googleNew.save()
+            req.session.message = {
+                type: 'success',
+                intro: 'Đăng kí tài khoản thành công! ',
+                message: 'Hãy đăng nhập ngay nào.'
+            }
+            res.redirect('back')
+        }
+    }
+    fail(req,res,next){
+        res.send('Đăng kí thất bại')
+    }
+    // log in with google
+    async successLogin(req,res,next){
+        var findEmail = await google.findOne({email: req.user.email})
+        if(findEmail){
+            res.cookie('cusId', findEmail.id, {
+                signed: true,
+                maxAge: 1000 * 60 * 60 * 2
+            })
+            var dataDb = await cart.findOne({ cusId: findEmail.id })
+            if (dataDb == null) {
+                const cartNew = new cart()
+                cartNew.total = 0
+                cartNew.cusId = findEmail.id
+                var cartup = await cartNew.save() 
+            }
+            req.session.message = {
+                type: 'success',
+                intro: 'Đăng nhập thành công! ',
+                message: ''
+            }
+            res.redirect('/customer')
+        }
+        else{
+            req.session.message = {
+                type: 'warning',
+                intro: 'Đăng nhập thất bại! ',
+                message: 'Hãy đăng nhập lại nào.'
+            }
+            res.redirect('back')
+        }
+        
+    }
+    failLogin(req,res,next){
+        res.send('Đăng nhập thất bại')
+    }
+
+
+
 }
 
 module.exports = new SiteController();
