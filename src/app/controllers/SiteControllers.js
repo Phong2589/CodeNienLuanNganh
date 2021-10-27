@@ -182,9 +182,13 @@ class SiteController {
             var cusId = req.signedCookies.cusId
             var cartElement = await cart.findOne({ cusId: cusId })
             var findProfile = await profileCustomer.findOne({ cusId: cusId })
-            var customerCurrent = await customer.findOne({ id: cusId })
+            var customerCurrent = await customer.findOne({ _id: cusId })
             res.locals.cus = customerCurrent._doc
-
+            for(var i=0;i<cartElement.cart.length;i++){
+                var productFind = await product.findOne({slug: cartElement.cart[i].slug})
+                cartElement.cart[i].quantity = productFind.quantity
+                
+            }
             if (cartElement.total == 0) {
                 res.render('cart', { layout: 'customer', })
             }

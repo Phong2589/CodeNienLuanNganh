@@ -45,6 +45,9 @@ body{
         .imageProduct {
             height: 350px !important;
         }
+        .avatarResponsive{
+            margin-left: 10px;
+        }
     }
 @media (min-width: 576px) and (max-width: 767.98px) {
     .contentMdHidden
@@ -57,6 +60,9 @@ body{
     }
     .rightItemLink{
         padding-left: 10px !important;
+    }
+    .avatarResponsive{
+        margin-left: 10px;
     }
 }
 .sortMenu{
