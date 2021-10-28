@@ -6,8 +6,8 @@ module.exports = {
         passport.use(new GoogleStrategy({
             clientID: "1067898336377-qb79vp2eoeg8i6ihsgcta36q6gt8ifa2.apps.googleusercontent.com",
             clientSecret: "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",
-            // callbackURL: "http://localhost:8080/registerGoogle/callback",
-            callbackURL: "https://pqshop.herokuapp.com/registerGoogle/callback",
+            callbackURL: "http://localhost:8080/registerGoogle/callback",
+            // callbackURL: "https://pqshop.herokuapp.com/registerGoogle/callback",s
             passReqToCallback   : true
             },
             function(request, accessToken, refreshToken, profile, done) {
@@ -20,8 +20,8 @@ module.exports = {
         passport.use(new GoogleStrategy({
             clientID: "1067898336377-qb79vp2eoeg8i6ihsgcta36q6gt8ifa2.apps.googleusercontent.com",
             clientSecret: "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",
-            // callbackURL: "http://localhost:8080/loginGoogle/callback",
-            callbackURL: "https://pqshop.herokuapp.com/loginGoogle/callback",
+            callbackURL: "http://localhost:8080/loginGoogle/callback",
+            // callbackURL: "https://pqshop.herokuapp.com/loginGoogle/callback",
             passReqToCallback   : true
             },
             function(request, accessToken, refreshToken, profile, done) {
@@ -34,8 +34,8 @@ module.exports = {
         passport.use(new FacebookStrategy({
             clientID: "583964342925090",
             clientSecret: "698e6747f90aa3ae71cff81e81bdbdc1",
-            // callbackURL: "http://localhost:8080/registerFacebook/callback",
-            callbackURL: "https://pqshop.herokuapp.com/registerFacebook/callback",
+            callbackURL: "http://localhost:8080/registerFacebook/callback",
+            // callbackURL: "https://pqshop.herokuapp.com/registerFacebook/callback",
           },
           function(accessToken, refreshToken, profile, done) {
             return done(null, profile);
@@ -47,8 +47,8 @@ module.exports = {
         passport.use(new FacebookStrategy({
             clientID: "583964342925090",
             clientSecret: "698e6747f90aa3ae71cff81e81bdbdc1",
-            // callbackURL: "http://localhost:8080/loginFacebook/callback",
-            callbackURL: "https://pqshop.herokuapp.com/loginFacebook/callback",
+            callbackURL: "http://localhost:8080/loginFacebook/callback",
+            // callbackURL: "https://pqshop.herokuapp.com/loginFacebook/callback",
           },
           function(accessToken, refreshToken, profile, done) {
             return done(null, profile);
