@@ -18,13 +18,15 @@ router.get('/sortCostDecrease',sitecontroller.sortCostDecrease);
 router.get('/search',sitecontroller.search);
 router.get('/sortNew',sitecontroller.sortNew);
 
-const { register } = require('../util/middle');
-const { login } = require('../util/middle');
+const { registerGG } = require('../util/middle');
+const { loginGG } = require('../util/middle');
+const { registerFace } = require('../util/middle');
+const { loginFace } = require('../util/middle');
 
 // register with google
 router.get('/success',sitecontroller.success);
 router.get('/fail',sitecontroller.fail);
-router.get('/registerGoogle',register,
+router.get('/registerGoogle',registerGG,
   passport.authenticate('google', { scope:
   	[ 'email', 'profile' ] }
 ));
@@ -36,7 +38,7 @@ router.get('/registerGoogle/callback',
 // log in with google
 router.get('/successLogin',sitecontroller.successLogin);
 router.get('/failLogin',sitecontroller.failLogin);
-router.get('/loginGoogle',login,
+router.get('/loginGoogle',loginGG,
   passport.authenticate('google', { scope:
   	[ 'email', 'profile' ] }
 ));
@@ -49,14 +51,26 @@ router.get('/loginGoogle/callback',
 //register with facebook
 router.get('/successRegisterFace',sitecontroller.successRegisterFace);
 
-router.get('/registerFacebook',
-passport.authenticate('facebook'));
+router.get('/registerFacebook',registerFace,
+  passport.authenticate('facebook'));
 
 router.get('/registerFacebook/callback',
-passport.authenticate('facebook', { failureRedirect: '/fail' }),
-function(req, res) {
-  res.redirect('/successRegisterFace');
-});
+passport.authenticate('facebook', { 
+  successRedirect: '/successRegisterFace',
+  failureRedirect: '/fail' 
+}));
+
+//login with facebook
+router.get('/successLoginFace',sitecontroller.successloginFace);
+
+router.get('/loginFacebook',loginFace,
+  passport.authenticate('facebook'));
+
+router.get('/loginFacebook/callback',
+passport.authenticate('facebook', { 
+  successRedirect: '/successloginFace',
+  failureRedirect: '/failLogin' 
+}));
 
 
 

@@ -1,6 +1,8 @@
 const customer = require('../app/models/customer')
 const cart = require('../app/models/cart')
 const google = require('../app/models/google')
+const facebook = require('../app/models/facebook')
+
 
 
 
@@ -17,6 +19,7 @@ module.exports.requireAuth = async function(req,res,next){
     {
         var data = await customer.findOne({_id: req.signedCookies.cusId})
         var googleFind = await google.findOne({_id: req.signedCookies.cusId})
+        var facebookFind = await facebook.findOne({_id: req.signedCookies.cusId})
         var cartDb = await cart.findOne({cusId: req.signedCookies.cusId})
         if(cartDb){
             var quantity = 0
@@ -29,6 +32,9 @@ module.exports.requireAuth = async function(req,res,next){
             }
             else if(googleFind){
                 res.locals.cus = googleFind._doc;
+            }
+            else if(facebookFind){
+                res.locals.cus = facebookFind._doc;
             }
             else {
                 res.locals.cus = "khong biet"

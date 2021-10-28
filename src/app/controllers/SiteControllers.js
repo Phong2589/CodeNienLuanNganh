@@ -5,6 +5,7 @@ const staff = require('../models/staff')
 const product = require('../models/product')
 const cart = require('../models/cart')
 const google = require('../models/google')
+const facebook = require('../models/facebook')
 const profileCustomer = require('../models/profileCustomer')
 const sha512 = require('js-sha512').sha512
 
@@ -185,11 +186,15 @@ class SiteController {
             var findProfile = await profileCustomer.findOne({ cusId: cusId })
             var customerCurrent = await customer.findOne({ _id: cusId })
             var googleFind = await google.findOne({_id: req.signedCookies.cusId})
+            var facebookFind = await facebook.findOne({_id: req.signedCookies.cusId})
             if(customerCurrent){
                 res.locals.cus = customerCurrent._doc;
             }
             else if(googleFind){
                 res.locals.cus = googleFind._doc;
+            }
+            else if(facebookFind){
+                res.locals.cus = facebookFind._doc;
             }
             else {
                 res.locals.cus = "khong biet"
@@ -431,7 +436,6 @@ class SiteController {
             const googleNew = new google()
             googleNew.email = req.user.email
             googleNew.user = req.user.given_name + ' ' + req.user.family_name
-            console.log(googleNew)
             var result = await googleNew.save()
             req.session.message = {
                 type: 'success',
@@ -481,9 +485,60 @@ class SiteController {
     }
 
     async successRegisterFace(req,res,next){
-        res.json(req.user)
+        var findId = await facebook.findOne({idFace: req.user.id})
+        if(findId){
+            req.session.message = {
+                type: 'warning',
+                intro: 'Tài khoản Facebook này đã đăng kí! ',
+                message: 'Hãy đăng nhập ngay nào.'
+            }
+            res.redirect('back')
+        }
+        else{
+            const facebookNew = new facebook()
+            facebookNew.idFace = req.user.id
+            facebookNew.user = req.user.displayName
+            var result = await facebookNew.save()
+            req.session.message = {
+                type: 'success',
+                intro: 'Đăng kí tài khoản thành công! ',
+                message: 'Hãy đăng nhập ngay nào.'
+            }
+            res.redirect('back')
+        }
     }
 
+    async successloginFace(req,res,next){
+        var findId = await facebook.findOne({idFace: req.user.id})
+        if(findId){
+            res.cookie('cusId', findId.id, {
+                signed: true,
+                maxAge: 1000 * 60 * 60 * 2
+            })
+            var dataDb = await cart.findOne({ cusId: findId.id })
+            if (dataDb == null) {
+                const cartNew = new cart()
+                cartNew.total = 0
+                cartNew.cusId = findId.id
+                var cartup = await cartNew.save() 
+            }
+            req.session.message = {
+                type: 'success',
+                intro: 'Đăng nhập thành công! ',
+                message: ''
+            }
+            res.redirect('/customer')
+        }
+        else{
+            req.session.message = {
+                type: 'warning',
+                intro: 'Đăng nhập thất bại! ',
+                message: 'Hãy đăng nhập lại nào.'
+            }
+            res.redirect('back')
+        }
+        
+    }
 
 }
 
