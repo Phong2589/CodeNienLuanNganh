@@ -15,6 +15,7 @@ passport.use(new FacebookStrategy({
   clientSecret: "e6466b3a0ea7e52d896496563650297d",
   callbackURL: "http://localhost:8080/registerFacebook/callback",
   callbackURL: "https://pqshop.herokuapp.com/registerFacebook/callback",
+  passReqToCallback   : true
 },
 function(accessToken, refreshToken, profile, done) {
   return done(null, profile);
