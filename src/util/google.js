@@ -15,6 +15,8 @@ passport.use(new GoogleStrategy({
     clientSecret: "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",
     callbackURL: "http://localhost:8080/registerGoogle/callback",
     callbackURL: "http://localhost:8080/loginGoogle/callback",
+    callbackURL: "https://pqshop.herokuapp.com/registerGoogle/callback",
+    callbackURL: "https://pqshop.herokuapp.com/loginGoogle/callback",
     passReqToCallback   : true
   },
   function(request, accessToken, refreshToken, profile, done) {

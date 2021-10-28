@@ -62,7 +62,7 @@ app.set('view options', { layout: 'staff' });
 
 //test
 require('./util/google')
-
+require('./util/facebook')
 const passport = require('passport');
 app.use(passport.initialize());
 app.use(passport.session());

@@ -480,6 +480,9 @@ class SiteController {
         res.send('Đăng nhập thất bại')
     }
 
+    async successRegisterFace(req,res,next){
+        res.json(req.user)
+    }
 
 
 }

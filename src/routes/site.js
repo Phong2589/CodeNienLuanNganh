@@ -44,6 +44,18 @@ router.get('/loginGoogle/callback',
         failureRedirect: '/failLogin'
 }));
 
+//register with facebook
+router.get('/successRegisterFace',sitecontroller.successRegisterFace);
+
+router.get('/registerFacebook',
+  passport.authenticate('facebook'));
+ 
+  router.get('/registerFacebook/callback',
+  passport.authenticate('facebook', { failureRedirect: '/fail' }),
+  function(req, res) {
+    res.redirect('/successRegisterFace');
+  });
+
 
 
 
