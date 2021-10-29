@@ -32,13 +32,13 @@ module.exports = {
     },
     registerFace: function(req,res,next){
         passport.use(new FacebookStrategy({
-            // clientID: "583964342925090",
-            // clientSecret: "698e6747f90aa3ae71cff81e81bdbdc1",
-            // callbackURL: "http://localhost:8080/registerFacebook/callback",
+            clientID: "583964342925090",
+            clientSecret: "698e6747f90aa3ae71cff81e81bdbdc1",
+            callbackURL: "http://localhost:8080/registerFacebook/callback",
 
-            clientID: "1016845922436221",
-            clientSecret: "4051c068556491cb7c137cad1dda8862",
-            callbackURL: "https://pqshop.herokuapp.com/registerFacebook/callback",
+            // clientID: "1016845922436221",
+            // clientSecret: "4051c068556491cb7c137cad1dda8862",
+            // callbackURL: "https://pqshop.herokuapp.com/registerFacebook/callback",
           },
           function(accessToken, refreshToken, profile, done) {
             return done(null, profile);
@@ -48,13 +48,13 @@ module.exports = {
     },
     loginFace: function(req,res,next){
         passport.use(new FacebookStrategy({
-            // clientID: "583964342925090",
-            // clientSecret: "698e6747f90aa3ae71cff81e81bdbdc1",
-            // callbackURL: "http://localhost:8080/loginFacebook/callback",
+            clientID: "583964342925090",
+            clientSecret: "698e6747f90aa3ae71cff81e81bdbdc1",
+            callbackURL: "http://localhost:8080/loginFacebook/callback",
 
-            clientID: "1016845922436221",
-            clientSecret: "4051c068556491cb7c137cad1dda8862",
-            callbackURL: "https://pqshop.herokuapp.com/loginFacebook/callback",
+            // clientID: "1016845922436221",
+            // clientSecret: "4051c068556491cb7c137cad1dda8862",
+            // callbackURL: "https://pqshop.herokuapp.com/loginFacebook/callback",
           },
           function(accessToken, refreshToken, profile, done) {
             return done(null, profile);
