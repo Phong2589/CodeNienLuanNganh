@@ -52,7 +52,7 @@ router.get('/loginGoogle/callback',
 router.get('/successRegisterFace',sitecontroller.successRegisterFace);
 
 router.get('/registerFacebook',registerFace,
-  passport.authenticate('facebook'));
+  passport.authenticate('facebook',{scope: ['public_profile', 'email']}));
 
 router.get('/registerFacebook/callback',
 passport.authenticate('facebook', { 

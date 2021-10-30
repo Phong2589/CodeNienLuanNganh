@@ -10,6 +10,8 @@ const { MongooseToObject } = require('../../util/mongoose')
 const { find, findOne } = require('../models/customer')
 const historyOrder = require('../models/historyOrder')
 const sha512 = require('js-sha512').sha512
+const facebook = require('../models/facebook')
+const google = require('../models/google')
 
 const uid = new ShortUniqueId({ length: 10 })
 
@@ -473,6 +475,12 @@ class customerController {
             image = "/" + image
             var cusId = req.signedCookies.cusId
             var result = await customer.updateOne({_id: cusId},{image:image})
+            if(result.modifiedCount == 0){
+                var result1 = await facebook.updateOne({_id: cusId},{image:image})
+                if(result1.modifiedCount == 0){
+                    var result2 = await google.updateOne({_id: cusId},{image:image})
+                }
+            }
             req.session.message = {
                 type: 'success',
                 intro: 'Cập nhật ảnh đại diện thành công!',

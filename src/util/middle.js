@@ -35,10 +35,13 @@ module.exports = {
             // clientID: "583964342925090",
             // clientSecret: "698e6747f90aa3ae71cff81e81bdbdc1",
             // callbackURL: "http://localhost:8080/registerFacebook/callback",
+            
 
             clientID: "1016845922436221",
             clientSecret: "4051c068556491cb7c137cad1dda8862",
             callbackURL: "https://pqshop.herokuapp.com/registerFacebook/callback",
+
+            profileFields: ['id', 'displayName', 'emails','name','picture.type(large)'],
           },
           function(accessToken, refreshToken, profile, done) {
             return done(null, profile);
@@ -51,6 +54,7 @@ module.exports = {
             // clientID: "583964342925090",
             // clientSecret: "698e6747f90aa3ae71cff81e81bdbdc1",
             // callbackURL: "http://localhost:8080/loginFacebook/callback",
+            // profileFields: ['id', 'displayName', 'emails','name','picture.type(large)'],
 
             clientID: "1016845922436221",
             clientSecret: "4051c068556491cb7c137cad1dda8862",
