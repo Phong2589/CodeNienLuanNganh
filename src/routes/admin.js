@@ -41,7 +41,8 @@ router.get('/revenueDay',adminController.revenueDay);
 router.get('/revenueMonth',adminController.revenueMonth);
 router.get('/statistics',adminController.statistics);
 router.get('/sortNew',adminController.sortNew);
-
+router.get('/changeAvatar',adminController.changeAvatar);
+router.post('/changeAvatarAdminDB', upload.single('image'), adminController.changeAvatarAdminDB);
 
 
 

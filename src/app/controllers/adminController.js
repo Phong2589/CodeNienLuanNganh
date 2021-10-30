@@ -41,6 +41,7 @@ class adminController {
         req.body.image = req.file.path.split('\\').slice(2).join('/')
         req.body.image = "/" + req.body.image
         const productNew = new product(req.body)
+        productNew.sold = 0
         var result = await productNew.save()
         if (result) {
             req.session.message = {
@@ -284,7 +285,7 @@ class adminController {
         var perPage = 16
         var start = (page - 1) * perPage
         var end = page * perPage
-        var products = await product.find().sort({ "updatedAt": -1 })
+        var products = await product.find().sort({ "createdAt": -1 })
         var quantityPage = Math.ceil(products.length / perPage)
         var quantityPageArr = []
         for (var i = 0; i < quantityPage; i++) {
@@ -473,6 +474,12 @@ class adminController {
             var orderId = req.params.slug
             var orderDel = await order.findOne({ orderId: orderId })
             const orderSave = new historyOrder()
+            
+            for(var i=0;i<orderDel.cart.length;i++){
+                var productFind = await product.findOne({slug: orderDel.cart[i].slug})
+                var upProduct = await product.updateOne({slug: orderDel.cart[i].slug},{sold: productFind.sold + orderDel.cart[i].quantityBuy})
+            }
+            
             orderSave.cusId = orderDel.cusId
             orderSave.orderId = orderDel.orderId
             orderSave.name = orderDel.name
@@ -608,6 +615,32 @@ class adminController {
         })
     }
 
+    async changeAvatar(req,res,next){
+        res.render('changeAvatarAdmin',{
+            layout: 'admin'
+        })
+    }
+    async changeAvatarAdminDB(req,res,next){
+        if(req.file.path){
+            var image = req.file.path.split('\\').slice(2).join('/')
+            image = "/" + image
+            var adminId = req.signedCookies.adminId
+            var result = await admin.updateOne({_id: adminId},{image:image})
+            req.session.message = {
+                type: 'success',
+                intro: 'Cập nhật ảnh đại diện thành công!',
+                message: ''
+            }
+        }
+        else{
+            req.session.message = {
+                type: 'warning',
+                intro: 'Cập nhật ảnh đại diện thất bại!',
+                message: ''
+            }
+        }
+        res.redirect('back')
+    }
 
 
 }

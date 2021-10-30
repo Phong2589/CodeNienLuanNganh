@@ -40,6 +40,7 @@ class SiteController {
     register(req, res, next) {
         req.body.password = sha512(req.body.password);
         const customerNew = new customer(req.body);
+        customerNew.image = "/img/avatarDefault.png"
         customerNew.save()
             .then(() => {
                 req.session.message = {
@@ -382,7 +383,7 @@ registerModal(req, res, next) {
     var perPage = 16
     var start = (page - 1) * perPage
     var end = page * perPage
-    var products = await product.find().sort({ "updatedAt": -1 })
+    var products = await product.find().sort({ "createdAt": -1 })
     var quantityPage = Math.ceil(products.length / perPage)
     var quantityPageArr = []
     for (var i = 0; i < quantityPage; i++) {
@@ -431,7 +432,7 @@ registerModal(req, res, next) {
             intro: 'Email này đã đăng kí! ',
             message: 'Hãy đăng nhập ngay nào.'
         }
-        res.redirect('back')
+        res.redirect('/')
     }
     else {
         const googleNew = new google()
@@ -443,7 +444,7 @@ registerModal(req, res, next) {
             intro: 'Đăng kí tài khoản thành công! ',
             message: 'Hãy đăng nhập ngay nào.'
         }
-        res.redirect('back')
+        res.redirect('/')
     }
 }
 fail(req, res, next){
@@ -477,7 +478,7 @@ fail(req, res, next){
             intro: 'Đăng nhập thất bại! ',
             message: 'Hãy đăng nhập lại nào.'
         }
-        res.redirect('back')
+        res.redirect('/')
     }
 
 }
@@ -485,28 +486,28 @@ failLogin(req, res, next){
     res.send('Đăng nhập thất bại')
 }
 
-    async successRegisterFace(req, res, next){
-    var findId = await facebook.findOne({ idFace: req.user.id })
-    if (findId) {
-        req.session.message = {
-            type: 'warning',
-            intro: 'Tài khoản Facebook này đã đăng kí! ',
-            message: 'Hãy đăng nhập ngay nào.'
-        }
-        res.redirect('back')
+async successRegisterFace(req, res, next){
+var findId = await facebook.findOne({ idFace: req.user.id })
+if (findId) {
+    req.session.message = {
+        type: 'warning',
+        intro: 'Tài khoản Facebook này đã đăng kí! ',
+        message: 'Hãy đăng nhập ngay nào.'
     }
-    else {
-        const facebookNew = new facebook()
-        facebookNew.idFace = req.user.id
-        facebookNew.user = req.user.displayName
-        var result = await facebookNew.save()
-        req.session.message = {
-            type: 'success',
-            intro: 'Đăng kí tài khoản thành công! ',
-            message: 'Hãy đăng nhập ngay nào.'
-        }
-        res.redirect('back')
+    res.redirect('/')
+}
+else {
+    const facebookNew = new facebook()
+    facebookNew.idFace = req.user.id
+    facebookNew.user = req.user.displayName
+    var result = await facebookNew.save()
+    req.session.message = {
+        type: 'success',
+        intro: 'Đăng kí tài khoản thành công! ',
+        message: 'Hãy đăng nhập ngay nào.'
     }
+    res.redirect('/')
+}
 }
 
     async successloginFace(req, res, next){
@@ -536,7 +537,7 @@ failLogin(req, res, next){
             intro: 'Đăng nhập thất bại! ',
             message: 'Hãy đăng nhập lại nào.'
         }
-        res.redirect('back')
+        res.redirect('/')
     }
 
 }

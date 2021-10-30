@@ -120,7 +120,7 @@ class staffController {
         var perPage = 16
         var start = (page - 1) * perPage
         var end = page * perPage
-        var products = await product.find().sort({ "updatedAt": -1 })
+        var products = await product.find().sort({ "createdAt": -1 })
         var quantityPage = Math.ceil(products.length / perPage)
         var quantityPageArr = []
         for (var i = 0; i < quantityPage; i++) {
@@ -351,6 +351,34 @@ class staffController {
             layout: 'staff',
             orders: mutipleMongooseToObject(orders)
         })
+    }
+
+    async changeAvatar(req,res,next){
+        res.render('changeAvatarStaff',{
+            layout: 'staff'
+        })
+    }
+    async changeAvatarStaffDB(req,res,next){
+        if(req.file.path){
+            var image = req.file.path.split('\\').slice(2).join('/')
+            image = "/" + image
+            var staffId = req.signedCookies.staffId
+            var result = await staff.updateOne({_id: staffId},{image:image})
+            req.session.message = {
+                type: 'success',
+                intro: 'Cập nhật ảnh đại diện thành công!',
+                message: ''
+            }
+        }
+        else{
+            req.session.message = {
+                type: 'warning',
+                intro: 'Cập nhật ảnh đại diện thất bại!',
+                message: ''
+            }
+        }
+        res.redirect('back')
+
     }
 
     

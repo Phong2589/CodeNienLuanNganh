@@ -330,7 +330,7 @@ class customerController {
         var perPage = 16
         var start = (page - 1) * perPage
         var end = page * perPage
-        var products = await product.find().sort({ "updatedAt": -1 })
+        var products = await product.find().sort({ "createdAt": -1 })
         var quantityPage = Math.ceil(products.length / perPage)
         var quantityPageArr = []
         for (var i = 0; i < quantityPage; i++) {
@@ -461,6 +461,34 @@ class customerController {
             res.send("no")
         }
     }
+
+    async changeAvatar(req,res,next){
+        res.render('changeAvatarCus',{
+            layout: 'customer'
+        })
+    }
+    async changeAvatarCusDB(req,res,next){
+        if(req.file.path){
+            var image = req.file.path.split('\\').slice(2).join('/')
+            image = "/" + image
+            var cusId = req.signedCookies.cusId
+            var result = await customer.updateOne({_id: cusId},{image:image})
+            req.session.message = {
+                type: 'success',
+                intro: 'Cập nhật ảnh đại diện thành công!',
+                message: ''
+            }
+        }
+        else{
+            req.session.message = {
+                type: 'warning',
+                intro: 'Cập nhật ảnh đại diện thất bại!',
+                message: ''
+            }
+        }
+        res.redirect('back')
+    }
+
 
 }
 

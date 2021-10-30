@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-
+const multer  = require('multer')
+const upload = multer({ dest: 'src/public/img/' })
 
 const staffController = require('../app/controllers/staffController');
 
@@ -23,6 +24,9 @@ router.get('/confirmOrder/:slug',staffController.confirmOrder);
 router.get('/cancelOrder/:slug',staffController.cancelOrder);
 router.get('/completeOrder/:slug',staffController.completeOrder);
 router.get('/sortNew',staffController.sortNew);
+router.get('/changeAvatar',staffController.changeAvatar);
+router.post('/changeAvatarStaffDB', upload.single('image'), staffController.changeAvatarStaffDB);
+
 
 
 

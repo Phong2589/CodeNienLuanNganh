@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const passport = require('passport');
-
+const multer  = require('multer')
+const upload = multer({ dest: 'src/public/img/' })
 const customerController = require('../app/controllers/customerController');
 
 
@@ -27,7 +28,8 @@ router.get('/changePassword',customerController.changePassword);
 router.post('/changePassCusPro',customerController.changePassCusPro);
 router.get('/checkPassword',customerController.checkPassword);
 router.get('/sortNew',customerController.sortNew);
-
+router.get('/changeAvatar',customerController.changeAvatar);
+router.post('/changeAvatarCusDB', upload.single('image'), customerController.changeAvatarCusDB);
 
 
 

@@ -9,7 +9,8 @@ const product = new Schema({
     image: {type: String},
     description: {type: String},
     quantity: {type: Number},
-    slug: { type: String, slug: 'name', unique: true }
+    slug: { type: String, slug: 'name', unique: true },
+    sold: {type: Number},
   },{
     timestamps: true,
   });

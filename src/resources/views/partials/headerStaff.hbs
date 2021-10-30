@@ -54,10 +54,11 @@
                 <div class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle avatarResponsive" href="#" id="navbarDropdown" role="button"
                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fas fa-user-circle"></i> {{staff.user}}
+                        <img class="rounded-circle" src="{{staff.image}}" alt="" style="width: 30px;"> {{staff.user}}
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" href="/staff/changePassword">Đổi mật khẩu</a>
+                        <a class="dropdown-item" href="/staff/changeAvatar">Đổi ảnh đại diện</a>
                         <a class="dropdown-item" href="/staff/profile">Thông tin cá nhân</a>
                         <a class="dropdown-item" href="/staff/logout">Đăng xuất</a>
                     </div>
