@@ -3,9 +3,20 @@ const path = require('path');
 const router = express.Router();
 const passport = require('passport');
 const multer  = require('multer')
-console.log(path.join(__dirname, '../public/img/'))
-const upload = multer({ dest: path.join(__dirname, '../public/img/')})
+// console.log(path.join(__dirname, '../public/img/'))
+// const upload = multer({ dest: path.join(__dirname, '../public/img/')})
+const fileStoge = multer.diskStorage({
+    destination: (req,file,cb)=>{
+        cb(null,"./src/public/img")
+    },
+    filename: (req,file,cb)=>{
+        cb(null,Date.now() + "--" + file.originalname)
+    },
+})
+const upload = multer({storage : fileStoge})
+
 const customerController = require('../app/controllers/customerController');
+
 
 
 router.get('/decreaseProductToCart/:slug',customerController.decreaseProductToCart);
@@ -42,3 +53,5 @@ router.get('/', customerController.customer);
 
 
 module.exports = router;
+
+// heroku run bash --app pqshop
