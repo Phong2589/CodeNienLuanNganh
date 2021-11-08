@@ -66,28 +66,6 @@ require('./util/facebook')
 const passport = require('passport');
 app.use(passport.initialize());
 app.use(passport.session());
-// const isLogedIn = (req,res,next)=>{
-//     if(req.user){
-//         next()
-//     }
-//     else{
-//         res.send('no no')
-//     }
-// }
-
-// app.get('/success',isLogedIn ,(req,res) => res.send(`thanh cong ${req.user.email}`));
-// app.get('/fail',(req,res) => res.send('that bai'));
-
-// app.get('/registerGoogle',
-//   passport.authenticate('google', { scope:
-//   	[ 'email', 'profile' ] }
-// ));
- 
-// app.get( '/registerGoogle/callback',
-//     passport.authenticate( 'google', {
-//         successRedirect: '/success',
-//         failureRedirect: '/fail'
-// }));
 
 //
 //xac dinh tuyen duong

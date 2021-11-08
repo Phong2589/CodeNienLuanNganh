@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 const multer  = require('multer')
-const upload = multer({ dest: 'src/public/img/' })
+console.log(__dirname)
+const upload = multer({ dest: './src/public/img/' })
 const customerController = require('../app/controllers/customerController');
 
 
