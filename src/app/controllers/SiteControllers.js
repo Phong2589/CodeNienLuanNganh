@@ -40,7 +40,7 @@ class SiteController {
     register(req, res, next) {
         req.body.password = sha512(req.body.password);
         const customerNew = new customer(req.body);
-        customerNew.image = "/img/avatarDefault.png"
+        customerNew.image = "https://res.cloudinary.com/pqshop/image/upload/v1636381618/avatarDefault_mwwgnf.png"
         customerNew.save()
             .then(() => {
                 req.session.message = {

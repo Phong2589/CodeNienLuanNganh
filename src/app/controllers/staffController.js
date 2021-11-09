@@ -6,7 +6,8 @@ const staff = require('../models/staff')
 const infoStaff = require('../models/infoStaff')
 const moment = require('moment')
 const sha512 = require('js-sha512').sha512
-
+const cloudinary = require('cloudinary').v2
+require('../../util/cloudinary')
 const { mutipleMongooseToObject } = require('../../util/mongoose')
 const { MongooseToObject } = require('../../util/mongoose')
 
@@ -360,8 +361,8 @@ class staffController {
     }
     async changeAvatarStaffDB(req,res,next){
         if(req.file.path){
-            var image = req.file.path.split('\\').slice(2).join('/')
-            image = "/" + image
+            var resultImage = await cloudinary.uploader.upload(req.file.path)
+            var image = resultImage.secure_url
             var staffId = req.signedCookies.staffId
             var result = await staff.updateOne({_id: staffId},{image:image})
             req.session.message = {

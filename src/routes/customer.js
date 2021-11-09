@@ -43,7 +43,7 @@ router.post('/changePassCusPro',customerController.changePassCusPro);
 router.get('/checkPassword',customerController.checkPassword);
 router.get('/sortNew',customerController.sortNew);
 router.get('/changeAvatar',customerController.changeAvatar);
-router.post('/changeAvatarCusDB',upload.single('image'), customerController.changeAvatarCusDB);
+router.get('/changeAvatarCusDB', customerController.changeAvatarCusDB);
 
 
 //upload.single('image'),

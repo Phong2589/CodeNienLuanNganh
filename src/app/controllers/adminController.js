@@ -8,6 +8,8 @@ const admin = require('../models/admin')
 const staff = require('../models/staff')
 const infoStaff = require('../models/infoStaff')
 const moment = require('moment')
+const cloudinary = require('cloudinary').v2
+require('../../util/cloudinary')
 const { mutipleMongooseToObject } = require('../../util/mongoose')
 const { MongooseToObject } = require('../../util/mongoose')
 
@@ -38,8 +40,8 @@ class adminController {
         res.render('addProduct', { layout: 'admin' });
     }
     async addProductDB(req, res, next) {
-        req.body.image = req.file.path.split('\\').slice(2).join('/')
-        req.body.image = "/" + req.body.image
+        var resultImage= await cloudinary.uploader.upload(req.file.path)
+        req.body.image = resultImage.secure_url
         const productNew = new product(req.body)
         productNew.sold = 0
         var result = await productNew.save()
@@ -72,8 +74,8 @@ class adminController {
         var slug = await req.params.slug
         var result
         if (req.file) {
-            req.body.image = req.file.path.split('\\').slice(2).join('/')
-            req.body.image = "/" + req.body.image
+            var resultImage= await cloudinary.uploader.upload(req.file.path)
+            req.body.image = resultImage.secure_url
             result = await product.updateOne({ slug: slug }, {
                 name: req.body.name,
                 cost: req.body.cost,
@@ -349,7 +351,8 @@ class adminController {
 
         var result = await staff.create({
             user: req.body.user,
-            password: sha512(req.body.password)
+            password: sha512(req.body.password),
+            image: "https://res.cloudinary.com/pqshop/image/upload/v1636381618/avatarDefault_mwwgnf.png"
         })
         var result2 = await infoStaff.create({
             user: req.body.user,
@@ -622,8 +625,8 @@ class adminController {
     }
     async changeAvatarAdminDB(req,res,next){
         if(req.file.path){
-            var image = req.file.path.split('\\').slice(2).join('/')
-            image = "/" + image
+            var resultImage= await cloudinary.uploader.upload(req.file.path)
+            var image = resultImage.secure_url
             var adminId = req.signedCookies.adminId
             var result = await admin.updateOne({_id: adminId},{image:image})
             req.session.message = {

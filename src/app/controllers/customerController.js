@@ -16,27 +16,22 @@ const google = require('../models/google')
 const uid = new ShortUniqueId({ length: 10 })
 
 const cloudinary = require('cloudinary').v2
-
-cloudinary.config({
-    cloud_name: 'pqshop',
-    api_key: '235438731113978',
-    api_secret: 'zOM2Llga6w4fei6pO1ey6AQniMU'
-})
+require('../../util/cloudinary')
 
 class customerController {
     async customer(req, res, next) {
         var page = parseInt(req.query.page)
-        if(!page) page=1
+        if (!page) page = 1
         var perPage = 16
-        var start = (page-1)*perPage
-        var end = page*perPage
+        var start = (page - 1) * perPage
+        var end = page * perPage
         var products = await product.find({ quantity: { $gte: 1 } })
         var quantityPage = Math.ceil(products.length / perPage)
         var quantityPageArr = []
-        for(var i=0;i<quantityPage;i++){
-            quantityPageArr[i] = i+1
+        for (var i = 0; i < quantityPage; i++) {
+            quantityPageArr[i] = i + 1
         }
-        products = products.slice(start,end)
+        products = products.slice(start, end)
         res.render('homeCustomer', {
             layout: 'customer',
             products: mutipleMongooseToObject(products),
@@ -254,19 +249,19 @@ class customerController {
     }
     async sortaz(req, res, next) {
         var page = parseInt(req.query.page)
-        if(!page) page=1
+        if (!page) page = 1
         var perPage = 16
-        var start = (page-1)*perPage
-        var end = page*perPage
+        var start = (page - 1) * perPage
+        var end = page * perPage
         var products = await product.find().sort({ "name": 1 })
         var quantityPage = Math.ceil(products.length / perPage)
         var quantityPageArr = []
-        for(var i=0;i<quantityPage;i++){
-            quantityPageArr[i] = i+1
+        for (var i = 0; i < quantityPage; i++) {
+            quantityPageArr[i] = i + 1
         }
-        products = products.slice(start,end)
+        products = products.slice(start, end)
 
-        
+
         res.render('homeCustomer', {
             layout: 'customer',
             products: mutipleMongooseToObject(products),
@@ -275,18 +270,18 @@ class customerController {
     }
     async sortza(req, res, next) {
         var page = parseInt(req.query.page)
-        if(!page) page=1
+        if (!page) page = 1
         var perPage = 16
-        var start = (page-1)*perPage
-        var end = page*perPage
+        var start = (page - 1) * perPage
+        var end = page * perPage
         var products = await product.find().sort({ "name": -1 })
         var quantityPage = Math.ceil(products.length / perPage)
         var quantityPageArr = []
-        for(var i=0;i<quantityPage;i++){
-            quantityPageArr[i] = i+1
+        for (var i = 0; i < quantityPage; i++) {
+            quantityPageArr[i] = i + 1
         }
-        products = products.slice(start,end)
-        
+        products = products.slice(start, end)
+
         res.render('homeCustomer', {
             layout: 'customer',
             products: mutipleMongooseToObject(products),
@@ -295,19 +290,19 @@ class customerController {
     }
     async sortCostDecrease(req, res, next) {
         var page = parseInt(req.query.page)
-        if(!page) page=1
+        if (!page) page = 1
         var perPage = 16
-        var start = (page-1)*perPage
-        var end = page*perPage
+        var start = (page - 1) * perPage
+        var end = page * perPage
         var products = await product.find().sort({ "cost": -1 })
         var quantityPage = Math.ceil(products.length / perPage)
         var quantityPageArr = []
-        for(var i=0;i<quantityPage;i++){
-            quantityPageArr[i] = i+1
+        for (var i = 0; i < quantityPage; i++) {
+            quantityPageArr[i] = i + 1
         }
-        products = products.slice(start,end)
+        products = products.slice(start, end)
 
-        
+
         res.render('homeCustomer', {
             layout: 'customer',
             products: mutipleMongooseToObject(products),
@@ -316,17 +311,17 @@ class customerController {
     }
     async sortCostIncrease(req, res, next) {
         var page = parseInt(req.query.page)
-        if(!page) page=1
+        if (!page) page = 1
         var perPage = 16
-        var start = (page-1)*perPage
-        var end = page*perPage
+        var start = (page - 1) * perPage
+        var end = page * perPage
         var products = await product.find().sort({ "cost": 1 })
         var quantityPage = Math.ceil(products.length / perPage)
         var quantityPageArr = []
-        for(var i=0;i<quantityPage;i++){
-            quantityPageArr[i] = i+1
+        for (var i = 0; i < quantityPage; i++) {
+            quantityPageArr[i] = i + 1
         }
-        products = products.slice(start,end)
+        products = products.slice(start, end)
 
         res.render('homeCustomer', {
             layout: 'customer',
@@ -334,7 +329,7 @@ class customerController {
             quantityPage: quantityPageArr
         })
     }
-    async sortNew(req,res,next){
+    async sortNew(req, res, next) {
         var page = parseInt(req.query.page)
         if (!page) page = 1
         var perPage = 16
@@ -357,19 +352,19 @@ class customerController {
     async search(req, res, next) {
 
         var page = parseInt(req.query.page)
-        if(!page) page=1
+        if (!page) page = 1
         var perPage = 16
-        var start = (page-1)*perPage
-        var end = page*perPage
+        var start = (page - 1) * perPage
+        var end = page * perPage
         var products = await product.find({ $text: { $search: req.query.search } })
         var quantityPage = Math.ceil(products.length / perPage)
         var quantityPageArr = []
-        for(var i=0;i<quantityPage;i++){
-            quantityPageArr[i] = i+1
+        for (var i = 0; i < quantityPage; i++) {
+            quantityPageArr[i] = i + 1
         }
-        products = products.slice(start,end)
+        products = products.slice(start, end)
 
-        
+
         if (products) {
             res.render('searchCustomer', {
                 layout: 'customer',
@@ -416,14 +411,14 @@ class customerController {
                 var quantityUpdate = productFind.quantity + orderDel.cart[i].quantityBuy
                 var resultUpdate = await product.updateOne({ slug: orderDel.cart[i].slug }, { quantity: quantityUpdate })
             }
-            var del = await order.deleteOne({orderId: orderId})
+            var del = await order.deleteOne({ orderId: orderId })
             res.send('success')
         }
         catch (error) {
             res.json(error)
         }
     }
-    async confirmed(req, res, next){
+    async confirmed(req, res, next) {
         var cusId = req.signedCookies.cusId
         var orders = await order.find({ cusId: cusId, state: 1 })
         res.render('confirmed', {
@@ -432,24 +427,24 @@ class customerController {
         })
     }
 
-    async history(req, res, next){
+    async history(req, res, next) {
         var cusId = req.signedCookies.cusId
-        var orders = await historyOrder.find({ cusId: cusId}).limit(10).sort({ createdAt : -1})
+        var orders = await historyOrder.find({ cusId: cusId }).limit(10).sort({ createdAt: -1 })
         res.render('historyOrderCus', {
             layout: 'customer',
             orders: mutipleMongooseToObject(orders)
         })
     }
-    async changePassword(req, res, next){
-        res.render('changePasswordCustomer',{
+    async changePassword(req, res, next) {
+        res.render('changePasswordCustomer', {
             layout: 'customer',
         })
     }
 
-    async changePassCusPro(req, res, next){
+    async changePassCusPro(req, res, next) {
         var cusId = req.signedCookies.cusId
         var pass = sha512(req.body.newPassword)
-        var result = await customer.updateOne({_id: cusId},{
+        var result = await customer.updateOne({ _id: cusId }, {
             password: pass
         })
         req.session.message = {
@@ -460,53 +455,35 @@ class customerController {
         res.redirect('/customer')
     }
 
-    async checkPassword(req,res,next){
+    async checkPassword(req, res, next) {
         var pass = sha512(req.query.pass)
         var cusId = req.signedCookies.cusId
-        var result = await customer.findOne({_id: cusId,password: pass})
-        if(result){
+        var result = await customer.findOne({ _id: cusId, password: pass })
+        if (result) {
             res.send("")
         }
-        else{
+        else {
             res.send("no")
         }
     }
 
-    async changeAvatar(req,res,next){
-        res.render('changeAvatarCus',{
+    async changeAvatar(req, res, next) {
+        res.render('changeAvatarCus', {
             layout: 'customer'
         })
     }
-    async changeAvatarCusDB(req,res,next){
-        // console.log(req)
-        // res.send('abc')
-        if(req.file.path){
-            var resultImage= await cloudinary.uploader.upload(req.file.path)
-            // console.log(resultImage.secure_url)
-            var image = req.file.path.split('\\').slice(2).join('/')
-            image = "/" + image
-            var cusId = req.signedCookies.cusId
-            var result = await customer.updateOne({_id: cusId},{image:image})
-            if(result.modifiedCount == 0){
-                var result1 = await facebook.updateOne({_id: cusId},{image:image})
-                if(result1.modifiedCount == 0){
-                    var result2 = await google.updateOne({_id: cusId},{image:image})
-                }
-            }
-            req.session.message = {
-                type: 'success',
-                intro: 'Cập nhật ảnh đại diện thành công!',
-                message: ''
+    async changeAvatarCusDB(req, res, next) {
+        var image = req.query.pathFile
+        var cusId = req.signedCookies.cusId
+        var result = await customer.updateOne({ _id: cusId }, { image: image })
+        if (result.modifiedCount == 0) {
+            var result1 = await facebook.updateOne({ _id: cusId }, { image: image })
+            if (result1.modifiedCount == 0) {
+                var result2 = await google.updateOne({ _id: cusId }, { image: image })
             }
         }
-        else{
-            req.session.message = {
-                type: 'warning',
-                intro: 'Cập nhật ảnh đại diện thất bại!',
-                message: ''
-            }
-        }
-        res.redirect('back')
+        res.send('abc')
+
     }
 
 

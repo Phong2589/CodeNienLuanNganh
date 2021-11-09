@@ -4,25 +4,63 @@
         <img src="{{cus.image}}" alt="" class="w-50">
     </div>
     <div class="mt-3 w-50 mx-auto">
-        <form action="/customer/changeAvatarCusDB" method="post" onsubmit="return check()" enctype="multipart/form-data">
-            <p>Chọn ảnh đại diện mới</p>
-            <input type="file" class="form-control" id="image" name="image" placeholder="Ảnh sản phẩm">
-            <p class="warning" id="warningImage"></p>
-            <button type="submit" class="btn btn-primary">Cập nhật</button>
-        </form>
+        <p>Chọn ảnh đại diện mới</p>
+        <input type="file" class="form-control" id="image" name="image" placeholder="Ảnh sản phẩm">
+        <p class="warning" id="warningImage"></p>
+        <button class="btn btn-primary" onclick="check()">Cập nhật</button>
     </div>
 
 </div>
 
 <script>
-    function check(){
-        var checked = true
-        var imageCheck = document.getElementById('image').value;
-        if(imageCheck == "") {
-                document.getElementById("warningImage").innerHTML="Vui lòng chọn ảnh đại diện mới!";
-                checked = false;
+    function check() {
+
+        //upload
+        var url = "https://api.cloudinary.com/v1_1/pqshop/image/upload";
+        var files = document.querySelector("#image").files;
+        console.log(files[0]);
+        var formData = new FormData();
+        if (files.length > 0) {
+            async function uploadImage() {
+                var file = files[0];
+                formData.append("file", file);
+                formData.append("upload_preset", "upload_image");
+
+                await fetch(url, {
+                    method: "POST",
+                    body: formData
+                })
+                    .then(async function (response) {
+                        var data = await response.text();
+                        var dataJson = await JSON.parse(data);
+
+                        var xmlhttp;
+                        xmlhttp = new XMLHttpRequest();
+                        xmlhttp.onreadystatechange = function () {
+                            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                                Swal.fire(
+                                    'Cập nhật ảnh đại diện thành công!',
+                                    '',
+                                    'success'
+                                ).then((result) => {
+                                    if (result.isConfirmed) {
+                                        location.reload();
+                                    }
+                                })
+                            }
+                        }
+                        xmlhttp.open("GET", "/customer/changeAvatarCusDB?pathFile=" + dataJson.secure_url, true);
+                        xmlhttp.send();
+                        
+
+                    });
             }
-        else    document.getElementById("warningImage").innerHTML="";
-        return checked;
+            uploadImage();
+        }
+        else {
+            document.getElementById("warningImage").innerHTML = "Vui lòng chọn ảnh đại diện mới!";
+        }
+
     }
+
 </script>
