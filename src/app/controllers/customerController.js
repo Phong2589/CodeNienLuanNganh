@@ -15,6 +15,14 @@ const google = require('../models/google')
 
 const uid = new ShortUniqueId({ length: 10 })
 
+const cloudinary = require('cloudinary').v2
+
+cloudinary.config({
+    cloud_name: 'pqshop',
+    api_key: '235438731113978',
+    api_secret: 'zOM2Llga6w4fei6pO1ey6AQniMU'
+})
+
 class customerController {
     async customer(req, res, next) {
         var page = parseInt(req.query.page)
@@ -470,7 +478,11 @@ class customerController {
         })
     }
     async changeAvatarCusDB(req,res,next){
+        // console.log(req)
+        // res.send('abc')
         if(req.file.path){
+            var resultImage= await cloudinary.uploader.upload(req.file.path)
+            // console.log(resultImage.secure_url)
             var image = req.file.path.split('\\').slice(2).join('/')
             image = "/" + image
             var cusId = req.signedCookies.cusId

@@ -3,17 +3,18 @@ const path = require('path');
 const router = express.Router();
 const passport = require('passport');
 const multer  = require('multer')
+// console.log(path.resolve(__dirname, '../public/img'))
 // console.log(path.join(__dirname, '../public/img/'))
-// const upload = multer({ dest: path.join(__dirname, '../public/img/')})
-const fileStoge = multer.diskStorage({
-    destination: (req,file,cb)=>{
-        cb(null,"./src/public/img")
-    },
-    filename: (req,file,cb)=>{
-        cb(null,Date.now() + "--" + file.originalname)
-    },
-})
-const upload = multer({storage : fileStoge})
+const upload = multer({ dest: './src/public/img/'})
+// const fileStoge = multer.diskStorage({
+//     destination: (req,file,cb)=>{
+//         cb(null,path.resolve(__dirname, '../public/img/'))
+//     },
+//     filename: (req,file,cb)=>{
+//         cb(null,Date.now() + "--" + file.originalname)
+//     },
+// })
+// const upload = multer({storage : fileStoge})
 
 const customerController = require('../app/controllers/customerController');
 
@@ -42,10 +43,10 @@ router.post('/changePassCusPro',customerController.changePassCusPro);
 router.get('/checkPassword',customerController.checkPassword);
 router.get('/sortNew',customerController.sortNew);
 router.get('/changeAvatar',customerController.changeAvatar);
-router.post('/changeAvatarCusDB', upload.single('image'), customerController.changeAvatarCusDB);
+router.post('/changeAvatarCusDB',upload.single('image'), customerController.changeAvatarCusDB);
 
 
-
+//upload.single('image'),
 
 
 router.get('/', customerController.customer);
@@ -53,5 +54,3 @@ router.get('/', customerController.customer);
 
 
 module.exports = router;
-
-// heroku run bash --app pqshop
