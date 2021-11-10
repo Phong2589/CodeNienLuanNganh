@@ -41,7 +41,7 @@ module.exports = {
             clientSecret: "4051c068556491cb7c137cad1dda8862",
             callbackURL: "https://pqshop.herokuapp.com/registerFacebook/callback",
 
-            profileFields: ['id', 'displayName', 'emails','name','picture.type(large)'],
+            profileFields: ['id', 'displayName','name','picture.type(large)'],
           },
           function(accessToken, refreshToken, profile, done) {
             return done(null, profile);

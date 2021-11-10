@@ -513,25 +513,38 @@ class SiteController {
     }
 
     async successloginFace(req, res, next) {
-        var findId = await facebook.findOne({ idFace: req.user.id })
-        if (findId) {
-            res.cookie('cusId', findId.id, {
-                signed: true,
-                maxAge: 1000 * 60 * 60 * 2
-            })
-            var dataDb = await cart.findOne({ cusId: findId.id })
-            if (dataDb == null) {
-                const cartNew = new cart()
-                cartNew.total = 0
-                cartNew.cusId = findId.id
-                var cartup = await cartNew.save()
+        // res.json(req.user)
+        // res.send('abs')
+        if (req.user.id) {
+            var findId = await facebook.findOne({ idFace: req.user.id })
+            if (findId) {
+                res.cookie('cusId', findId.id, {
+                    signed: true,
+                    maxAge: 1000 * 60 * 60 * 2
+                })
+                var dataDb = await cart.findOne({ cusId: findId.id })
+                if (dataDb == null) {
+                    const cartNew = new cart()
+                    cartNew.total = 0
+                    cartNew.cusId = findId.id
+                    var cartup = await cartNew.save()
+                }
+                req.session.message = {
+                    type: 'success',
+                    intro: 'Đăng nhập thành công! ',
+                    message: ''
+                }
+                res.redirect('/customer')
             }
-            req.session.message = {
-                type: 'success',
-                intro: 'Đăng nhập thành công! ',
-                message: ''
+            else {
+                req.session.message = {
+                    type: 'warning',
+                    intro: 'Đăng nhập thất bại! ',
+                    message: 'Hãy đăng nhập lại nào.'
+                }
+                res.redirect('/')
             }
-            res.redirect('/customer')
+
         }
         else {
             req.session.message = {
