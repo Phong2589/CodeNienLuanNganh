@@ -349,7 +349,7 @@ class adminController {
         var result = await staff.create({
             user: req.body.user,
             password: sha512(req.body.password),
-            image: "https://res.cloudinary.com/pqshop/image/upload/v1636381618/avatarDefault_mwwgnf.png"
+            image: "https://res.cloudinary.com/pqshop/image/upload/v1636549194/image/avatarDefault_qdriw6.png"
         })
         var result2 = await infoStaff.create({
             user: req.body.user,
