@@ -40,8 +40,7 @@ class adminController {
         res.render('addProduct', { layout: 'admin' });
     }
     async addProductDB(req, res, next) {
-        var resultImage= await cloudinary.uploader.upload(req.file.path)
-        req.body.image = resultImage.secure_url
+        req.body.image = req.body.linkFile
         const productNew = new product(req.body)
         productNew.sold = 0
         var result = await productNew.save()
@@ -73,15 +72,13 @@ class adminController {
     async updateProductDB(req, res, next) {
         var slug = await req.params.slug
         var result
-        if (req.file) {
-            var resultImage= await cloudinary.uploader.upload(req.file.path)
-            req.body.image = resultImage.secure_url
+        if (req.body.linkFile != '') {
             result = await product.updateOne({ slug: slug }, {
                 name: req.body.name,
                 cost: req.body.cost,
                 quantity: req.body.quantity,
                 description: req.body.description,
-                image: req.body.image
+                image: req.body.linkFile
             })
         }
         else {
@@ -281,7 +278,7 @@ class adminController {
             quantityPage: quantityPageArr
         })
     }
-    async sortNew(req,res,next){
+    async sortNew(req, res, next) {
         var page = parseInt(req.query.page)
         if (!page) page = 1
         var perPage = 16
@@ -477,12 +474,12 @@ class adminController {
             var orderId = req.params.slug
             var orderDel = await order.findOne({ orderId: orderId })
             const orderSave = new historyOrder()
-            
-            for(var i=0;i<orderDel.cart.length;i++){
-                var productFind = await product.findOne({slug: orderDel.cart[i].slug})
-                var upProduct = await product.updateOne({slug: orderDel.cart[i].slug},{sold: productFind.sold + orderDel.cart[i].quantityBuy})
+
+            for (var i = 0; i < orderDel.cart.length; i++) {
+                var productFind = await product.findOne({ slug: orderDel.cart[i].slug })
+                var upProduct = await product.updateOne({ slug: orderDel.cart[i].slug }, { sold: productFind.sold + orderDel.cart[i].quantityBuy })
             }
-            
+
             orderSave.cusId = orderDel.cusId
             orderSave.orderId = orderDel.orderId
             orderSave.name = orderDel.name
@@ -509,7 +506,7 @@ class adminController {
     }
 
     async history(req, res, next) {
-        var orders = await historyOrder.find({}).limit(20).sort({ createdAt : -1})
+        var orders = await historyOrder.find({}).limit(20).sort({ createdAt: -1 })
         res.render('historyOrderCus', {
             layout: 'admin',
             orders: mutipleMongooseToObject(orders)
@@ -565,11 +562,11 @@ class adminController {
         if (!monthDate) {
             monthDate = date.getMonth() + 1
         }
-        if (!parseInt(monthDate) || monthDate < 1 || monthDate>12) {
+        if (!parseInt(monthDate) || monthDate < 1 || monthDate > 12) {
             res.json('Tháng nhập vào không đúng!')
         }
         else {
-            var currentDate = moment(year + '-'+(monthDate));
+            var currentDate = moment(year + '-' + (monthDate));
 
             // var futureMonth = moment(currentDate).subtract(1, 'M');
             // res.json(currentDate)
@@ -591,13 +588,13 @@ class adminController {
                 year: year
             })
         }
-        }
-    async statistics(req,res,next){
+    }
+    async statistics(req, res, next) {
         var date = new Date()
         var year = date.getFullYear()
         var arr = []
-        for(var i=1;i<=12;i++){
-            var currentDate = moment(year + '-'+i)
+        for (var i = 1; i <= 12; i++) {
+            var currentDate = moment(year + '-' + i)
             var orders = await historyOrder.find({
                 createdAt: {
                     $gte: currentDate.toDate(),
@@ -609,40 +606,25 @@ class adminController {
             for (var j = 0; j < orders.length; j++) {
                 total = total + orders[j].total
             }
-            arr[i-1] = total
+            arr[i - 1] = total
         }
 
         res.setHeader('total', arr)
-        res.render('statistics',{
+        res.render('statistics', {
             layout: 'admin',
         })
     }
 
-    async changeAvatar(req,res,next){
-        res.render('changeAvatarAdmin',{
+    async changeAvatar(req, res, next) {
+        res.render('changeAvatarAdmin', {
             layout: 'admin'
         })
     }
-    async changeAvatarAdminDB(req,res,next){
-        if(req.file.path){
-            var resultImage= await cloudinary.uploader.upload(req.file.path)
-            var image = resultImage.secure_url
-            var adminId = req.signedCookies.adminId
-            var result = await admin.updateOne({_id: adminId},{image:image})
-            req.session.message = {
-                type: 'success',
-                intro: 'Cập nhật ảnh đại diện thành công!',
-                message: ''
-            }
-        }
-        else{
-            req.session.message = {
-                type: 'warning',
-                intro: 'Cập nhật ảnh đại diện thất bại!',
-                message: ''
-            }
-        }
-        res.redirect('back')
+    async changeAvatarAdminDB(req, res, next) {
+        var image = req.query.pathFile
+        var adminId = req.signedCookies.adminId
+        var result = await admin.updateOne({ _id: adminId }, { image: image })
+        res.send('abs')
     }
 
 

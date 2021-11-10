@@ -13,7 +13,7 @@ const { MongooseToObject } = require('../../util/mongoose')
 
 class staffController {
 
-    async home(req, res,next) {
+    async home(req, res, next) {
         var page = parseInt(req.query.page)
         if (!page) page = 1
         var perPage = 16
@@ -115,7 +115,7 @@ class staffController {
             quantityPage: quantityPageArr
         })
     }
-    async sortNew(req,res,next){
+    async sortNew(req, res, next) {
         var page = parseInt(req.query.page)
         if (!page) page = 1
         var perPage = 16
@@ -218,20 +218,20 @@ class staffController {
             numberDay: numberDay
         })
     }
-    async profile(req,res,next){
+    async profile(req, res, next) {
         var staffId = req.signedCookies.staffId
-        var staffFind = await staff.findOne({id:staffId})
+        var staffFind = await staff.findOne({ id: staffId })
         var user = staffFind.user
-        var info = await infoStaff.findOne({user:user})
-        if(info){
-            res.render('profileStaff',{
-                layout:'staff',
-                info : MongooseToObject(info)
+        var info = await infoStaff.findOne({ user: user })
+        if (info) {
+            res.render('profileStaff', {
+                layout: 'staff',
+                info: MongooseToObject(info)
             })
         }
-        else{
-            res.render('profileStaff',{
-                layout:'staff',
+        else {
+            res.render('profileStaff', {
+                layout: 'staff',
             })
         }
     }
@@ -347,42 +347,27 @@ class staffController {
     }
 
     async history(req, res, next) {
-        var orders = await historyOrder.find({}).limit(20).sort({ createdAt : -1})
+        var orders = await historyOrder.find({}).limit(20).sort({ createdAt: -1 })
         res.render('historyOrderCus', {
             layout: 'staff',
             orders: mutipleMongooseToObject(orders)
         })
     }
 
-    async changeAvatar(req,res,next){
-        res.render('changeAvatarStaff',{
+    async changeAvatar(req, res, next) {
+        res.render('changeAvatarStaff', {
             layout: 'staff'
         })
     }
-    async changeAvatarStaffDB(req,res,next){
-        if(req.file.path){
-            var resultImage = await cloudinary.uploader.upload(req.file.path)
-            var image = resultImage.secure_url
-            var staffId = req.signedCookies.staffId
-            var result = await staff.updateOne({_id: staffId},{image:image})
-            req.session.message = {
-                type: 'success',
-                intro: 'Cập nhật ảnh đại diện thành công!',
-                message: ''
-            }
-        }
-        else{
-            req.session.message = {
-                type: 'warning',
-                intro: 'Cập nhật ảnh đại diện thất bại!',
-                message: ''
-            }
-        }
-        res.redirect('back')
+    async changeAvatarStaffDB(req, res, next) {
+        var image = req.query.pathFile
+        var staffId = req.signedCookies.staffId
+        var result = await staff.updateOne({ _id: staffId }, { image: image })
+        res.send('abc')
 
     }
 
-    
+
 }
 
 module.exports = new staffController();

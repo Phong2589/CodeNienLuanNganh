@@ -1,4 +1,4 @@
-<form action="/admin/addProductDB" method="post" onsubmit="return check()" class="mt-3" enctype="multipart/form-data">
+<form action="/admin/addProductDB" method="post" onsubmit="return check()" class="mt-3" id="abcform">
     <div class="form-group">
 
         <div class="d-xl-flex d-lg-flex d-md-flex">
@@ -14,79 +14,111 @@
 
         <div class="d-xl-flex d-lg-flex d-md-flex">
             <div class="w-xl-50 w-lg-50 w-md-50 w-sm-100 w-xs-100 mr-4">
-                <input type="file" class="form-control" id="image" name="image" placeholder="Ảnh sản phẩm">
+                <input type="file" class="form-control" id="image" name="image" placeholder="Ảnh sản phẩm"
+                    onchange="changeLink()">
                 <p class="warning" id="warningImage"></p>
             </div>
+            <input tpe="text" class="d-none" id="linkFile" name="linkFile">
             <div class="w-xl-50 w-lg-50 w-md-50 w-sm-100 w-xs-100">
                 <input type="text" class="form-control" id="quantity" name="quantity" placeholder="Số lượng sản phẩm">
                 <p class="warning" id="warningQuantity"></p>
             </div>
         </div>
-        
+
         <div class="">
-            <textarea rows="5" type="text" class="form-control" id="description" name="description" placeholder="Chi tiết sản phẩm"></textarea>
+            <textarea rows="5" type="text" class="form-control" id="description" name="description"
+                placeholder="Chi tiết sản phẩm"></textarea>
             <p class="warning" id="warningDescription"></p>
         </div>
         <hr>
         <div class="endFormRegister">
             <button type="reset button" class="btn btn-secondary">Làm lại</button>&nbsp;
-            <button type="submit button" class="btn btn-primary">Thêm sản phẩm</button>   
+            <button type="submit button" class="btn btn-primary">Thêm sản phẩm</button>
         </div>
     </div>
 </form>
+<p id="test"></p>
 <script>
-    function check(){
-        var checked=true;
-        //check name product
-        
-        var nameCheck = document.getElementById('name').value;
-        if(nameCheck == "") {
-                document.getElementById("warningName").innerHTML="Vui lòng nhập vào tên sản phẩm!";
-                checked = false;
+
+    function changeLink() {
+        var url = "https://api.cloudinary.com/v1_1/pqshop/image/upload";
+        var files = document.querySelector("#image").files;
+        var formData = new FormData();
+
+        if (files.length > 0) {
+            async function uploadImage() {
+                var file = files[0];
+                formData.append("file", file);
+                formData.append("upload_preset", "upload_image");
+
+                await fetch(url, {
+                    method: "POST",
+                    body: formData
+                })
+                    .then(async function (response) {
+                        var data = await response.text();
+                        var dataJson = await JSON.parse(data);
+                        document.getElementById("linkFile").value = await dataJson.url;
+                    });
             }
-        else    document.getElementById("warningName").innerHTML="";
+            uploadImage();
+        }
+    }
+
+    function check() {
+        var checked = true;
+        //check name product
+
+        var nameCheck = document.getElementById('name').value;
+        if (nameCheck == "") {
+            document.getElementById("warningName").innerHTML = "Vui lòng nhập vào tên sản phẩm!";
+            checked = false;
+        }
+        else document.getElementById("warningName").innerHTML = "";
 
         //check cost
-        var cost_reg=/^[1-9][0-9]{3,15}$/;
+        var cost_reg = /^[1-9][0-9]{3,15}$/;
         var costCheck = document.getElementById('cost').value;
-        if(costCheck == "") {
-            document.getElementById("warningCost").innerHTML="Vui lòng nhập vào giá sản phẩm!";
-            checked=false;
+        if (costCheck == "") {
+            document.getElementById("warningCost").innerHTML = "Vui lòng nhập vào giá sản phẩm!";
+            checked = false;
         }
-        else  if(cost_reg.test(costCheck))  document.getElementById("warningCost").innerHTML="";
-                else  {
-                    document.getElementById("warningCost").innerHTML="Giá sản phẩm không đúng định dạng!";
-                    checked = false;
-                }    
+        else if (cost_reg.test(costCheck)) document.getElementById("warningCost").innerHTML = "";
+        else {
+            document.getElementById("warningCost").innerHTML = "Giá sản phẩm không đúng định dạng!";
+            checked = false;
+        }
         //check quantity
-        var quantity_reg=/^[1-9][0-9]{0,15}$/;
+        var quantity_reg = /^[1-9][0-9]{0,15}$/;
         var quantityCheck = document.getElementById('quantity').value;
-        if(quantityCheck == "") {
-            document.getElementById("warningQuantity").innerHTML="Vui lòng nhập vào số lượng sản phẩm!";
-            checked=false;
+        if (quantityCheck == "") {
+            document.getElementById("warningQuantity").innerHTML = "Vui lòng nhập vào số lượng sản phẩm!";
+            checked = false;
         }
-        else  if(quantity_reg.test(quantityCheck))  document.getElementById("warningQuantity").innerHTML="";
-                else  {
-                    document.getElementById("warningQuantity").innerHTML="Số lượng sản phẩm không đúng định dạng!";
-                    checked = false;
-                }    
+        else if (quantity_reg.test(quantityCheck)) document.getElementById("warningQuantity").innerHTML = "";
+        else {
+            document.getElementById("warningQuantity").innerHTML = "Số lượng sản phẩm không đúng định dạng!";
+            checked = false;
+        }
 
         //check image
         var imageCheck = document.getElementById('image').value;
-        if(imageCheck == "") {
-                document.getElementById("warningImage").innerHTML="Vui lòng chọn ảnh sản phẩm!";
-                checked = false;
-            }
-        else    document.getElementById("warningImage").innerHTML="";
+        if (imageCheck == "") {
+            document.getElementById("warningImage").innerHTML = "Vui lòng chọn ảnh sản phẩm!";
+            checked = false;
+        }
+        else document.getElementById("warningImage").innerHTML = "";
 
         //check description
         var descriptionCheck = document.getElementById('description').value;
-        if(descriptionCheck == "") {
-                document.getElementById("warningDescription").innerHTML="Vui lòng nhập vào mô tả sản phẩm!";
-                checked = false;
-            }
-        else    document.getElementById("warningDescription").innerHTML="";
+        if (descriptionCheck == "") {
+            document.getElementById("warningDescription").innerHTML = "Vui lòng nhập vào mô tả sản phẩm!";
+            checked = false;
+        }
+        else document.getElementById("warningDescription").innerHTML = "";
+
+
         return checked;
     }
-   
+
 </script>

@@ -8,9 +8,9 @@ const adminController = require('../app/controllers/adminController');
 
 
 router.get('/addProduct', adminController.addProduct);
-router.post('/addProductDB', upload.single('image'), adminController.addProductDB);
+router.post('/addProductDB',adminController.addProductDB);
 router.get('/updateProduct/:slug', adminController.updateProduct);
-router.post('/updateProductDB/:slug', upload.single('image'), adminController.updateProductDB);
+router.post('/updateProductDB/:slug',adminController.updateProductDB);
 router.get('/deleteProduct/:slug', adminController.deleteProduct);
 router.get('/productDeleted', adminController.productDeleted);
 router.get('/restoreproduct/:slug', adminController.restoreproduct);
@@ -42,7 +42,7 @@ router.get('/revenueMonth',adminController.revenueMonth);
 router.get('/statistics',adminController.statistics);
 router.get('/sortNew',adminController.sortNew);
 router.get('/changeAvatar',adminController.changeAvatar);
-router.post('/changeAvatarAdminDB', upload.single('image'), adminController.changeAvatarAdminDB);
+router.get('/changeAvatarAdminDB', adminController.changeAvatarAdminDB);
 
 
 
