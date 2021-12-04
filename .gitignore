@@ -1,2 +1,4 @@
 node_modules/
 src/util/middle.js
+src/util/facebook.js
+src/util/google.js
