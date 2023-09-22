@@ -2,10 +2,16 @@ name: Example workflow using Snyk
 on: push
 jobs:
   security:
-    runs-on: QIPDNS116
+    runs-on: self-hosted
     steps:
-      - uses: actions/checkout@master
-      - name: Run Snyk to check for vulnerabilities
-        uses: snyk/actions/node@master
-        env:
-          SNYK_TOKEN: 935108ec-6fcc-41cd-b8f9-14b342aea9fc
+    - name: pull source
+      working-directory: /opt/snyk/PQShopWithNodeJs
+      run: |
+        git fetch --all
+        git clean -fd
+        git clean -f -X
+        git checkout master
+        git reset --hard origin/master
+        git pull --rebase=false origin --prune --verbose
+        git status
+        snyk test
