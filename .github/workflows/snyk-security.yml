@@ -10,8 +10,8 @@ jobs:
         git fetch --all
         git clean -fd
         git clean -f -X
-        git checkout master
-        git reset --hard origin/master
+        git checkout main
+        git reset --hard origin/main
         git pull --rebase=false origin --prune --verbose
         git status
         snyk test
