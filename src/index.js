@@ -60,7 +60,7 @@ app.set('view options', { layout: 'admin' });
 app.set('view options', { layout: 'staff' });
 
 
-//test
+//test google and facebook
 require('./util/google')
 require('./util/facebook')
 const passport = require('passport');
